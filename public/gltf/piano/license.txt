@@ -1,0 +1,11 @@
+Model Information:
+* title:	electric piano lowpoly
+* source:	https://sketchfab.com/3d-models/electric-piano-lowpoly-dcbd79f9913b45128ebacd141cee9a38
+* author:	berti_buchsbaum (https://sketchfab.com/berti_buchsbaum)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "electric piano lowpoly" (https://sketchfab.com/3d-models/electric-piano-lowpoly-dcbd79f9913b45128ebacd141cee9a38) by berti_buchsbaum (https://sketchfab.com/berti_buchsbaum) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
