@@ -12,6 +12,8 @@
     "@prisma/client": "4.14.0",
     "@react-three/drei": "^9.66.0",
     "@react-three/fiber": "^8.12.2",
+    "@supabase/supabase-js": "^2.21.0",
+    "axios": "^1.4.0",
     "leva": "^0.9.34",
     "next": "13.3.1",
     "postcss": "8.4.23",
