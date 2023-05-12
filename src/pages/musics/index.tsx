@@ -1,25 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { ScrollControls } from '@react-three/drei';
-import Music from '@/components/Music';
-import { create } from 'zustand';
+import MusicList from '@/components/MusicList';
 
-const titleList = [
-  'Complicated',
-  'Self Control',
-  'Get Lucky',
-  "Sweet Childs O'mine",
-  'Smells like Teen Sprit',
-  'Marigold',
-  'Billie Bossa Nova',
-  'How Like That',
-  'Canonball',
-  'Humble',
-  'Hype Boy',
-  'Take Where Your Heart is'
-];
-
-const list = [
+const musicList = [
   '/album/avril.png',
   '/album/blonde.jpeg',
   '/album/daft.jpeg',
@@ -36,25 +20,23 @@ const list = [
 
 const Index = () => {
   const [selectedIdx, setSelectedIdx] = useState<null | number>(null);
-  const [previousIdx, setPreviousIdx] = useState<null | number>(null);
   const listRefs = useRef<(HTMLLIElement | null)[]>([]);
 
   const handleClick = (idx: number) => {
-    if (selectedIdx == null) {
+    if (selectedIdx === null) {
       setSelectedIdx(idx);
     } else {
-      setPreviousIdx(selectedIdx);
       setSelectedIdx(null);
     }
     scrollToItem(idx);
   };
-
   const scrollToItem = (index: number) => {
     const target = index === 0 ? 0 : index - 1;
     if (listRefs.current[target]) {
       listRefs.current[target]?.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
   return (
     <div className={'grid grid-cols-[400px_minmax(900px,_1fr)] h-screen'}>
       <div className={'bg-white bg-opacity-90 px-6'}>
@@ -68,7 +50,7 @@ const Index = () => {
             'overflow-y-scroll h-32 snap-y snap-mandatory bg-black bg-opacity-90 py-4 flex flex-col items-center  scrollbar scrollbar-thumb-red-400'
           }
         >
-          {list.map((title, index) => (
+          {musicList.map((title, index) => (
             <li
               key={index}
               className={
@@ -77,15 +59,16 @@ const Index = () => {
               ref={(el) => (listRefs.current[index] = el)}
               onClick={() => handleClick(index)}
             >
-              {title}
+              {title.split('/')[2].split('.')[0]}
             </li>
           ))}
         </ul>
         <button>+ add</button>
       </div>
       <Canvas
+        className="scrollbar scrollbar-thumb-red-400 h-32"
         camera={{
-          zoom: 2.7,
+          zoom: 1.7,
           position: [15, 5, 0],
           fov: 100,
           near: 0.1,
@@ -93,19 +76,14 @@ const Index = () => {
         }}
       >
         <color attach="background" args={['white']} />
-        <ScrollControls enabled={selectedIdx === null}>
-          {list.map((url, i) => (
-            <Music
-              key={i}
-              url={url}
-              index={i}
-              // scrollToItem={scrollToItem}
-              handleClick={handleClick}
-              previousIdx={previousIdx}
-              setPreviousIdx={setPreviousIdx}
-              selectedIdx={selectedIdx}
-            />
-          ))}
+        {/* style for hide scroll bar */}
+        <ScrollControls damping={0} style={{ left: '15px' }}>
+          <MusicList
+            handleClick={handleClick}
+            selectedIdx={selectedIdx}
+            setSelectedIdx={setSelectedIdx}
+            musicList={musicList}
+          />
         </ScrollControls>
         <ambientLight />
       </Canvas>

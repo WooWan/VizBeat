@@ -1,9 +1,10 @@
 import * as THREE from 'three';
-import { useFrame, useLoader, useThree } from '@react-three/fiber';
+import { useFrame, useLoader } from '@react-three/fiber';
 import { useScroll } from '@react-three/drei';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { TextureLoader } from 'three';
 import { lerp } from 'three/src/math/MathUtils';
+import {MeshAxis, YAxis} from "@/types/Axis";
 
 const radian = Math.PI / 180;
 
@@ -11,96 +12,77 @@ type Props = {
   url: string;
   index: number;
   handleClick: (idx: number) => void;
-  previousIdx: null | number;
   selectedIdx: null | number;
-  setPreviousIdx: (idx: null | number) => void;
-  // scrollToItem: (idx: number) => void;
+  setSelectedIdx: (idx: null | number) => void;
 };
+
+const LERP_FACTOR = 0.05;
 
 const Music = ({
   url,
   index,
   handleClick,
-  previousIdx,
   selectedIdx,
-  setPreviousIdx
+  setSelectedIdx
 }: Props) => {
-  const [previous, setPrevious] = useState(0);
-  const [originalPos] = useState(2 - index * 1.5);
-  const [upPos] = useState(7 - index * 1.5);
-  const [downPos] = useState(-3 - index * 1.5);
+  const [originalPosition] = useState(2- index * 1.5);
+  const [upPosition] = useState(7 - index * 1.5);
+  const [downPosition] = useState(-3 - index * 1.5);
   const [rotation, setRotation] = useState(radian * 10 * index);
-  const { camera } = useThree();
   const meshRef = useRef<THREE.Mesh>(null!);
   const data = useScroll();
   const cover = useLoader(TextureLoader, url);
   const texture = useLoader(TextureLoader, '/cdtexture.jpg');
 
-  useFrame(() => {
-    camera.position.y -= data.offset - previous;
-    setPrevious(data.offset);
+  const positionMap = {
+    up: upPosition,
+    down: downPosition,
+    original: originalPosition
+  };
 
-    if (selectedIdx == index) {
-      //내가 선택되면
-      meshRef.current.rotation.x = lerp(
-        meshRef.current.rotation.x,
-        radian * 90,
-        0.05
-      );
-      meshRef.current.rotation.y = lerp(
-        meshRef.current.rotation.y,
-        radian * 0,
-        0.05
-      );
-      meshRef.current.rotation.z = lerp(
-        meshRef.current.rotation.z,
-        radian * -90,
-        0.05
-      );
-      camera.position.y = lerp(camera.position.y, originalPos + 5, 0.05);
-    } else if (selectedIdx !== null) {
-      //남이 선택되면
-      if (selectedIdx > index) {
-        meshRef.current.position.y = lerp(
-          meshRef.current.position.y,
-          upPos,
-          0.05
-        );
-      } else {
-        meshRef.current.position.y = lerp(
-          meshRef.current.position.y,
-          downPos,
-          0.05
-        );
-      }
+  const updateRotation = ({x,y,z}:MeshAxis)  =>{
+    meshRef.current.rotation.x = lerp(meshRef.current.rotation.x, x, LERP_FACTOR);
+    meshRef.current.rotation.y = lerp(meshRef.current.rotation.y, y, LERP_FACTOR);
+    meshRef.current.rotation.z = lerp(meshRef.current.rotation.z, z, LERP_FACTOR);
+  }
+
+  const updatePosition = ({y}: YAxis) => {
+    meshRef.current.position.y = lerp(meshRef.current.position.y, y, LERP_FACTOR);
+  }
+
+  useFrame(() => {
+    if (selectedIdx === null) return
+    const key = selectedIdx > index ? "up" : "down";
+    if (selectedIdx === index) {
+      updateRotation({x: radian * 90, y: 0, z: radian * -90});
     } else {
-      meshRef.current.position.y = lerp(
-        meshRef.current.position.y,
-        originalPos,
-        0.05
-      );
-      meshRef.current.rotation.x = lerp(meshRef.current.rotation.x, 0, 0.05);
-      meshRef.current.rotation.z = lerp(meshRef.current.rotation.z, 0, 0.05);
-
-      if (previousIdx === index) {
-        // if(Math.abs(meshRef.current.rotation.y-rotation) < radian*30) meshRef.current.rotation.y = lerp(meshRef.current.rotation.y, rotation, 0.1)
-        meshRef.current.rotation.y = lerp(
-          meshRef.current.rotation.y,
-          rotation,
-          0.05
-        );
-        setPreviousIdx(null);
-      }
+      updatePosition({y: positionMap[key]});
     }
-  }, 0);
-  //
+  });
+
   useFrame(() => {
-    setRotation(rotation + 0.1 * radian);
+    if (selectedIdx === null) {
+      updatePosition({y: originalPosition});
+      updateRotation({x: 0, y: 0, z: 0});
+    }
+  }, 0 )
+
+  useFrame(() => {
+    setRotation((prev) => prev + 0.1 * radian);
     if (selectedIdx !== index) {
       meshRef.current.rotation.y = rotation;
       meshRef.current.rotation.y %= 360 * radian;
     }
   });
+
+
+  useEffect(() => {
+    if (selectedIdx !== null) {
+      updatePosition({y: positionMap["original"]});
+      updateRotation({x: 0, y: 0, z: 0});
+      setSelectedIdx(null);
+    }
+  }, [data.offset]);
 
   return (
     <mesh
@@ -123,3 +105,5 @@ const Music = ({
   );
 };
 export default Music;
+
+
