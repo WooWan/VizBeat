@@ -6,12 +6,20 @@ const Page = () => {
   useEffect(() => {
     const fetchMusic = async () => {
       const res = await axios.get(
-        'https://sgfbjtwrqhjzbyuhnknq.supabase.co/storage/v1/object/public/music/file_path?t=2023-05-12T08%3A08%3A26.506Z',
+        'https://sgfbjtwrqhjzbyuhnknq.supabase.co/storage/v1/object/public/music/test2.mp3',
+        // 'https://sgfbjtwrqhjzbyuhnknq.supabase.co/storage/v1/object/public/music/file_path?t=2023-05-12T08%3A08%3A26.506Z',
         {
           responseType: 'blob'
         }
       );
+      console.log('res', res.data);
       const urlBlob = URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement('a');
+      link.href = urlBlob;
+      link.setAttribute('download', 'test.mp3'); //or any other extension
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
       setMusicUrl(urlBlob);
     };
     fetchMusic();
