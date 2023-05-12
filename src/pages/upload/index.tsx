@@ -18,6 +18,7 @@ const Page = () => {
   }, []);
 
   const splitMusic = async () => {
+    console.log(musicUrl);
     const options = {
       method: 'POST',
       url: 'https://developer-api.moises.ai/api/job',
@@ -38,21 +39,9 @@ const Page = () => {
     }
   };
 
-  const uploadMusic = async () => {
-    const res = await axios.get(
-      'https://sgfbjtwrqhjzbyuhnknq.supabase.co/storage/v1/object/public/music/file_path?t=2023-05-12T08%3A08%3A26.506Z',
-      {
-        responseType: 'blob'
-      }
-    );
-    const urlBlob = URL.createObjectURL(new Blob([res.data]));
-    setMusicUrl(urlBlob);
-  };
-
   return (
     <div>
       <input type="file" onChange={fileChangedHandler} />
-      <button onClick={uploadMusic}>upload</button>
       <button onClick={splitMusic}>split</button>
     </div>
   );
