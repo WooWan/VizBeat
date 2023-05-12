@@ -51,7 +51,7 @@ const Music = ({
   }
 
   useFrame(() => {
-    if (!selectedIdx) return
+    if (selectedIdx === null) return
     const key = selectedIdx > index ? "up" : "down";
     if (selectedIdx === index) {
       updateRotation({x: radian * 90, y: 0, z: radian * -90});
@@ -61,7 +61,7 @@ const Music = ({
   });
 
   useFrame(() => {
-    if (!selectedIdx) {
+    if (selectedIdx === null) {
       updatePosition({y: originalPosition});
       updateRotation({x: 0, y: 0, z: 0});
     }
