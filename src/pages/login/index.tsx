@@ -1,5 +1,5 @@
 import React from 'react';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { Canvas } from '@react-three/fiber';
 import { Html, OrbitControls } from '@react-three/drei';
 import { Physics } from '@react-three/cannon';
@@ -7,6 +7,8 @@ import Ground from '@/components/3d/Ground';
 import Image from 'next/image';
 
 const LoginPage = () => {
+  const { data: session } = useSession();
+
   return (
     <div className={'h-screen'}>
       <Canvas gl={{ alpha: false }} dpr={[1, 1.5]}>
@@ -22,11 +24,15 @@ const LoginPage = () => {
             <header className={'pt-4 pb-12'}>
               <h2 className={'text-xl'}>Social Login</h2>
             </header>
-            <ul className={'flex'}>
-              <li onClick={() => signIn('google')}>
-                <Image src={'/google_login.png'} alt={'google login'} width={198} height={198} />
-              </li>
-            </ul>
+            {session ? (
+              <div>Signed in as hard coding</div>
+            ) : (
+              <ul className={'flex'}>
+                <li onClick={() => signIn('google')} className={'cursor-pointer'}>
+                  <Image src={'/google_login.png'} alt={'google login'} width={198} height={198} />
+                </li>
+              </ul>
+            )}
           </nav>
         </Html>
         <Physics>
