@@ -2,27 +2,21 @@ import React, { useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { ScrollControls } from '@react-three/drei';
 import MusicList from '@/components/MusicList';
+import { useMusics } from '@/hooks/queries/music/useMusics';
+import Image from 'next/image';
+import { Music } from '@prisma/client';
+import clsx from 'clsx';
+import Link from 'next/link';
 
-const musicList = [
-  '/album/avril.png',
-  '/album/blonde.jpeg',
-  '/album/daft.jpeg',
-  '/album/guns.jpeg',
-  '/album/nevermind.jpg.webp',
-  '/album/aimyon.jpeg',
-  '/album/billie.webp',
-  '/album/blackpink.jpeg',
-  '/album/breeders.jpeg',
-  '/album/damn.jpeg',
-  '/album/newjeans.webp',
-  '/album/Q.jpeg'
-];
-
-const Index = () => {
+const MusicsPage = () => {
+  const { data: musics, isLoading, isError } = useMusics();
   const [selectedIdx, setSelectedIdx] = useState<null | number>(null);
   const listRefs = useRef<(HTMLLIElement | null)[]>([]);
+  const [selectedMusic, setSelectedMusic] = useState<Music | null>(null);
 
   const handleClick = (idx: number) => {
+    if (!musics) return;
+    setSelectedMusic(musics[idx]);
     if (selectedIdx === null) {
       setSelectedIdx(idx);
     } else {
@@ -30,6 +24,7 @@ const Index = () => {
     }
     scrollToItem(idx);
   };
+
   const scrollToItem = (index: number) => {
     const target = index === 0 ? 0 : index - 1;
     if (listRefs.current[target]) {
@@ -37,12 +32,20 @@ const Index = () => {
     }
   };
 
+  if (isLoading) return <div>loading...</div>;
+  if (isError) return <div>error...</div>;
+
   return (
     <div className={'grid grid-cols-[400px_minmax(900px,_1fr)] h-screen'}>
       <div className={'bg-white bg-opacity-90 px-6'}>
         <h1>Music Title</h1>
-        <img src="/album/aimyon.jpeg" />
-        Selected Music : <audio id="vocal" controls src=""></audio>
+        <Image
+          src={selectedMusic ? selectedMusic.albumCover : '/images/vinyl_record.png'}
+          alt={'album'}
+          width={250}
+          height={250}
+        />
+        Selected Music : <audio id="vocal" controls src={selectedMusic?.musicLink}></audio>
         <br />
         <span>My List</span>
         <ul
@@ -50,7 +53,7 @@ const Index = () => {
             'overflow-y-scroll h-32 snap-y snap-mandatory bg-black bg-opacity-90 py-4 flex flex-col items-center  scrollbar scrollbar-thumb-red-400'
           }
         >
-          {musicList.map((title, index) => (
+          {musics?.map((music, index) => (
             <li
               key={index}
               className={
@@ -59,7 +62,7 @@ const Index = () => {
               ref={(el) => (listRefs.current[index] = el)}
               onClick={() => handleClick(index)}
             >
-              {title.split('/')[2].split('.')[0]}
+              {music.title}
             </li>
           ))}
         </ul>
@@ -82,13 +85,25 @@ const Index = () => {
             handleClick={handleClick}
             selectedIdx={selectedIdx}
             setSelectedIdx={setSelectedIdx}
-            musicList={musicList}
+            musicList={musics}
           />
         </ScrollControls>
         <ambientLight />
       </Canvas>
+      <Link href={`/music/${selectedMusic?.id}`}>
+        <button
+          className={clsx(
+            'w-28 h-28 bg-orange-200 absolute top-[60%] right-[20%] rounded-full flex justify-center transition-opacity hover:transition-all hover:scale-150 duration-700 items-center',
+            {
+              'opacity-0': selectedIdx === null
+            }
+          )}
+        >
+          View more
+        </button>
+      </Link>
     </div>
   );
 };
 
-export default Index;
+export default MusicsPage;

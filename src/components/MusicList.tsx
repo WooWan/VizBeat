@@ -1,21 +1,18 @@
 import React, { useRef } from 'react';
 import * as THREE from 'three';
 import { useScroll } from '@react-three/drei';
-import Music from '@/components/Music';
+import MusicCard from '@/components/Music';
 import { useFrame, useThree } from '@react-three/fiber';
+import { Music } from '@prisma/client';
 
 type Props = {
   handleClick: (idx: number) => void;
   selectedIdx: null | number;
   setSelectedIdx: React.Dispatch<React.SetStateAction<null | number>>;
-  musicList: string[];
+  musicList: Music[];
 };
-const MusicList = ({
-  handleClick,
-  setSelectedIdx,
-  selectedIdx,
-  musicList
-}: Props) => {
+
+const MusicList = ({ handleClick, setSelectedIdx, selectedIdx, musicList }: Props) => {
   const groupRef = useRef<THREE.Group>(null!);
   const three = useThree();
   const scroll = useScroll();
@@ -26,14 +23,15 @@ const MusicList = ({
 
   return (
     <group ref={groupRef}>
-      {musicList.map((url, i) => (
-        <Music
+      {musicList?.map((music, i) => (
+        <MusicCard
+          music={music}
           key={i}
-          url={url}
           index={i}
           handleClick={handleClick}
           setSelectedIdx={setSelectedIdx}
           selectedIdx={selectedIdx}
+          groupY={scroll.offset * three.viewport.height * 0.25}
         />
       ))}
     </group>
