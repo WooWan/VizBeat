@@ -5,6 +5,8 @@ import MusicList from '@/components/MusicList';
 import { useMusics } from '@/hooks/queries/music/useMusics';
 import Image from 'next/image';
 import { Music } from '@prisma/client';
+import clsx from 'clsx';
+import Link from 'next/link';
 
 const MusicsPage = () => {
   const { data: musics, isLoading, isError } = useMusics();
@@ -88,6 +90,18 @@ const MusicsPage = () => {
         </ScrollControls>
         <ambientLight />
       </Canvas>
+      <Link href={`/music/${selectedMusic?.id}`}>
+        <button
+          className={clsx(
+            'w-28 h-28 bg-orange-200 absolute top-[60%] right-[20%] rounded-full flex justify-center transition-opacity hover:transition-all hover:scale-150 duration-700 items-center',
+            {
+              'opacity-0': selectedIdx === null
+            }
+          )}
+        >
+          View more
+        </button>
+      </Link>
     </div>
   );
 };
