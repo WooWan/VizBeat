@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { Music } from '@prisma/client';
 
 const MusicsPage = () => {
-  const { data: musics, isSuccess, isLoading, isError } = useMusics();
+  const { data: musics, isLoading, isError } = useMusics();
   const [selectedIdx, setSelectedIdx] = useState<null | number>(null);
   const listRefs = useRef<(HTMLLIElement | null)[]>([]);
   const [selectedMusic, setSelectedMusic] = useState<Music | null>(null);
