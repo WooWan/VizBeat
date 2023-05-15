@@ -1,8 +1,8 @@
 import * as THREE from 'three';
+import { TextureLoader } from 'three';
 import { useFrame, useLoader } from '@react-three/fiber';
 import { useScroll } from '@react-three/drei';
-import { useRef, useState, useEffect } from 'react';
-import { TextureLoader } from 'three';
+import { useEffect, useRef, useState } from 'react';
 import { lerp } from 'three/src/math/MathUtils';
 import { MeshAxis, YAxis } from '@/types/Axis';
 import { Music } from '@prisma/client';
@@ -39,16 +39,18 @@ const Music = ({ music, index, handleClick, selectedIdx, setSelectedIdx, groupY 
   };
 
   useFrame(() => {
-    if (selectedIdx === null) return //아무것도 선택 안됬을때
-    if (selectedIdx === index) { //내가 선택됬을떄
-      updateRotation({x: radian * 90, y: 0, z: radian * -90});
-      updatePosition({y: - groupY})
-    } else { //남이 선택됬을때
-      const indexGap = index - selectedIdx
-      if(indexGap < 0){
-        updatePosition({ y: 5 - groupY - indexGap*1.5})
-      }else {
-        updatePosition({ y: -5 - groupY - indexGap*1.5})
+    if (selectedIdx === null) return; //아무것도 선택 안됬을때
+    if (selectedIdx === index) {
+      //내가 선택됬을떄
+      updateRotation({ x: radian * 90, y: 0, z: radian * -90 });
+      updatePosition({ y: -groupY });
+    } else {
+      //남이 선택됬을때
+      const indexGap = index - selectedIdx;
+      if (indexGap < 0) {
+        updatePosition({ y: 5 - groupY - indexGap * 1.5 });
+      } else {
+        updatePosition({ y: -5 - groupY - indexGap * 1.5 });
       }
     }
   });
@@ -70,8 +72,8 @@ const Music = ({ music, index, handleClick, selectedIdx, setSelectedIdx, groupY 
 
   useEffect(() => {
     if (selectedIdx !== null) {
-      updatePosition({y: originalPosition});
-      updateRotation({x: 0, y: 0, z: 0});
+      updatePosition({ y: originalPosition });
+      updateRotation({ x: 0, y: 0, z: 0 });
       setSelectedIdx(null);
     }
   }, [scroll.offset]);
