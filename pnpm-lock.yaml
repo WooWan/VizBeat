@@ -7,12 +7,18 @@ dependencies:
   '@prisma/client':
     specifier: ^4.14.0
     version: 4.14.0(prisma@4.14.0)
+  '@react-three/cannon':
+    specifier: ^6.5.2
+    version: 6.5.2(@react-three/fiber@8.13.0)(react@18.2.0)(three@0.151.3)(typescript@4.9.5)
   '@react-three/drei':
     specifier: ^9.66.0
     version: 9.68.3(@react-three/fiber@8.13.0)(@types/three@0.150.2)(react-dom@18.2.0)(react@18.2.0)(three@0.151.3)
   '@react-three/fiber':
     specifier: ^8.12.2
     version: 8.13.0(react-dom@18.2.0)(react@18.2.0)(three@0.151.3)
+  '@react-three/postprocessing':
+    specifier: ^2.11.3
+    version: 2.11.3(@react-three/fiber@8.13.0)(@types/three@0.150.2)(react@18.2.0)(three@0.151.3)
   '@supabase/supabase-js':
     specifier: ^2.21.0
     version: 2.21.0
@@ -73,7 +79,7 @@ devDependencies:
     specifier: ^2.8.8
     version: 2.8.8
   prettier-plugin-tailwindcss:
-    specifier: ^0.2.7
+    specifier: ^0.2.8
     version: 0.2.8(prettier@2.8.8)
   prisma:
     specifier: ^4.14.0
@@ -352,6 +358,14 @@ packages:
       picocolors: 1.0.0
       tslib: 2.5.0
     dev: true
+
+  /@pmndrs/cannon-worker-api@2.3.2(three@0.151.3):
+    resolution: {integrity: sha512-+4YGTH7XfSvUYUa65LoltcDMRLu3lr7rFtHT9dmeCeu2JJ7Zg2xBFJ5wiWSJmcM1ECh2R0YDcROdEQ1JKpOgFA==}
+    peerDependencies:
+      three: '>=0.139'
+    dependencies:
+      three: 0.151.3
+    dev: false
 
   /@prisma/client@4.14.0(prisma@4.14.0):
     resolution: {integrity: sha512-MK/XaA2sFdfaOa7I9MjNKz6dxeIEdeZlnpNRoF2w3JuRLlFJLkpp6cD3yaqw2nUUhbrn3Iqe3ZpVV+VuGGil7Q==}
@@ -673,6 +687,23 @@ packages:
     resolution: {integrity: sha512-POu8Mk0hIU3lRXB3bGIGe4VHIwwDsQyoD1F394OK7STTiX9w4dG3cTLljjYswkQN+hDSHRrj4O36kuVa7KPU8Q==}
     dev: false
 
+  /@react-three/cannon@6.5.2(@react-three/fiber@8.13.0)(react@18.2.0)(three@0.151.3)(typescript@4.9.5):
+    resolution: {integrity: sha512-d7qH2XMVtHRkCaMUWpLkWSD9JPiE570gy8LoP7WBw+Ui+hI9ZiFx9HDaX5+Y6wzbGJd1WvELWaG9O0cOtk2rmw==}
+    peerDependencies:
+      '@react-three/fiber': '>=8'
+      react: '>=18'
+      three: '>=0.139'
+    dependencies:
+      '@pmndrs/cannon-worker-api': 2.3.2(three@0.151.3)
+      '@react-three/fiber': 8.13.0(react-dom@18.2.0)(react@18.2.0)(three@0.151.3)
+      cannon-es: 0.20.0
+      cannon-es-debugger: 1.0.0(cannon-es@0.20.0)(three@0.151.3)(typescript@4.9.5)
+      react: 18.2.0
+      three: 0.151.3
+    transitivePeerDependencies:
+      - typescript
+    dev: false
+
   /@react-three/drei@9.68.3(@react-three/fiber@8.13.0)(@types/three@0.150.2)(react-dom@18.2.0)(react@18.2.0)(three@0.151.3):
     resolution: {integrity: sha512-u+70dPPiM1rfJ/Wd4lbbyaC0QbQwvQd1NuMfIE78UzvMtOI8LjVLJNmdvzhAfcEL+RuqQlboSgd2/NjcLv9aDQ==}
     peerDependencies:
@@ -745,6 +776,24 @@ packages:
       suspend-react: 0.0.8(react@18.2.0)
       three: 0.151.3
       zustand: 3.7.2(react@18.2.0)
+    dev: false
+
+  /@react-three/postprocessing@2.11.3(@react-three/fiber@8.13.0)(@types/three@0.150.2)(react@18.2.0)(three@0.151.3):
+    resolution: {integrity: sha512-aUy6IrfNeTTLPVJSBYfGeLnwhRWLuBI9bWkcXbsZJrzBxx1n6Y8NpgzA+7tNmMxuahA4klDsTIGh6jR2pA9qXg==}
+    peerDependencies:
+      '@react-three/fiber': '>=8.0'
+      react: '>=18.0'
+      three: '>= 0.138.0 < 0.152.0'
+    dependencies:
+      '@react-three/fiber': 8.13.0(react-dom@18.2.0)(react@18.2.0)(three@0.151.3)
+      maath: 0.5.3(@types/three@0.150.2)(three@0.151.3)
+      postprocessing: 6.31.0(three@0.151.3)
+      react: 18.2.0
+      screen-space-reflections: 2.5.0(postprocessing@6.31.0)(three@0.151.3)
+      three: 0.151.3
+      three-stdlib: 2.21.11(three@0.151.3)
+    transitivePeerDependencies:
+      - '@types/three'
     dev: false
 
   /@rushstack/eslint-patch@1.2.0:
@@ -1241,6 +1290,25 @@ packages:
 
   /caniuse-lite@1.0.30001487:
     resolution: {integrity: sha512-83564Z3yWGqXsh2vaH/mhXfEM0wX+NlBCm1jYHOb97TrTWJEmPTccZgeLTPBUUb0PNVo+oomb7wkimZBIERClA==}
+
+  /cannon-es-debugger@1.0.0(cannon-es@0.20.0)(three@0.151.3)(typescript@4.9.5):
+    resolution: {integrity: sha512-sE9lDOBAYFKlh+0w+cvWKwUhJef8HYnUSVPWPL0jD15MAuVRQKno4QYZSGxgOoJkMR3mQqxL4bxys2b3RSWH8g==}
+    peerDependencies:
+      cannon-es: 0.x
+      three: 0.x
+      typescript: '>=3.8'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      cannon-es: 0.20.0
+      three: 0.151.3
+      typescript: 4.9.5
+    dev: false
+
+  /cannon-es@0.20.0:
+    resolution: {integrity: sha512-eZhWTZIkFOnMAJOgfXJa9+b3kVlvG+FX4mdkpePev/w/rP5V8NRquGyEozcjPfEoXUlb+p7d9SUcmDSn14prOA==}
+    dev: false
 
   /chalk@4.1.2:
     resolution: {integrity: sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==}
@@ -3212,6 +3280,15 @@ packages:
       picocolors: 1.0.0
       source-map-js: 1.0.2
 
+  /postprocessing@6.31.0(three@0.151.3):
+    resolution: {integrity: sha512-h1g2KDVrTS6QB4AHP55opp8FYzq66jJHh4JIFCptaj283RUX1y/tPkv8FBB2oK4WYrdPgqvElnKrXZwgiLWeHQ==}
+    engines: {node: '>= 0.13.2'}
+    peerDependencies:
+      three: '>= 0.138.0 < 0.153.0'
+    dependencies:
+      three: 0.151.3
+    dev: false
+
   /potpack@1.0.2:
     resolution: {integrity: sha512-choctRBIV9EMT9WGAZHn3V7t0Z2pMQyl0EZE6pFc/6ml3ssw7Dlf/oAOvFwjm1HVsqfQN8GfeFyJ+d8tRzqueQ==}
     dev: false
@@ -3501,6 +3578,16 @@ packages:
     resolution: {integrity: sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==}
     dependencies:
       loose-envify: 1.4.0
+    dev: false
+
+  /screen-space-reflections@2.5.0(postprocessing@6.31.0)(three@0.151.3):
+    resolution: {integrity: sha512-fWSDMhJS0xwD3LTxRRch7Lb9NzxsR66sCmtDmAA7i+OGnghUrBBsrha85ng7StnCBaLq/BKmZ97dLxWd1XgWdQ==}
+    peerDependencies:
+      postprocessing: '>=6.28.0'
+      three: '>=0.141.0'
+    dependencies:
+      postprocessing: 6.31.0(three@0.151.3)
+      three: 0.151.3
     dev: false
 
   /semver@6.3.0:
@@ -3925,7 +4012,6 @@ packages:
     resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
     engines: {node: '>=4.2.0'}
     hasBin: true
-    dev: true
 
   /unbox-primitive@1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}
