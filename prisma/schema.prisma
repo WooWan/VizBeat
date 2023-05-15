@@ -3,9 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider     = "mysql"
-  url          = env("DATABASE_URL")
-  relationMode = "prisma"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Account {
@@ -45,6 +44,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  musics        Music[]
 }
 
 model VerificationToken {
@@ -54,4 +54,14 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Music {
+  id         String @id @default(cuid())
+  title      String
+  artist     String
+  albumCover String
+  musicLink  String
+  userId     String @map("user_id")
+  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
