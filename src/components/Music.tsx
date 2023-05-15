@@ -14,6 +14,7 @@ type Props = {
   handleClick: (idx: number) => void;
   selectedIdx: null | number;
   setSelectedIdx: (idx: null | number) => void;
+  groupY: number;
 };
 
 const LERP_FACTOR = 0.05;
@@ -23,22 +24,15 @@ const Music = ({
   index,
   handleClick,
   selectedIdx,
-  setSelectedIdx
+  setSelectedIdx,
+  groupY
 }: Props) => {
   const [originalPosition] = useState(2- index * 1.5);
-  const [upPosition] = useState(7 - index * 1.5);
-  const [downPosition] = useState(-3 - index * 1.5);
   const [rotation, setRotation] = useState(radian * 10 * index);
   const meshRef = useRef<THREE.Mesh>(null!);
-  const data = useScroll();
   const cover = useLoader(TextureLoader, url);
   const texture = useLoader(TextureLoader, '/cdtexture.jpg');
-
-  const positionMap = {
-    up: upPosition,
-    down: downPosition,
-    original: originalPosition
-  };
+  const scroll = useScroll();
 
   const updateRotation = ({x,y,z}:MeshAxis)  =>{
     meshRef.current.rotation.x = lerp(meshRef.current.rotation.x, x, LERP_FACTOR);
@@ -51,12 +45,17 @@ const Music = ({
   }
 
   useFrame(() => {
-    if (selectedIdx === null) return
-    const key = selectedIdx > index ? "up" : "down";
-    if (selectedIdx === index) {
+    if (selectedIdx === null) return //아무것도 선택 안됬을때
+    if (selectedIdx === index) { //내가 선택됬을떄
       updateRotation({x: radian * 90, y: 0, z: radian * -90});
-    } else {
-      updatePosition({y: positionMap[key]});
+      updatePosition({y: - groupY})
+    } else { //남이 선택됬을때
+      const indexGap = index - selectedIdx
+      if(indexGap < 0){ 
+        updatePosition({ y: 5 - groupY - indexGap*1.5})
+      }else {
+        updatePosition({ y: -5 - groupY - indexGap*1.5})
+      }
     }
   });
 
@@ -78,11 +77,11 @@ const Music = ({
 
   useEffect(() => {
     if (selectedIdx !== null) {
-      updatePosition({y: positionMap["original"]});
+      updatePosition({y: originalPosition});
       updateRotation({x: 0, y: 0, z: 0});
       setSelectedIdx(null);
     }
-  }, [data.offset]);
+  }, [scroll.offset]);
 
   return (
     <mesh
@@ -91,8 +90,6 @@ const Music = ({
         e.stopPropagation();
         handleClick(index);
       }}
-      position={[0, 2 - index * 1.5, -3]}
-      rotation={[0, radian * 10 * index, 0]}
     >
       <boxGeometry args={[10, 0.7, 10]} />
       <meshBasicMaterial attach="material-0" map={texture} />
