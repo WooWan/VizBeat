@@ -96,8 +96,8 @@
   position: absolute;
   width: 200px;
   height: 316px;
-  left: 0px;
-  top: 0px;
+  left: 0;
+  top: 0;
 
   background: #8d39a3;
   filter: blur(175px);
