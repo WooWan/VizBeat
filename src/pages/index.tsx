@@ -1,18 +1,26 @@
-import Image from 'next/image';
-import { Inter } from 'next/font/google';
-import {signIn, useSession} from "next-auth/react";
-
-const inter = Inter({ subsets: ['latin'] });
+import React from 'react';
+import { About, Explore, GetStarted, Hero, WhatsNew } from '@/components/sections';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import StarsCanvas from '@/canvas/StarsCanvas';
 
 export default function Home() {
-  const { data: session, status } = useSession()
-  console.log(session, status)
-
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
-      <button onClick={() => signIn('google')}>구글 로그인!!</button>
-    </main>
+    <div className="bg-primary-black overflow-hidden">
+      <Navbar />
+      <Hero />
+      <StarsCanvas />
+      <div className="relative">
+        <About />
+        <div className="gradient-03 z-0" />
+        <Explore />
+      </div>
+      <div className="relative">
+        <GetStarted />
+        <div className="gradient-04 z-0" />
+        <WhatsNew />
+      </div>
+      <Footer />
+    </div>
   );
 }
