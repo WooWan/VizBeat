@@ -21,8 +21,10 @@ const About = () => (
         visualize music and instruments in a way that transcends the ordinary listening experience. This is the true{' '}
         <span className="font-extrabold text-white">wonder of VizBeats</span> today, utilizing a state-of-the-art{' '}
         <span className="font-extrabold text-white">music visualizer</span> that brings each note and instrument to life
-        before your eyes. With just <span className="font-extrabold text-white">your device</span>, you can easily
-        journey through the vibrant landscapes of your favorite songs, transforming the auditory into the visual. Let's{' '}
+        before your eyes. With just <span className="font-extrabold text-white">your device</span>
+        {
+          ", you can easily journey through the vibrant landscapes of your favorite songs, transforming the auditory into the visual. Let's"
+        }{' '}
         <span className="font-extrabold text-white">explore</span> the wonder of VizBeats by scrolling down.
       </motion.p>
       <motion.img
