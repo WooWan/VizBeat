@@ -18,10 +18,10 @@ const LoginPage = () => {
           <nav
             style={{ boxShadow: '-3px -3px 9px #aaa9a9a2, 3px 3px 7px rgba(147, 149, 151, 0.671)' }}
             className={
-              'text-white rounded-lg p-4 flex flex-col items-center w-96 h-96 shadow-[-3px -3px 9px shadow-white]'
+              'shadow-[-3px -3px 9px shadow-white] flex h-96 w-96 flex-col items-center rounded-lg p-4 text-white'
             }
           >
-            <header className={'pt-4 pb-12'}>
+            <header className={'pb-12 pt-4'}>
               <h2 className={'text-xl'}>Social Login</h2>
             </header>
             {session ? (
