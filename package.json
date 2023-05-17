@@ -19,8 +19,8 @@
     "@tanstack/react-query": "^4.29.7",
     "@tanstack/react-query-devtools": "^4.29.7",
     "axios": "^1.4.0",
-    "framer-motion": "^10.12.11",
     "clsx": "^1.2.1",
+    "framer-motion": "^10.12.11",
     "leva": "^0.9.34",
     "lucide-react": "^0.216.0",
     "maath": "^0.5.3",
@@ -29,6 +29,7 @@
     "postcss": "8.4.23",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "tailwind-merge": "^1.12.0",
     "tailwind-scrollbar-hide": "^1.1.7",
     "three": "^0.151.3",
     "zustand": "^4.3.7"

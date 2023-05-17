@@ -61,6 +61,9 @@ dependencies:
   react-dom:
     specifier: 18.2.0
     version: 18.2.0(react@18.2.0)
+  tailwind-merge:
+    specifier: ^1.12.0
+    version: 1.12.0
   tailwind-scrollbar-hide:
     specifier: ^1.1.7
     version: 1.1.7
@@ -3924,12 +3927,16 @@ packages:
     dev: false
 
   /synckit@0.8.5:
-    resolution: {integrity: sha512-L1dapNV6vu2s/4Sputv8xGsCdAVlb5nRDMFU/E27D44l5U6cw1g0dGd45uLc+OXjNMmF4ntiMdCimzcjFKQI8Q==}
+    resolution: { integrity: sha512-L1dapNV6vu2s/4Sputv8xGsCdAVlb5nRDMFU/E27D44l5U6cw1g0dGd45uLc+OXjNMmF4ntiMdCimzcjFKQI8Q== }
     engines: { node: ^14.18.0 || >=16.0.0 }
     dependencies:
       '@pkgr/utils': 2.4.0
       tslib: 2.5.0
     dev: true
+
+  /tailwind-merge@1.12.0:
+    resolution: { integrity: sha512-Y17eDp7FtN1+JJ4OY0Bqv9OA41O+MS8c1Iyr3T6JFLnOgLg3EvcyMKZAnQ8AGyvB5Nxm3t9Xb5Mhe139m8QT/g== }
+    dev: false
 
   /tailwind-scrollbar-hide@1.1.7:
     resolution: { integrity: sha512-X324n9OtpTmOMqEgDUEA/RgLrNfBF/jwJdctaPZDzB3mppxJk7TLIDmOreEDm1Bq4R9LSPu4Epf8VSdovNU+iA== }
