@@ -9,12 +9,12 @@ const Footer = () => (
     <div className={`inner-width mx-auto flex flex-col gap-8`}>
       <div className="flex items-center justify-between flex-wrap gap-5">
         <h4 className="font-bold md:text-[64px] text-[44px] text-white">Enter the VizBeats</h4>
-        <button type="button" className="flex items-center h-fit py-4 px-6 bg-[#25618B] rounded-[32px] gap-[12px]">
-          <MusicIcon className="w-6 h-6 text-white" />
-          <Link href={'/musics'}>
+        <Link href={'/musics'}>
+          <button type="button" className="flex items-center h-fit py-4 px-6 bg-[#25618B] rounded-[32px] gap-[12px]">
+            <MusicIcon className="w-6 h-6 text-white" />
             <span className="font-normal text-[16px] text-white">Enter VizBeats</span>
-          </Link>
-        </button>
+          </button>
+        </Link>
       </div>
       <div className="flex flex-col">
         <div className="mb-[50px] h-[2px] bg-white opacity-10" />
