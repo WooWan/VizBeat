@@ -13,6 +13,7 @@ const MusicsPage = () => {
   const [selectedIdx, setSelectedIdx] = useState<null | number>(null);
   const listRefs = useRef<(HTMLLIElement | null)[]>([]);
   const [selectedMusic, setSelectedMusic] = useState<Music | null>(null);
+  console.log(musics, isError, isLoading);
 
   const handleClick = (idx: number) => {
     if (!musics) return;
@@ -32,7 +33,7 @@ const MusicsPage = () => {
     }
   };
 
-  if (isLoading) return <div>loading...</div>;
+  if (isLoading) return <div>loading...중입니다아</div>;
   if (isError) return <div>error...</div>;
 
   return (
