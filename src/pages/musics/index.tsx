@@ -1,101 +1,103 @@
 import React, { useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { ScrollControls } from '@react-three/drei';
+import { Environment, ScrollControls } from '@react-three/drei';
 import MusicList from '@/components/MusicList';
 import { useMusics } from '@/hooks/queries/music/useMusics';
-import Image from 'next/image';
 import { Music } from '@prisma/client';
 import clsx from 'clsx';
 import Link from 'next/link';
+import AudioPlayer from '@/components/AudioPlayer';
+import { Play } from 'lucide-react';
 
 const MusicsPage = () => {
   const { data: musics, isLoading, isError } = useMusics();
-  const [selectedIdx, setSelectedIdx] = useState<null | number>(null);
-  const listRefs = useRef<(HTMLLIElement | null)[]>([]);
   const [selectedMusic, setSelectedMusic] = useState<Music | null>(null);
+  const listRefs = useRef<(HTMLLIElement | null)[]>([]);
 
-  const handleClick = (idx: number) => {
-    if (!musics) return;
-    setSelectedMusic(musics[idx]);
-    if (selectedIdx === null) {
-      setSelectedIdx(idx);
+  const handleMusicSelect = (id: string) => {
+    const music = musics?.find((music) => music.id === id);
+    if (!music) return;
+    if (music.id === selectedMusic?.id) {
+      setSelectedMusic(null);
     } else {
-      setSelectedIdx(null);
+      setSelectedMusic(music);
     }
-    scrollToItem(idx);
   };
 
-  const scrollToItem = (index: number) => {
-    const target = index === 0 ? 0 : index - 1;
-    if (listRefs.current[target]) {
-      listRefs.current[target]?.scrollIntoView({ behavior: 'smooth' });
-    }
+  const skipToNextMusic = () => {
+    if (!musics) return;
+    const index = musics.findIndex((music) => music.id === selectedMusic?.id);
+    const nextIndex = index === musics.length - 1 ? 0 : index + 1;
+    setSelectedMusic(musics[nextIndex]);
   };
 
   if (isLoading) return <div>loading...</div>;
   if (isError) return <div>error...</div>;
 
   return (
-    <div className={'grid grid-cols-[400px_minmax(900px,_1fr)] h-screen'}>
-      <div className={'bg-white bg-opacity-90 px-6'}>
-        <h1>Music Title</h1>
-        <Image
-          src={selectedMusic ? selectedMusic.albumCover : '/images/vinyl_record.png'}
-          alt={'album'}
-          width={250}
-          height={250}
-        />
-        Selected Music : <audio id="vocal" controls src={selectedMusic?.musicLink}></audio>
-        <br />
-        <span>My List</span>
+    <div className={'grid h-screen grid-cols-[480px_minmax(900px,_1fr)]'}>
+      <div className={'flex flex-col bg-white bg-opacity-90 px-6'}>
+        <h2 className={'pt-2 text-h1'}>Music</h2>
+        <AudioPlayer selectedMusic={selectedMusic} skipNextMusic={skipToNextMusic} />
         <ul
           className={
-            'overflow-y-scroll h-32 snap-y snap-mandatory bg-black bg-opacity-90 py-4 flex flex-col items-center  scrollbar scrollbar-thumb-red-400'
+            'flex h-64 snap-y snap-mandatory flex-col items-center overflow-y-scroll bg-white bg-opacity-90 py-4 scrollbar scrollbar-thumb-red-400'
           }
         >
-          {musics?.map((music, index) => (
-            <li
-              key={index}
-              className={
-                'py-2 border-y-[1px] border-y-amber-50 w-[250px] flex justify-center cursor-pointer snap-center text-white'
-              }
-              ref={(el) => (listRefs.current[index] = el)}
-              onClick={() => handleClick(index)}
-            >
-              {music.title}
-            </li>
-          ))}
+          {musics?.map((music, index) => {
+            return (
+              <li
+                key={index}
+                className={clsx(
+                  'grid w-full cursor-pointer snap-center grid-cols-[200px_1fr] border-b-[1px] border-y-slate-700 px-4 py-2 hover:bg-slate-100',
+                  {
+                    'bg-slate-100': selectedMusic === music
+                  }
+                )}
+                ref={(el) => (listRefs.current[index] = el)}
+                onClick={() => handleMusicSelect(music.id)}
+              >
+                <span>{music.artist}</span>
+                <span>{music.title}</span>
+              </li>
+            );
+          })}
         </ul>
         <button>+ add</button>
       </div>
       <Canvas
-        className="scrollbar scrollbar-thumb-red-400 h-32"
+        className="h-32 scrollbar scrollbar-thumb-red-400"
         camera={{
-          zoom: 1.7,
-          position: [15, 5, 0],
-          fov: 100,
-          near: 0.1,
-          far: 1000
+          zoom: 1,
+          position: [10, 1, 0],
+          fov: 100
         }}
       >
-        <color attach="background" args={['white']} />
+        <Environment preset="dawn" background blur={0.6} />
         {/* style for hide scroll bar */}
         <ScrollControls damping={0} style={{ left: '15px' }}>
           <MusicList
-            handleClick={handleClick}
-            selectedIdx={selectedIdx}
-            setSelectedIdx={setSelectedIdx}
+            handleClick={handleMusicSelect}
+            setSelectedMusic={setSelectedMusic}
             musicList={musics}
+            selectedMusic={selectedMusic}
           />
         </ScrollControls>
         <ambientLight />
       </Canvas>
+      <button
+        className={clsx('absolute right-[26%] top-[45%] z-50 flex h-32 w-32 items-center justify-center rounded-full', {
+          'opacity-0': selectedMusic === null
+        })}
+      >
+        <Play size={64} className={'fill-current text-gray-400/[0.5]'} />
+      </button>
       <Link href={`/music/${selectedMusic?.id}`}>
         <button
           className={clsx(
-            'w-28 h-28 bg-orange-200 absolute top-[60%] right-[20%] rounded-full flex justify-center transition-opacity hover:transition-all hover:scale-150 duration-700 items-center',
+            'absolute right-[20%] top-[60%] z-50 flex h-20 w-20 items-center justify-center rounded-full bg-orange-200 p-4 transition-opacity duration-700 hover:scale-110 hover:transition-all',
             {
-              'opacity-0': selectedIdx === null
+              'opacity-0': selectedMusic === null
             }
           )}
         >
