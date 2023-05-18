@@ -31,7 +31,7 @@ const MusicsPage = () => {
     setSelectedMusic(musics[nextIndex]);
   };
 
-  if (isLoading) return <div>loading...</div>;
+  if (isLoading) return <div>loading...중입니다아</div>;
   if (isError) return <div>error...</div>;
 
   return (
