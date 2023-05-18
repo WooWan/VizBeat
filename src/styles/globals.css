@@ -4,7 +4,7 @@
 
 @layer components {
   .paddings {
-    @apply sm:p-16 px-6 py-12;
+    @apply px-6 py-12 sm:p-16;
   }
 
   .flex-center {
@@ -12,7 +12,7 @@
   }
 
   .inner-width {
-    @apply 2xl:max-w-[1280px] w-full
+    @apply w-full 2xl:max-w-[1280px];
   }
 
   .x-paddings {
@@ -24,31 +24,26 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Eudoxus Sans", sans-serif;
+  font-family: 'Eudoxus Sans', sans-serif;
   scroll-behavior: smooth;
 }
 
 .gradient-01 {
   background-image: linear-gradient(
           270deg,
-          #EE969C 0%,
+          #ee969c 0%,
           hsl(284deg 70% 73%) 26%,
-          #EC682B 39%,
-          #F5CDCA 50%,
+          #ec682b 39%,
+          #f5cdca 50%,
           hsl(215deg 77% 81%) 61%,
-          #EE969C 70%,
-          #FB392C 100%
+          #ee969c 70%,
+          #fb392c 100%
   );
   filter: blur(125px);
 }
 
 .hero-gradient {
-  background: linear-gradient(
-          97.86deg,
-          #FDC22D 0%,
-          #FB392C 53.65%,
-          #5C2F53 100%
-  );
+  background: linear-gradient(97.86deg, #fdc22d 0%, #fb392c 53.65%, #5c2f53 100%);
 }
 
 .gradient-02 {
@@ -85,11 +80,7 @@
 }
 
 .gradient-05 {
-  background: linear-gradient(
-          180deg,
-          rgba(255, 255, 255, 0.04) 0%,
-          rgba(255, 255, 255, 0) 100%
-  );
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0) 100%);
 }
 
 .feedback-gradient {
@@ -113,4 +104,3 @@
   background: #65c4fa;
   filter: blur(150px);
 }
-

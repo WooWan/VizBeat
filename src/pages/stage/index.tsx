@@ -74,37 +74,19 @@ const Index = () => {
             url="gltf/electric_guitar/scene.gltf"
           />
           {target && <TransformControls object={target} />}
-          <Model
-            position={[30, -45, -20]}
-            scale={[2.5, 2.5, 2.5]}
-            url="/gltf/bass/scene.gltf"
-          />
+          <Model position={[30, -45, -20]} scale={[2.5, 2.5, 2.5]} url="/gltf/bass/scene.gltf" />
           <Model
             position={[-15, -55, -20]}
             rotation={[0, RADIAN * 180, 0]}
             scale={[1.5, 1.5, 1.5]}
             url="gltf/low_poly_mic_stand/scene.gltf"
           />
-          <Model
-            position={[22, -39, -50]}
-            scale={[0.015, 0.015, 0.015]}
-            url="/gltf/drum_kit/scene.gltf"
-          />
-          <Model
-            position={[25, -55, -30]}
-            scale={[10, 10, 10]}
-            url="/gltf/piano/scene.gltf"
-          />
+          <Model position={[22, -39, -50]} scale={[0.015, 0.015, 0.015]} url="/gltf/drum_kit/scene.gltf" />
+          <Model position={[25, -55, -30]} scale={[10, 10, 10]} url="/gltf/piano/scene.gltf" />
         </Suspense>
         <OrbitControls />
         <axesHelper args={[30]} />
-        <spotLight
-          ref={spotRef}
-          position={[0, 50, 50]}
-          angle={RADIAN * 60}
-          penumbra={0.5}
-          castShadow
-        />
+        <spotLight ref={spotRef} position={[0, 50, 50]} angle={RADIAN * 60} penumbra={0.5} castShadow />
         <ambientLight intensity={1} />
       </Canvas>
     </div>
