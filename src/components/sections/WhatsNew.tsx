@@ -12,9 +12,9 @@ const WhatsNew = () => (
       initial="hidden"
       whileInView="show"
       viewport={{ once: false, amount: 0.25 }}
-      className={`inner-width mx-auto flex lg:flex-row flex-col gap-8`}
+      className={`inner-width mx-auto flex flex-col gap-8 lg:flex-row`}
     >
-      <motion.div variants={fadeIn('right', 'tween', 0.2, 1)} className="flex-[0.95] flex justify-center flex-col">
+      <motion.div variants={fadeIn('right', 'tween', 0.2, 1)} className="flex flex-[0.95] flex-col justify-center">
         <TypingText title="| Whats new?" />
         <TitleText title={<>{"What's new about VizBeats?"}</>} />
         <div className="mt-[48px] flex flex-wrap justify-between gap-[24px]">
@@ -23,7 +23,7 @@ const WhatsNew = () => (
           ))}
         </div>
       </motion.div>
-      <motion.div variants={planetVariants('right')} className={`flex-1 flex-center`}>
+      <motion.div variants={planetVariants('right')} className={`flex-center flex-1`}>
         <Image src={'/images/musical_note.png'} alt={'musical_note'} width={500} height={500} />
       </motion.div>
     </motion.div>

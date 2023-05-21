@@ -10,12 +10,12 @@ const About = () => (
       initial="hidden"
       whileInView="show"
       viewport={{ once: false, amount: 0.25 }}
-      className={`mx-auto max-w-[1280px] flex-center flex-col`}
+      className={`flex-center mx-auto max-w-[1280px] flex-col`}
     >
       <TypingText title="| About VizBeats" textStyles="text-center" />
       <motion.p
         variants={fadeIn('up', 'tween', 0.2, 1)}
-        className="mt-[8px] font-normal sm:text-[32px] text-[20px] text-center text-secondary-white"
+        className="mt-[8px] text-center text-[20px] font-normal text-secondary-white sm:text-[32px]"
       >
         <span className="font-extrabold text-white">VizBeats</span> is an innovative leap into the future, where you can
         visualize music and instruments in a way that transcends the ordinary listening experience. This is the true{' '}
@@ -31,7 +31,7 @@ const About = () => (
         variants={fadeIn('up', 'tween', 0.3, 1)}
         src="/arrow-down.svg"
         alt="arrow down"
-        className="w-[18px] h-[28px] object-contain mt-[28px] animate-bounce"
+        className="mt-[28px] h-[28px] w-[18px] animate-bounce object-contain"
       />
     </motion.div>
   </section>

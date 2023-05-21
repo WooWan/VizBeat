@@ -21,12 +21,12 @@ const Explore = () => {
         <TitleText
           title={
             <>
-              Choose the instruemnt you want <br className="md:block hidden" /> to visualize
+              Choose the instruemnt you want <br className="hidden md:block" /> to visualize
             </>
           }
           textStyles="text-center"
         />
-        <div className="mt-[50px] flex lg:flex-row flex-col min-h-[70vh] gap-5">
+        <div className="mt-[50px] flex min-h-[70vh] flex-col gap-5 lg:flex-row">
           {exploreWorlds.map((world, index) => (
             <ExploreCard key={world.id} {...world} index={index} active={active} handleClick={setActive} />
           ))}

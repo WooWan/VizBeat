@@ -6,7 +6,7 @@ import StarsCanvas from '@/canvas/StarsCanvas';
 
 export default function Home() {
   return (
-    <div className="bg-primary-black overflow-hidden">
+    <div className="overflow-hidden bg-primary-black">
       <Navbar />
       <Hero />
       <StarsCanvas />
