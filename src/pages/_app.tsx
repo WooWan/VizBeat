@@ -7,7 +7,9 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <SessionProvider session={pageProps.session}>
       <TanstackQueryProvider>
-        <Component {...pageProps} />
+        <div className="h-screen">
+          <Component {...pageProps} />
+        </div>
       </TanstackQueryProvider>
     </SessionProvider>
   );

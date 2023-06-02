@@ -1,10 +1,15 @@
 import React, { Suspense, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
 import Model from '@/components/Model';
-import { OrbitControls, TransformControls } from '@react-three/drei';
+import { OrbitControls, Stars, TransformControls } from '@react-three/drei';
+import { EffectComposer, Bloom } from '@react-three/postprocessing';
+import { KernelSize } from 'postprocessing';
 import * as THREE from 'three';
 import { create } from 'zustand';
 import { useControls } from 'leva';
+import StageGround from '@/components/StageGround';
+import Rig from '@/components/Rig';
+import Triangle from '@/components/Triangle';
 
 type ThreeState = {
   target: THREE.Object3D | null;
@@ -22,92 +27,66 @@ const Index = () => {
   const { mode } = useControls({
     mode: { value: 'translate', options: ['translate', 'rotate', 'scale'] }
   });
+
   return (
-    <div className={'grid grid-cols-[350px_1fr]'}>
-      <div>
-        <h1>Music Title</h1>
-        <img src="/album/aimyon.jpeg" />
-        <p>
-          Vocal : <audio id="vocal" controls src=""></audio>
-          Guitar : <audio id="guitar" controls src=""></audio>
-          Piano : <audio id="piano" controls src=""></audio>
-          Bass : <audio id="bass" controls src=""></audio>
-          Drum : <audio id="drum" controls src=""></audio>
-        </p>
-      </div>
-      <Canvas
-        camera={{
-          zoom: 2.7,
-          position: [0, 15, 140],
-          fov: 100,
-          near: 0.1,
-          far: 3000
-        }}
-      >
-        <fog attach={'fog'} args={['black', 0.1, 1600]} />
-        <color attach="background" args={[0xb8dff8]} />
-        <Suspense fallback={<>...loading</>}>
-          {/*<Model*/}
-          {/*  position={[0, 30, 90]}*/}
-          {/*  rotation={[0, 145 * RADIAN, 0]}*/}
-          {/*  scale={[30, 30, 30]}*/}
-          {/*  url="/gltf/georgeville_beach_ns/scene.gltf"*/}
-          {/*/>*/}
-          {/*<Model*/}
-          {/*  position={[0, -50, 0]}*/}
-          {/*  scale={[0.1, 0.1, 0.1]}*/}
-          {/*  url="/gltf/simple_concert_stage/scene.gltf"*/}
-          {/*/>*/}
-          {/*<primitive*/}
-          {/*    // zIndex={1}*/}
-          {/*    // className={'bg-amber-50 h-96 w-96'}*/}
-          {/*    onClick={(e) => setTarget(e.object)}*/}
-          {/*    scale={props.scale}*/}
-          {/*    rotation={props.rotation}*/}
-          {/*    position={[0, -50, 0]}*/}
-          {/*    object={result.scene}*/}
-          {/*/>*/}
-          <Model
-            position={[50, -55, -20]}
-            rotation={[RADIAN * 12, RADIAN * 90, 0]}
-            scale={[20, 20, 20]}
-            url="gltf/electric_guitar/scene.gltf"
-          />
-          {target && <TransformControls object={target} />}
-          <Model
-            position={[30, -45, -20]}
-            scale={[2.5, 2.5, 2.5]}
-            url="/gltf/bass/scene.gltf"
-          />
-          <Model
-            position={[-15, -55, -20]}
-            rotation={[0, RADIAN * 180, 0]}
-            scale={[1.5, 1.5, 1.5]}
-            url="gltf/low_poly_mic_stand/scene.gltf"
-          />
-          <Model
-            position={[22, -39, -50]}
-            scale={[0.015, 0.015, 0.015]}
-            url="/gltf/drum_kit/scene.gltf"
-          />
-          <Model
-            position={[25, -55, -30]}
-            scale={[10, 10, 10]}
-            url="/gltf/piano/scene.gltf"
-          />
-        </Suspense>
-        <OrbitControls />
-        <axesHelper args={[30]} />
-        <spotLight
-          ref={spotRef}
-          position={[0, 50, 50]}
-          angle={RADIAN * 60}
-          penumbra={0.5}
-          castShadow
+    <Canvas
+      camera={{
+        position: [0, 50, 0],
+        fov: 100,
+        near: 0.1,
+        far: 3000
+      }}
+    >
+      <color attach="background" args={['black']} />
+      <Stars />
+      <Rig>
+        <Triangle
+          color="#ff2060"
+          scale={0.3}
+          position={new THREE.Vector3(25, -50, -60)}
+          rotation={new THREE.Euler(0, 0, Math.PI / 3)}
         />
-        <ambientLight intensity={1} />
-      </Canvas>
-    </div>
+        <Triangle
+          color="cyan"
+          scale={0.3}
+          position={new THREE.Vector3(85, -50, -80)}
+          rotation={new THREE.Euler(0, 0, Math.PI / 3)}
+        />
+        <Triangle
+          color="orange"
+          scale={0.3}
+          position={new THREE.Vector3(-35, -50, -80)}
+          rotation={new THREE.Euler(0, 0, Math.PI / 3)}
+        />
+        <StageGround />
+        <Suspense>
+          <Model
+            position={[20, -12, 5]}
+            rotation={[0, Math.PI / 2, 0]}
+            scale={[30, 30, 30]}
+            url="/gltf/electric_guitar/scene.gltf"
+          />
+          <Model
+            position={[-14, -10, 10]}
+            rotation={[0, Math.PI, 0]}
+            scale={[1.5, 1.5, 1.5]}
+            url="/gltf/low_poly_mic_stand/scene.gltf"
+          />
+          <Model position={[30, -15, 0]} scale={[10, 10, 10]} url="/gltf/piano/scene.gltf" />
+          <Model position={[30, 5, 8]} scale={[25, 25, 25]} url="/gltf/fender_pj_bass/scene.gltf" />
+          <Model position={[22, 0, -20]} scale={[0.015, 0.015, 0.015]} url="/gltf/drum_kit/scene.gltf" />
+        </Suspense>
+      </Rig>
+      <EffectComposer multisampling={8}>
+        <Bloom kernelSize={3} luminanceThreshold={0} luminanceSmoothing={0.4} intensity={0.6} />
+        <Bloom kernelSize={KernelSize.HUGE} luminanceThreshold={0} luminanceSmoothing={0} intensity={0.5} />
+      </EffectComposer>
+      {/* <OrbitControls /> */}
+      <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
+      <axesHelper args={[30]} />
+      <ambientLight intensity={1} />
+      {/* <spotLight penumbra={0} intensity={1} position={[-10, 10, 50]} color={'0xffffff'} /> */}
+    </Canvas>
   );
 };
 

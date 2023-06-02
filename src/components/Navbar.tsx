@@ -7,6 +7,8 @@ const Navbar = () => (
     <div className="absolute w-[50%] inset-0 gradient-01" />
     <div className={`inner-width mx-auto flex justify-between gap-8`}>
       <Link href={'/'}>
+
+        
         <h2 className="font-extrabold text-[24px] leading-[30.24px] text-white">VizBeats</h2>
       </Link>
     </div>
