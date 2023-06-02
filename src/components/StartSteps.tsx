@@ -5,10 +5,10 @@ type Props = {
 
 const StartSteps = ({ number, text }: Props) => (
   <div className={`flex-center flex-row`}>
-    <div className={`flex-center w-[70px] h-[70px] rounded-[24px] bg-[#323F5D]`}>
-      <p className="font-bold text-[20px] text-white">{number}</p>
+    <div className={`flex-center h-[70px] w-[70px] rounded-[24px] bg-[#323F5D]`}>
+      <p className="text-[20px] font-bold text-white">{number}</p>
     </div>
-    <p className="flex-1 ml-[30px] font-normal text-[18px] text-[#B0B0B0] leading-[32.4px]">{text}</p>
+    <p className="ml-[30px] flex-1 text-[18px] font-normal leading-[32.4px] text-[#B0B0B0]">{text}</p>
   </div>
 );
 

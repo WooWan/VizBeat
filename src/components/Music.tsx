@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { TextureLoader } from 'three';
 import { useFrame, useLoader } from '@react-three/fiber';
 import { useScroll } from '@react-three/drei';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { lerp } from 'three/src/math/MathUtils';
 import { MeshAxis, YAxis } from '@/types/Axis';
 import { Music } from '@prisma/client';
@@ -12,15 +12,16 @@ const radian = Math.PI / 180;
 type Props = {
   music: Music;
   index: number;
-  handleClick: (idx: number) => void;
-  selectedIdx: null | number;
-  setSelectedIdx: (idx: null | number) => void;
+  handleClick: (id: string) => void;
   groupY: number;
+  selectedMusic: Music | null;
+  musics: Music[];
+  setSelectedMusic: React.Dispatch<React.SetStateAction<Music | null>>;
 };
 
 const LERP_FACTOR = 0.05;
 
-const Music = ({ music, index, handleClick, selectedIdx, setSelectedIdx, groupY }: Props) => {
+const Music = ({ music, index, handleClick, groupY, selectedMusic, musics, setSelectedMusic }: Props) => {
   const [originalPosition] = useState(2 - index * 1.5);
   const [rotation, setRotation] = useState(radian * 10 * index);
   const meshRef = useRef<THREE.Mesh>(null!);
@@ -39,24 +40,25 @@ const Music = ({ music, index, handleClick, selectedIdx, setSelectedIdx, groupY 
   };
 
   useFrame(() => {
-    if (selectedIdx === null) return; //아무것도 선택 안됬을때
-    if (selectedIdx === index) {
-      //내가 선택됬을떄
+    if (selectedMusic === null) return; //아무것도 선택 안됬을때
+    const selectedIdx = musics.findIndex((music) => music.id === selectedMusic?.id);
+    //내가 선택됬을떄
+    if (selectedMusic.id === music.id) {
       updateRotation({ x: radian * 90, y: 0, z: radian * -90 });
       updatePosition({ y: -groupY });
     } else {
       //남이 선택됬을때
       const indexGap = index - selectedIdx;
       if (indexGap < 0) {
-        updatePosition({ y: 5 - groupY - indexGap * 1.5 });
+        updatePosition({ y: 10 - groupY - indexGap * 1.5 });
       } else {
-        updatePosition({ y: -5 - groupY - indexGap * 1.5 });
+        updatePosition({ y: -10 - groupY - indexGap * 1.5 });
       }
     }
   });
 
   useFrame(() => {
-    if (selectedIdx === null) {
+    if (selectedMusic?.id !== music.id) {
       updatePosition({ y: originalPosition });
       updateRotation({ x: 0, y: 0, z: 0 });
     }
@@ -64,17 +66,17 @@ const Music = ({ music, index, handleClick, selectedIdx, setSelectedIdx, groupY 
 
   useFrame(() => {
     setRotation((prev) => prev + 0.1 * radian);
-    if (selectedIdx !== index) {
+    if (selectedMusic?.id !== music.id) {
       meshRef.current.rotation.y = rotation;
       meshRef.current.rotation.y %= 360 * radian;
     }
   });
 
   useEffect(() => {
-    if (selectedIdx !== null) {
+    if (selectedMusic !== null) {
       updatePosition({ y: originalPosition });
       updateRotation({ x: 0, y: 0, z: 0 });
-      setSelectedIdx(null);
+      setSelectedMusic(null);
     }
   }, [scroll.offset]);
 
@@ -83,7 +85,7 @@ const Music = ({ music, index, handleClick, selectedIdx, setSelectedIdx, groupY 
       ref={meshRef}
       onClick={(e) => {
         e.stopPropagation();
-        handleClick(index);
+        handleClick(music.id);
       }}
     >
       <boxGeometry args={[10, 0.7, 10]} />

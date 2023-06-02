@@ -4,7 +4,7 @@
 
 @layer components {
   .paddings {
-    @apply sm:p-16 px-6 py-12;
+    @apply px-6 py-12 sm:p-16;
   }
 
   .flex-center {
@@ -12,7 +12,7 @@
   }
 
   .inner-width {
-    @apply 2xl:max-w-[1280px] w-full;
+    @apply w-full 2xl:max-w-[1280px];
   }
 
   .x-paddings {
@@ -30,14 +30,14 @@
 
 .gradient-01 {
   background-image: linear-gradient(
-    270deg,
-    #ee969c 0%,
-    hsl(284deg 70% 73%) 26%,
-    #ec682b 39%,
-    #f5cdca 50%,
-    hsl(215deg 77% 81%) 61%,
-    #ee969c 70%,
-    #fb392c 100%
+          270deg,
+          #ee969c 0%,
+          hsl(284deg 70% 73%) 26%,
+          #ec682b 39%,
+          #f5cdca 50%,
+          hsl(215deg 77% 81%) 61%,
+          #ee969c 70%,
+          #fb392c 100%
   );
   filter: blur(125px);
 }
@@ -103,8 +103,4 @@
 
   background: #65c4fa;
   filter: blur(150px);
-}
-
-body {
-  height: 100vh;
 }
