@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Pause, Play, SkipBack, SkipForward } from 'lucide-react';
 import Image from 'next/image';
-import { cn } from '@/lib/twMerge';
+import { cn } from '@/lib/utils';
 import { formatTime } from '@/utils/time';
 import { Music } from '@prisma/client';
 
