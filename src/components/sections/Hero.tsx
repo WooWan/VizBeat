@@ -37,7 +37,7 @@ const Hero = () => (
         {/*<div className="absolute w-full h-[350px] hero-gradient rounded-tl-[140px] z-[0] -top-[30px]" />*/}
         <Image
           className={'relative rounded-tl-[140px] object-cover'}
-          src={'/images/music_stage2.png'}
+          src={'/images/music_stage.png'}
           alt={'music-stage'}
           fill
         />
