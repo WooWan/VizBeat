@@ -1,28 +1,26 @@
 import React from 'react';
-import { MeshReflectorMaterial, useTexture } from '@react-three/drei';
-import { Vector2 } from 'three';
+import Model from './Model';
 
 type Props = {};
 
 export default function StageGround({}: Props) {
   // const floor = useTexture('/SurfaceImperfections003_1K_var1.jpg');
-  const normal = useTexture('/SurfaceImperfections003_1K_Normal.jpg');
-  const floor = useTexture('/wood2.jpeg');
+  // const normal = useTexture('/SurfaceImperfections003_1K_Normal.jpg');
+  // // const floor = useTexture('/wood2.jpeg');
 
   return (
-    <mesh position={[0, -10, 0]} rotation={[(Math.PI / 180) * -90, 0, 0]}>
-      <planeGeometry args={[500, 500]} />
-      <MeshReflectorMaterial
-        blur={[500, 100]}
-        mixBlur={12}
-        mixStrength={1.5}
-        resolution={1024}
-        mirror={1}
-        metalness={0}
-        roughnessMap={floor}
-        normalMap={normal}
-        normalScale={new Vector2(2, 2)}
+    <group>
+      <Model
+        position={[10, -10, 0]}
+        scale={[0.12, 0.02, 0.04]}
+        url="/gltf/substance_wood_floor_material_pbr/scene.gltf"
       />
-    </mesh>
+      <Model
+        position={[30, -10, 30]}
+        rotation={[0, Math.PI / 2, 0]}
+        scale={[0.02, 0.02, 0.03]}
+        url="/gltf/old_garage/scene.gltf"
+      />
+    </group>
   );
 }
