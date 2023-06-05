@@ -8,6 +8,7 @@ import Rig from '@/components/Rig';
 import StageSpotLight from '@/components/StageSpotLight';
 import MusicAnalyzer from '@/components/MusicAnalyzer';
 import Instrumental from '@/components/Instrumental';
+import Loading from '@/components/Loading';
 
 type ThreeState = {
   target: THREE.Object3D | null;
@@ -46,20 +47,19 @@ const Index = () => {
       <audio ref={pianoRef} src="/music/piano.wav"></audio>
       <audio ref={bassRef} src="/music/bass.wav"></audio>
       <audio ref={drumRef} src="/music/drum.wav"></audio>
-
-      <Canvas
-        camera={{
-          position: [0, 20, 0],
-          fov: 80,
-          near: 0.1,
-          far: 300,
-          zoom: 1
-        }}
-        style={{ width: '100vw', height: '100vh' }}
-      >
-        <color attach="background" args={['white']} />
-        <Rig>
-          <Suspense>
+      <Suspense fallback={<Loading />}>
+        <Canvas
+          camera={{
+            position: [0, 20, 0],
+            fov: 80,
+            near: 0.1,
+            far: 300,
+            zoom: 1
+          }}
+          style={{ width: '100vw', height: '100vh' }}
+        >
+          <color attach="background" args={['white']} />
+          <Rig>
             <StageGround />
             <Instrumental
               position={[32, -10, -20]}
@@ -91,46 +91,46 @@ const Index = () => {
               scale={[0.01, 0.01, 0.01]}
               url="/gltf/old_microphone/scene.gltf"
             />
-          </Suspense>
-        </Rig>
-        <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
-        <ambientLight intensity={0.4} />
-        <StageSpotLight
-          color={0xffee93}
-          angle={0.22}
-          target={new THREE.Vector3(750, 0, 100)}
-          position={new THREE.Vector3(75, 60, 10)}
-        />
-        <StageSpotLight
-          color={0xffee93}
-          angle={0.22}
-          target={new THREE.Vector3(-750, 0, 100)}
-          position={new THREE.Vector3(-75, 60, 10)}
-        />
-        <StageSpotLight
-          color={0xffee93}
-          angle={0.32}
-          target={new THREE.Vector3(320, 0, -100)}
-          position={new THREE.Vector3(32, 60, 10)}
-        />
-        <StageSpotLight
-          color={0xffee93}
-          angle={0.32}
-          target={new THREE.Vector3(-320, 0, -100)}
-          position={new THREE.Vector3(-32, 60, 10)}
-        />
-        <StageSpotLight
-          color={0xffee93}
-          angle={0.25}
-          target={new THREE.Vector3(0, 0, 300)}
-          position={new THREE.Vector3(0, 60, 30)}
-        />
-        <MusicAnalyzer isPlay={isPlay} music={guitarRef} fftSize={128} centerPos={[75, -26, 10]} radius={6} />
-        <MusicAnalyzer isPlay={isPlay} music={vocalRef} fftSize={128} centerPos={[0, -26, 30]} radius={6} />
-        <MusicAnalyzer isPlay={isPlay} music={bassRef} fftSize={128} centerPos={[-75, -26, 10]} radius={2} />
-        <MusicAnalyzer isPlay={isPlay} music={drumRef} fftSize={128} centerPos={[32, -26, -10]} radius={16} />
-        <MusicAnalyzer isPlay={isPlay} music={pianoRef} fftSize={128} centerPos={[-32, -26, -10]} radius={16} />
-      </Canvas>
+            <StageSpotLight
+              color={0xffee93}
+              angle={0.22}
+              target={new THREE.Vector3(750, 0, 100)}
+              position={new THREE.Vector3(75, 60, 10)}
+            />
+            <StageSpotLight
+              color={0xffee93}
+              angle={0.22}
+              target={new THREE.Vector3(-750, 0, 100)}
+              position={new THREE.Vector3(-75, 60, 10)}
+            />
+            <StageSpotLight
+              color={0xffee93}
+              angle={0.32}
+              target={new THREE.Vector3(320, 0, -100)}
+              position={new THREE.Vector3(32, 60, 10)}
+            />
+            <StageSpotLight
+              color={0xffee93}
+              angle={0.32}
+              target={new THREE.Vector3(-320, 0, -100)}
+              position={new THREE.Vector3(-32, 60, 10)}
+            />
+            <StageSpotLight
+              color={0xffee93}
+              angle={0.25}
+              target={new THREE.Vector3(0, 0, 300)}
+              position={new THREE.Vector3(0, 60, 30)}
+            />
+            <MusicAnalyzer isPlay={isPlay} music={guitarRef} fftSize={128} centerPos={[75, -26, 10]} radius={6} />
+            <MusicAnalyzer isPlay={isPlay} music={vocalRef} fftSize={128} centerPos={[0, -26, 30]} radius={6} />
+            <MusicAnalyzer isPlay={isPlay} music={bassRef} fftSize={128} centerPos={[-75, -26, 10]} radius={2} />
+            <MusicAnalyzer isPlay={isPlay} music={drumRef} fftSize={128} centerPos={[32, -26, -10]} radius={16} />
+            <MusicAnalyzer isPlay={isPlay} music={pianoRef} fftSize={128} centerPos={[-32, -26, -10]} radius={16} />
+          </Rig>
+          <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
+          <ambientLight intensity={0.4} />
+        </Canvas>
+      </Suspense>
     </div>
   );
 };
