@@ -78,11 +78,6 @@ const MusicsNavbar = ({ selectedMusic, setSelectedMusic, musics, handleMusicSele
   };
 
   const splitMusic = async () => {
-    // const res = await httpClient.post('/musics');
-    // const { data } = await supabase.storage.from('music').createSignedUrl('music/green_day.mp3', 60, {
-    //   download: true
-    // });
-    // console.log(data?.signedUrl);
     const moises_url = 'https://developer-api.moises.ai/api/job';
     const res = await axios.post(
       moises_url,
@@ -105,7 +100,6 @@ const MusicsNavbar = ({ selectedMusic, setSelectedMusic, musics, handleMusicSele
         }
       }
     );
-    // console.log('res', res);
   };
 
   return (
@@ -148,7 +142,6 @@ const MusicsNavbar = ({ selectedMusic, setSelectedMusic, musics, handleMusicSele
           <DialogHeader>
             <DialogTitle>음악을 업로드 해보세요 🎸</DialogTitle>
           </DialogHeader>
-
           {audioMetadata?.common.picture ? (
             <Image
               src={URL.createObjectURL(
@@ -226,48 +219,8 @@ const MusicsNavbar = ({ selectedMusic, setSelectedMusic, musics, handleMusicSele
               <Button type="submit">Submit</Button>
             </form>
           </Form>
-
-          {/*<form*/}
-          {/*  onSubmit={form.handleSubmit(onSubmit)}*/}
-          {/*  className={cn('hidden', {*/}
-          {/*    block: audioFile*/}
-          {/*  })}*/}
-          {/*>*/}
-          {/*  <div className="grid gap-4 py-4">*/}
-          {/*    <div className="grid grid-cols-4 items-center gap-4">*/}
-          {/*      <Label htmlFor="music" className="text-right">*/}
-          {/*        Music*/}
-          {/*      </Label>*/}
-          {/*      <Input id="music" value={audioFile?.common.title} className="col-span-3" />*/}
-          {/*    </div>*/}
-          {/*    <div className="grid grid-cols-4 items-center gap-4">*/}
-          {/*      <Label htmlFor="username" className="text-right">*/}
-          {/*        Artist*/}
-          {/*      </Label>*/}
-          {/*      <Input id="username" value={audioFile?.common.artist} className="col-span-3" />*/}
-          {/*    </div>*/}
-          {/*    <div className="grid grid-cols-4 items-center gap-4">*/}
-          {/*      <Label htmlFor="Album" className="text-right">*/}
-          {/*        Album*/}
-          {/*      </Label>*/}
-          {/*      <Input id="album" value={audioFile?.common.album} className="col-span-3" />*/}
-          {/*    </div>*/}
-          {/*    <div className="grid grid-cols-4 items-center gap-4">*/}
-          {/*      <Label htmlFor="genre" className="text-right">*/}
-          {/*        genre*/}
-          {/*      </Label>*/}
-          {/*      <Input id="genre" value={audioFile?.common.genre} className="col-span-3" />*/}
-          {/*    </div>*/}
-          {/*  </div>*/}
-          {/*  <DialogFooter>*/}
-          {/*    <Button type="submit">Save changes</Button>*/}
-          {/*  </DialogFooter>*/}
-          {/*</form>*/}
         </DialogContent>
       </Dialog>
-      <Button variant="outline" onClick={splitMusic}>
-        Split this shit!
-      </Button>
     </nav>
   );
 };

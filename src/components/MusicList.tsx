@@ -1,7 +1,7 @@
 import React, { SetStateAction, useRef } from 'react';
 import * as THREE from 'three';
 import { useScroll } from '@react-three/drei';
-import MusicCard from '@/components/Music';
+import MusicAlbum from '@/components/Music';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Music } from '@prisma/client';
 
@@ -24,7 +24,7 @@ const MusicList = ({ handleClick, musicList, selectedMusic, setSelectedMusic }: 
   return (
     <group ref={groupRef}>
       {musicList?.map((music, i) => (
-        <MusicCard
+        <MusicAlbum
           key={i}
           music={music}
           index={i}

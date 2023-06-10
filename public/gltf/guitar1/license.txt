@@ -1,0 +1,11 @@
+Model Information:
+* title:	Guitar
+* source:	https://sketchfab.com/3d-models/guitar-a44930f9c14544a6ae6967d5544417e8
+* author:	Ivan Dnistrian (https://sketchfab.com/ivanlynx)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Guitar" (https://sketchfab.com/3d-models/guitar-a44930f9c14544a6ae6967d5544417e8) by Ivan Dnistrian (https://sketchfab.com/ivanlynx) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

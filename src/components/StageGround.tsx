@@ -4,10 +4,6 @@ import Model from './Model';
 type Props = {};
 
 export default function StageGround({}: Props) {
-  // const floor = useTexture('/SurfaceImperfections003_1K_var1.jpg');
-  // const normal = useTexture('/SurfaceImperfections003_1K_Normal.jpg');
-  // // const floor = useTexture('/wood2.jpeg');
-
   return (
     <group>
       <Model
