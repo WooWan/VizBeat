@@ -35,7 +35,9 @@ const MusicAlbum = ({ music, index, handleClick, groupY, selectedMusic, musics, 
   const scroll = useScroll();
   const router = useRouter();
 
-  const handlePlayMusic = () => {
+  const handlePlayMusic = (event: React.MouseEvent<HTMLButtonElement>) => {
+    // event.pr\
+    event.stopPropagation();
     if (selectedMusic?.id !== music.id) return;
     setIsMusicPlay(true);
     router.push('/stage');
@@ -101,7 +103,7 @@ const MusicAlbum = ({ music, index, handleClick, groupY, selectedMusic, musics, 
       }}
     >
       <Html>
-        <div
+        <button
           onClick={handlePlayMusic}
           className={cn(
             'absolute left-1/2 top-1/2 flex h-24 w-24 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white/[0.7] opacity-0',
@@ -110,10 +112,8 @@ const MusicAlbum = ({ music, index, handleClick, groupY, selectedMusic, musics, 
             }
           )}
         >
-          <button>
-            <Play size={48} className={'fill-current text-black/[0.85]'} />
-          </button>
-        </div>
+          <Play size={48} className={'fill-current text-black/[0.85]'} />
+        </button>
       </Html>
       <boxGeometry args={[10, 0.7, 10]} />
       <meshBasicMaterial attach="material-0" map={texture} />
