@@ -1,25 +1,24 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
 import { supabase } from '@/lib/supabase';
 
-const fs = require('fs');
+// const fs = require('fs');
 
-export const addMusic = async (music: any) => {
-  const res = await prisma.music.create({
-    data: {
-      title: music.title,
-      artist: music.artist,
-      albumCover: music.album,
-      musicLink: '',
-      user: {
-        connect: {
-          id: music.userId
-        }
-      }
-    }
-  });
-  return res;
-};
+// export const addMusic = async (music: any) => {
+//   const res = await prisma.music.create({
+//     data: {
+//       title: music.title,
+//       artist: music.artist,
+//       albumCover: music.album,
+//       musicLink: '',
+//       user: {
+//         connect: {
+//           id: music.userId
+//         }
+//       }
+//     }
+//   });
+//   return res;
+// };
 
 export async function POST(request: Request) {
   // return withSessionUser(async (user) => {
