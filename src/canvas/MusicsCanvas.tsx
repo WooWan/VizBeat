@@ -21,7 +21,7 @@ const MusicsCanvas = ({ handleMusicSelect, musics, setSelectedMusic, selectedMus
         fov: 100
       }}
     >
-      <Environment preset="dawn" background blur={0.6} />
+      <Environment files={'/background/dawn.hdr'} background blur={0.6} />
       {/* style for hide scroll bar */}
       <ScrollControls damping={0} style={{ left: '15px' }}>
         <MusicList
