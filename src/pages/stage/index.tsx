@@ -1,10 +1,17 @@
-import React, { Suspense, useRef } from 'react';
+import React, { Suspense, useEffect, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
-import Model from '@/components/Model';
-import { OrbitControls, TransformControls } from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import { create } from 'zustand';
-import { useControls } from 'leva';
+import StageGround from '@/components/StageGround';
+import Rig from '@/components/Rig';
+import StageSpotLight from '@/components/StageSpotLight';
+import MusicAnalyzer from '@/components/MusicAnalyzer';
+import Instrumental from '@/components/Instrumental';
+import Loading from '@/components/Loading';
+import { useMusicPlayStore } from '@/store/music';
+import { shallow } from 'zustand/shallow';
+import MusicPlayToggleButton from '@/components/MusicPlayToggleButton';
 
 type ThreeState = {
   target: THREE.Object3D | null;
@@ -15,82 +22,149 @@ export const useStore = create<ThreeState>((set) => ({
   setTarget: (target) => set({ target })
 }));
 
-const Index = () => {
-  const { target, setTarget } = useStore();
-  const spotRef = useRef<THREE.SpotLight>(null!);
-  const RADIAN = Math.PI / 180;
-  const { mode } = useControls({
-    mode: { value: 'translate', options: ['translate', 'rotate', 'scale'] }
-  });
+const StagePage = () => {
+  const { isMusicPlay, setIsMusicPlay } = useMusicPlayStore(
+    (state) => ({ isMusicPlay: state.isMusicPlay, setIsMusicPlay: state.setIsMusicPlay }),
+    shallow
+  );
+  const vocalRef = useRef<HTMLAudioElement>(null!);
+  const guitarRef = useRef<HTMLAudioElement>(null!);
+  const pianoRef = useRef<HTMLAudioElement>(null!);
+  const bassRef = useRef<HTMLAudioElement>(null!);
+  const drumRef = useRef<HTMLAudioElement>(null!);
+
+  useEffect(() => {
+    if (isMusicPlay) {
+      vocalRef.current.play();
+      guitarRef.current.play();
+      pianoRef.current.play();
+      bassRef.current.play();
+      drumRef.current.play();
+    } else {
+      vocalRef.current.pause();
+      guitarRef.current.pause();
+      pianoRef.current.pause();
+      bassRef.current.pause();
+      drumRef.current.pause();
+    }
+  }, [isMusicPlay]);
+
+  const radian = Math.PI / 180;
+
   return (
-    <div className={'grid grid-cols-[350px_1fr]'}>
-      <div>
-        <h1>Music Title</h1>
-        <img src="/album/aimyon.jpeg" />
-        <p>
-          Vocal : <audio id="vocal" controls src=""></audio>
-          Guitar : <audio id="guitar" controls src=""></audio>
-          Piano : <audio id="piano" controls src=""></audio>
-          Bass : <audio id="bass" controls src=""></audio>
-          Drum : <audio id="drum" controls src=""></audio>
-        </p>
-      </div>
-      <Canvas
-        camera={{
-          zoom: 2.7,
-          position: [0, 15, 140],
-          fov: 100,
-          near: 0.1,
-          far: 3000
-        }}
-      >
-        <fog attach={'fog'} args={['black', 0.1, 1600]} />
-        <color attach="background" args={[0xb8dff8]} />
-        <Suspense fallback={<>...loading</>}>
-          {/*<Model*/}
-          {/*  position={[0, 30, 90]}*/}
-          {/*  rotation={[0, 145 * RADIAN, 0]}*/}
-          {/*  scale={[30, 30, 30]}*/}
-          {/*  url="/gltf/georgeville_beach_ns/scene.gltf"*/}
-          {/*/>*/}
-          {/*<Model*/}
-          {/*  position={[0, -50, 0]}*/}
-          {/*  scale={[0.1, 0.1, 0.1]}*/}
-          {/*  url="/gltf/simple_concert_stage/scene.gltf"*/}
-          {/*/>*/}
-          {/*<primitive*/}
-          {/*    // zIndex={1}*/}
-          {/*    // className={'bg-amber-50 h-96 w-96'}*/}
-          {/*    onClick={(e) => setTarget(e.object)}*/}
-          {/*    scale={props.scale}*/}
-          {/*    rotation={props.rotation}*/}
-          {/*    position={[0, -50, 0]}*/}
-          {/*    object={result.scene}*/}
-          {/*/>*/}
-          <Model
-            position={[50, -55, -20]}
-            rotation={[RADIAN * 12, RADIAN * 90, 0]}
-            scale={[20, 20, 20]}
-            url="gltf/electric_guitar/scene.gltf"
-          />
-          {target && <TransformControls object={target} />}
-          <Model position={[30, -45, -20]} scale={[2.5, 2.5, 2.5]} url="/gltf/bass/scene.gltf" />
-          <Model
-            position={[-15, -55, -20]}
-            rotation={[0, RADIAN * 180, 0]}
-            scale={[1.5, 1.5, 1.5]}
-            url="gltf/low_poly_mic_stand/scene.gltf"
-          />
-          <Model position={[22, -39, -50]} scale={[0.015, 0.015, 0.015]} url="/gltf/drum_kit/scene.gltf" />
-          <Model position={[25, -55, -30]} scale={[10, 10, 10]} url="/gltf/piano/scene.gltf" />
-        </Suspense>
-        <OrbitControls />
-        <axesHelper args={[30]} />
-        <spotLight ref={spotRef} position={[0, 50, 50]} angle={RADIAN * 60} penumbra={0.5} castShadow />
-        <ambientLight intensity={1} />
-      </Canvas>
-    </div>
+    <section className={'relative'}>
+      <audio ref={vocalRef} src="/music/vocal.wav"></audio>
+      <audio ref={guitarRef} src="/music/guitar.wav"></audio>
+      <audio ref={pianoRef} src="/music/piano.wav"></audio>
+      <audio ref={bassRef} src="/music/bass.wav"></audio>
+      <audio ref={drumRef} src="/music/drum.wav"></audio>
+      <MusicPlayToggleButton />
+      <Suspense fallback={<Loading />}>
+        <Canvas
+          camera={{
+            position: [0, 20, 0],
+            fov: 80,
+            near: 0.1,
+            far: 300,
+            zoom: 1
+          }}
+          style={{ width: '100vw', height: '100vh' }}
+        >
+          <color attach="background" args={['white']} />
+          <Suspense fallback={null}>
+            <Rig>
+              <StageGround />
+              <Instrumental
+                position={[32, -10, -20]}
+                rotation={[0, radian * -20, 0]}
+                scale={[18, 18, 18]}
+                url="/gltf/drum/scene.gltf"
+              />
+              <Instrumental
+                position={[-32, -10, -16]}
+                rotation={[0, radian * 10, 0]}
+                scale={[0.5, 0.5, 0.5]}
+                url="/gltf/piano/scene.gltf"
+              />
+              <Instrumental
+                position={[73, -6, 12]}
+                rotation={[0, radian * -0.75, 0]}
+                scale={[2.25, 2.25, 2.25]}
+                url="/gltf/guitar1/scene.gltf"
+              />
+              <Instrumental
+                position={[-75, -10, 8]}
+                rotation={[0, radian * 30, 0]}
+                scale={[23, 23, 23]}
+                url="/gltf/guitar/scene.gltf"
+              />
+              <Instrumental
+                position={[0, -15, 30]}
+                rotation={[0, 0, 0]}
+                scale={[0.3, 0.3, 0.3]}
+                url={'/gltf/microphone/scene.gltf'}
+              />
+              <StageSpotLight
+                color={0xffee93}
+                angle={0.22}
+                target={new THREE.Vector3(750, 0, 100)}
+                position={new THREE.Vector3(75, 60, 10)}
+              />
+              <StageSpotLight
+                color={0xffee93}
+                angle={0.22}
+                target={new THREE.Vector3(-750, 0, 100)}
+                position={new THREE.Vector3(-75, 60, 10)}
+              />
+              <StageSpotLight
+                color={0xffee93}
+                angle={0.32}
+                target={new THREE.Vector3(320, 0, -100)}
+                position={new THREE.Vector3(32, 60, 10)}
+              />
+              <StageSpotLight
+                color={0xffee93}
+                angle={0.32}
+                target={new THREE.Vector3(-320, 0, -100)}
+                position={new THREE.Vector3(-32, 60, 10)}
+              />
+              <StageSpotLight
+                color={0xffee93}
+                angle={0.25}
+                target={new THREE.Vector3(0, 0, 300)}
+                position={new THREE.Vector3(0, 60, 30)}
+              />
+              <MusicAnalyzer
+                isPlay={isMusicPlay}
+                music={guitarRef}
+                fftSize={128}
+                centerPos={[75, -26, 10]}
+                radius={6}
+              />
+              <MusicAnalyzer isPlay={isMusicPlay} music={vocalRef} fftSize={128} centerPos={[0, -26, 30]} radius={6} />
+              <MusicAnalyzer isPlay={isMusicPlay} music={bassRef} fftSize={128} centerPos={[-75, -26, 10]} radius={2} />
+              <MusicAnalyzer
+                isPlay={isMusicPlay}
+                music={drumRef}
+                fftSize={128}
+                centerPos={[32, -26, -10]}
+                radius={16}
+              />
+              <MusicAnalyzer
+                isPlay={isMusicPlay}
+                music={pianoRef}
+                fftSize={128}
+                centerPos={[-32, -26, -10]}
+                radius={16}
+              />
+            </Rig>
+          </Suspense>
+          <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
+          <ambientLight intensity={0.4} />
+        </Canvas>
+      </Suspense>
+    </section>
   );
 };
 
-export default Index;
+export default StagePage;

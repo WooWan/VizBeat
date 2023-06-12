@@ -21,7 +21,7 @@ const Explore = () => {
         <TitleText
           title={
             <>
-              Choose the instruemnt you want <br className="hidden md:block" /> to visualize
+              Choose the music you want <br className="hidden md:block" /> to visualize
             </>
           }
           textStyles="text-center"
