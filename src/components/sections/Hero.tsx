@@ -36,7 +36,7 @@ const Hero = () => (
       >
         <Image
           className={'relative rounded-tl-[140px] object-cover'}
-          src={'/images/music_stage.png'}
+          src={'/images/stage.png'}
           alt={'music-stage'}
           fill
         />
