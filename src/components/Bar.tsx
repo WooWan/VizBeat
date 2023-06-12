@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { lerp } from 'three/src/math/MathUtils';
@@ -16,12 +16,11 @@ type Props = {
 
 export default function Bar({ radius, index, centerPos, position, theta, color, meanRef, dataArrayRef }: Props) {
   const barRef = useRef<THREE.Mesh>(null!);
-  const [angle, setAngle] = useState(theta);
   const heightRef = useRef(0);
   const angleRef = useRef(theta);
   const radian = Math.PI / 180;
 
-  useFrame((_, delta) => {
+  useFrame((_) => {
     if (!dataArrayRef.current) return;
     const mean = meanRef.current - 1;
     const frequency = dataArrayRef.current?.[index] / 128 - 1;
@@ -32,12 +31,11 @@ export default function Bar({ radius, index, centerPos, position, theta, color, 
     } else {
       heightRef.current = height - height * 0.2;
     }
-    const nextAngle = (angleRef.current + radian) % 360;
-    angleRef.current = nextAngle;
+    angleRef.current = (angleRef.current + radian) % 360;
     const power = mean < 0 ? 0 : Math.round(mean * 10000) / 10000;
-    const nx = centerPos[0] + (radius + power * 500) * Math.cos(angle);
+    const nx = centerPos[0] + (radius + power * 500) * Math.cos(angleRef.current);
     const ny = centerPos[1] + heightRef.current * heightRef.current * 1200;
-    const nz = centerPos[2] + (radius + power * 500) * Math.sin(angle);
+    const nz = centerPos[2] + (radius + power * 500) * Math.sin(angleRef.current);
 
     barRef.current.position.x = lerp(barRef.current.position.x, nx, 0.02);
     barRef.current.position.y = lerp(barRef.current.position.y, ny, 0.03);
