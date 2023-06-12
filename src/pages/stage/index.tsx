@@ -10,7 +10,6 @@ import MusicAnalyzer from '@/components/MusicAnalyzer';
 import Instrumental from '@/components/Instrumental';
 import Loading from '@/components/Loading';
 import { useMusicPlayStore } from '@/store/music';
-import { shallow } from 'zustand/shallow';
 import MusicPlayToggleButton from '@/components/MusicPlayToggleButton';
 
 type ThreeState = {
@@ -23,10 +22,7 @@ export const useStore = create<ThreeState>((set) => ({
 }));
 
 const StagePage = () => {
-  const { isMusicPlay, setIsMusicPlay } = useMusicPlayStore(
-    (state) => ({ isMusicPlay: state.isMusicPlay, setIsMusicPlay: state.setIsMusicPlay }),
-    shallow
-  );
+  const isMusicPlay = useMusicPlayStore((state) => state.isMusicPlay);
   const vocalRef = useRef<HTMLAudioElement>(null!);
   const guitarRef = useRef<HTMLAudioElement>(null!);
   const pianoRef = useRef<HTMLAudioElement>(null!);
@@ -134,29 +130,11 @@ const StagePage = () => {
                 target={new THREE.Vector3(0, 0, 300)}
                 position={new THREE.Vector3(0, 60, 30)}
               />
-              <MusicAnalyzer
-                isPlay={isMusicPlay}
-                music={guitarRef}
-                fftSize={128}
-                centerPos={[75, -26, 10]}
-                radius={6}
-              />
-              <MusicAnalyzer isPlay={isMusicPlay} music={vocalRef} fftSize={128} centerPos={[0, -26, 30]} radius={6} />
-              <MusicAnalyzer isPlay={isMusicPlay} music={bassRef} fftSize={128} centerPos={[-75, -26, 10]} radius={2} />
-              <MusicAnalyzer
-                isPlay={isMusicPlay}
-                music={drumRef}
-                fftSize={128}
-                centerPos={[32, -26, -10]}
-                radius={16}
-              />
-              <MusicAnalyzer
-                isPlay={isMusicPlay}
-                music={pianoRef}
-                fftSize={128}
-                centerPos={[-32, -26, -10]}
-                radius={16}
-              />
+              <MusicAnalyzer music={guitarRef} fftSize={128} centerPos={[75, -26, 10]} radius={6} />
+              <MusicAnalyzer music={vocalRef} fftSize={128} centerPos={[0, -26, 30]} radius={6} />
+              <MusicAnalyzer music={bassRef} fftSize={128} centerPos={[-75, -26, 10]} radius={2} />
+              <MusicAnalyzer music={drumRef} fftSize={128} centerPos={[32, -26, -10]} radius={16} />
+              <MusicAnalyzer music={pianoRef} fftSize={128} centerPos={[-32, -26, -10]} radius={16} />
             </Rig>
           </Suspense>
           <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />

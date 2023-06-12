@@ -1,20 +1,23 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import Bar from './Bar';
+import { useMusicPlayStore } from '@/store/music';
 
 type Props = {
-  isPlay: boolean;
   music: React.MutableRefObject<HTMLAudioElement>;
   fftSize: number;
   centerPos: number[];
   radius: number;
 };
 
-export default function MusicAnalyzer({ isPlay, music, fftSize, centerPos, radius }: Props) {
+export default function MusicAnalyzer({ music, fftSize, centerPos, radius }: Props) {
   const [analyser, setAnalyser] = useState<any>(null);
   const [dataArray, setDataArray] = useState<any>(null);
   const [mean, setMean] = useState(0);
+  const [sourceNode, setSourceNode] = useState<MediaElementAudioSourceNode | null>(null);
+  const isMusicPlay = useMusicPlayStore((state) => state.isMusicPlay);
+
   const bars = useMemo(() => {
     const bars = [];
     for (let i = 0; i < fftSize; i++) {
@@ -30,23 +33,18 @@ export default function MusicAnalyzer({ isPlay, music, fftSize, centerPos, radiu
   }, [fftSize, radius]);
 
   useEffect(() => {
+    if (!isMusicPlay || sourceNode) return;
     const audioContext = new window.AudioContext();
     const analyser = audioContext.createAnalyser();
     const source = audioContext.createMediaElementSource(music.current);
-
+    setSourceNode(source);
     source.connect(analyser);
     source.connect(audioContext.destination);
 
     analyser.fftSize = fftSize;
 
     setAnalyser(analyser);
-
-    return () => {
-      source.disconnect();
-      analyser.disconnect();
-      audioContext.close();
-    };
-  }, []);
+  }, [isMusicPlay]);
 
   useFrame(() => {
     if (analyser) {
@@ -58,8 +56,7 @@ export default function MusicAnalyzer({ isPlay, music, fftSize, centerPos, radiu
       setDataArray(newData);
     }
   });
-
-  if (isPlay && dataArray) {
+  if (isMusicPlay && dataArray) {
     return (
       <group>
         {bars.map((item, index) => (
