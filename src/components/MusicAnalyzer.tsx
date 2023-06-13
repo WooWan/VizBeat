@@ -1,20 +1,25 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import Bar from './Bar';
+import { useMusicPlayStore } from '@/store/music';
 
 type Props = {
-  isPlay: boolean;
   music: React.MutableRefObject<HTMLAudioElement>;
   fftSize: number;
   centerPos: number[];
   radius: number;
 };
 
-export default function MusicAnalyzer({ isPlay, music, fftSize, centerPos, radius }: Props) {
+export default function MusicAnalyzer({ music, fftSize, centerPos, radius }: Props) {
   const [analyser, setAnalyser] = useState<any>(null);
-  const [dataArray, setDataArray] = useState<any>(null);
-  const [mean, setMean] = useState(0);
+  const dataArrayRef = useRef<Uint8Array | null>(null);
+  const meanRef = useRef(0);
+  // const [dataArray, setDataArray] = useState<any>(null);
+  // const [mean, setMean] = useState(0);
+  const [sourceNode, setSourceNode] = useState<MediaElementAudioSourceNode | null>(null);
+  const isMusicPlay = useMusicPlayStore((state) => state.isMusicPlay);
+
   const bars = useMemo(() => {
     const bars = [];
     for (let i = 0; i < fftSize; i++) {
@@ -30,45 +35,44 @@ export default function MusicAnalyzer({ isPlay, music, fftSize, centerPos, radiu
   }, [fftSize, radius]);
 
   useEffect(() => {
+    if (!isMusicPlay || sourceNode) return;
     const audioContext = new window.AudioContext();
     const analyser = audioContext.createAnalyser();
     const source = audioContext.createMediaElementSource(music.current);
-
+    setSourceNode(source);
     source.connect(analyser);
     source.connect(audioContext.destination);
 
     analyser.fftSize = fftSize;
 
     setAnalyser(analyser);
+  }, [isMusicPlay]);
 
-    return () => {
-      source.disconnect();
-      analyser.disconnect();
-      audioContext.close();
-    };
-  }, []);
-
+  const newData = new Uint8Array(fftSize);
   useFrame(() => {
     if (analyser) {
-      const newData = new Uint8Array(fftSize);
-
       analyser.getByteTimeDomainData(newData);
 
-      setMean(newData.reduce((a, b) => a + b) / (128 * newData.length));
-      setDataArray(newData);
+      // setMean(newData.reduce((a, b) => a + b) / (128 * newData.length));
+      // setDataArray(newData);
+
+      meanRef.current = newData.reduce((a, b) => a + b) / (128 * newData.length);
+      dataArrayRef.current = newData;
     }
   });
-
-  if (isPlay && dataArray) {
+  if (isMusicPlay) {
     return (
       <group>
         {bars.map((item, index) => (
           <Bar
             key={index}
+            index={index}
             radius={radius}
             centerPos={centerPos}
-            mean={mean - 1}
-            musicInput={dataArray[index] / 128 - 1}
+            // mean={mean - 1}
+            // musicInput={dataArray[index] / 128 - 1}
+            dataArrayRef={dataArrayRef}
+            meanRef={meanRef}
             position={item.position}
             theta={item.theta}
             color={item.color}

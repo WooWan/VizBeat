@@ -36,12 +36,18 @@ const MusicAlbum = ({ music, index, handleClick, groupY, selectedMusic, musics, 
   const router = useRouter();
 
   const handlePlayMusic = (event: React.MouseEvent<HTMLButtonElement>) => {
-    // event.pr\
-    event.stopPropagation();
-    if (selectedMusic?.id !== music.id) return;
+    if (!selectedMusic) return;
     setIsMusicPlay(true);
     router.push('/stage');
+    event.stopPropagation();
   };
+
+  useEffect(() => {
+    //TODO: 앨범 dynamic page를 구현하면 prefetch를 각 페이지별로 아래 옵션 중에서 구현
+    // 1.앨범에 마우스가 hover 되었을 경우
+    // 2 앨범이 선택되었을 경우
+    router.prefetch('/stage');
+  }, [router]);
 
   const updateRotation = ({ x, y, z }: MeshAxis) => {
     meshRef.current.rotation.x = lerp(meshRef.current.rotation.x, x, LERP_FACTOR);
@@ -98,8 +104,8 @@ const MusicAlbum = ({ music, index, handleClick, groupY, selectedMusic, musics, 
     <mesh
       ref={meshRef}
       onClick={(e) => {
-        e.stopPropagation();
         handleClick(music.id);
+        e.stopPropagation();
       }}
     >
       <Html>

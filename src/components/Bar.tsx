@@ -1,38 +1,41 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { lerp } from 'three/src/math/MathUtils';
 
 type Props = {
   radius: number;
+  index: number;
   centerPos: number[];
-  mean: number;
-  musicInput: number;
   position: THREE.Vector3;
   theta: number;
   color: string;
+  meanRef: React.MutableRefObject<number>;
+  dataArrayRef: React.MutableRefObject<Uint8Array | null>;
 };
 
-export default function Bar({ radius, centerPos, mean, musicInput, position, theta, color }: Props) {
+export default function Bar({ radius, index, centerPos, position, theta, color, meanRef, dataArrayRef }: Props) {
   const barRef = useRef<THREE.Mesh>(null!);
-  const [height, setHeight] = useState(0);
-  const [angle, setAngle] = useState<any>(theta);
-
+  const heightRef = useRef(0);
+  const angleRef = useRef(theta);
   const radian = Math.PI / 180;
 
-  useFrame((_, delta) => {
-    if (musicInput > height) {
-      setHeight(musicInput);
-    } else {
-      setHeight(height - height * 0.2);
-    }
+  useFrame((_) => {
+    if (!dataArrayRef.current) return;
+    const mean = meanRef.current - 1;
+    const frequency = dataArrayRef.current?.[index] / 128 - 1;
+    const height = heightRef.current;
 
-    const na = (angle + radian) % 360;
-    setAngle(na);
+    if (frequency > height) {
+      heightRef.current = frequency;
+    } else {
+      heightRef.current = height - height * 0.2;
+    }
+    angleRef.current = (angleRef.current + radian) % 360;
     const power = mean < 0 ? 0 : Math.round(mean * 10000) / 10000;
-    const nx = centerPos[0] + (radius + power * 500) * Math.cos(angle);
-    const ny = centerPos[1] + height * height * 1200;
-    const nz = centerPos[2] + (radius + power * 500) * Math.sin(angle);
+    const nx = centerPos[0] + (radius + power * 500) * Math.cos(angleRef.current);
+    const ny = centerPos[1] + heightRef.current * heightRef.current * 1200;
+    const nz = centerPos[2] + (radius + power * 500) * Math.sin(angleRef.current);
 
     barRef.current.position.x = lerp(barRef.current.position.x, nx, 0.02);
     barRef.current.position.y = lerp(barRef.current.position.y, ny, 0.03);
