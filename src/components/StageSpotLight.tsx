@@ -10,7 +10,7 @@ type Props = {
 };
 
 export default function StageSpotLight({ target, position, color, angle }: Props) {
-  const spotLightRef = useRef<any>(null!);
+  const spotLightRef = useRef<THREE.SpotLight>(null!);
 
   useEffect(() => {
     spotLightRef.current.target.position.lerp(target, 0.1);
