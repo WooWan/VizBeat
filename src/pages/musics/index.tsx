@@ -4,6 +4,9 @@ import { Music } from '@prisma/client';
 import Loading from '@/components/Loading';
 import MusicsNavbar from '@/components/layout/MusicsNavbar';
 import MusicsCanvas from '@/canvas/MusicsCanvas';
+import { useGLTF } from '@react-three/drei';
+import { instruments } from '@/constants/music';
+import { stages } from '@/constants/stage';
 
 const MusicsPage = () => {
   const { data: musics, isLoading, isError } = useMusics();
@@ -43,3 +46,6 @@ const MusicsPage = () => {
 };
 
 export default MusicsPage;
+
+useGLTF.preload(instruments.map((instrument) => instrument.url));
+useGLTF.preload(stages.map((stage) => stage.url));
