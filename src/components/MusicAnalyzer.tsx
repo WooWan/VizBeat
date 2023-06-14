@@ -12,11 +12,9 @@ type Props = {
 };
 
 export default function MusicAnalyzer({ music, fftSize, centerPos, radius }: Props) {
-  const [analyser, setAnalyser] = useState<any>(null);
+  const [analyser, setAnalyser] = useState<AnalyserNode | null>(null);
   const dataArrayRef = useRef<Uint8Array | null>(null);
   const meanRef = useRef(0);
-  // const [dataArray, setDataArray] = useState<any>(null);
-  // const [mean, setMean] = useState(0);
   const [sourceNode, setSourceNode] = useState<MediaElementAudioSourceNode | null>(null);
   const isMusicPlay = useMusicPlayStore((state) => state.isMusicPlay);
 
@@ -53,9 +51,6 @@ export default function MusicAnalyzer({ music, fftSize, centerPos, radius }: Pro
     if (analyser) {
       analyser.getByteTimeDomainData(newData);
 
-      // setMean(newData.reduce((a, b) => a + b) / (128 * newData.length));
-      // setDataArray(newData);
-
       meanRef.current = newData.reduce((a, b) => a + b) / (128 * newData.length);
       dataArrayRef.current = newData;
     }
@@ -69,8 +64,6 @@ export default function MusicAnalyzer({ music, fftSize, centerPos, radius }: Pro
             index={index}
             radius={radius}
             centerPos={centerPos}
-            // mean={mean - 1}
-            // musicInput={dataArray[index] / 128 - 1}
             dataArrayRef={dataArrayRef}
             meanRef={meanRef}
             position={item.position}
