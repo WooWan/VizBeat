@@ -7,15 +7,17 @@ import StageGround from '@/components/StageGround';
 import Rig from '@/components/Rig';
 import StageSpotLight from '@/components/StageSpotLight';
 import MusicAnalyzer from '@/components/MusicAnalyzer';
-import Instrumental from '@/components/Instrumental';
+import Instrument from '@/components/Instrumental';
 import Loading from '@/components/Loading';
 import { useMusicPlayStore } from '@/store/music';
 import MusicPlayToggleButton from '@/components/MusicPlayToggleButton';
+import { instruments } from '@/constants/music';
 
 type ThreeState = {
   target: THREE.Object3D | null;
   setTarget: (target: THREE.Object3D) => void;
 };
+
 export const useStore = create<ThreeState>((set) => ({
   target: null,
   setTarget: (target) => set({ target })
@@ -45,8 +47,6 @@ const StagePage = () => {
     }
   }, [isMusicPlay]);
 
-  const radian = Math.PI / 180;
-
   return (
     <section className={'relative'}>
       <audio ref={vocalRef} src="/music/vocal.wav"></audio>
@@ -70,36 +70,15 @@ const StagePage = () => {
           <Suspense fallback={null}>
             <Rig>
               <StageGround />
-              <Instrumental
-                position={[32, -10, -20]}
-                rotation={[0, radian * -20, 0]}
-                scale={[18, 18, 18]}
-                url="/gltf/drum/scene.gltf"
-              />
-              <Instrumental
-                position={[-32, -10, -16]}
-                rotation={[0, radian * 10, 0]}
-                scale={[0.5, 0.5, 0.5]}
-                url="/gltf/piano/scene.gltf"
-              />
-              <Instrumental
-                position={[73, -6, 12]}
-                rotation={[0, radian * -0.75, 0]}
-                scale={[2.25, 2.25, 2.25]}
-                url="/gltf/guitar1/scene.gltf"
-              />
-              <Instrumental
-                position={[-75, -10, 8]}
-                rotation={[0, radian * 30, 0]}
-                scale={[23, 23, 23]}
-                url="/gltf/guitar/scene.gltf"
-              />
-              <Instrumental
-                position={[0, -15, 30]}
-                rotation={[0, 0, 0]}
-                scale={[0.3, 0.3, 0.3]}
-                url={'/gltf/microphone/scene.gltf'}
-              />
+              {instruments.map((instrument, index) => (
+                <Instrument
+                  key={index}
+                  position={instrument.position}
+                  rotation={instrument.rotation}
+                  scale={instrument.scale}
+                  url={instrument.url}
+                />
+              ))}
               <StageSpotLight
                 color={0xffee93}
                 angle={0.22}
