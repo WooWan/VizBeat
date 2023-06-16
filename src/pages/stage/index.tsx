@@ -49,11 +49,11 @@ const StagePage = () => {
 
   return (
     <section className={'relative'}>
-      <audio ref={vocalRef} src="/music/vocal.wav"></audio>
-      <audio ref={guitarRef} src="/music/guitar.wav"></audio>
-      <audio ref={pianoRef} src="/music/piano.wav"></audio>
-      <audio ref={bassRef} src="/music/bass.wav"></audio>
-      <audio ref={drumRef} src="/music/drum.wav"></audio>
+      <audio ref={vocalRef} src="/music/vocal.aac"></audio>
+      <audio ref={guitarRef} src="/music/guitar.aac"></audio>
+      <audio ref={pianoRef} src="/music/piano.aac"></audio>
+      <audio ref={bassRef} src="/music/bass.aac"></audio>
+      <audio ref={drumRef} src="/music/drum.aac"></audio>
       <MusicPlayToggleButton />
       <Suspense fallback={<Loading />}>
         <Canvas
