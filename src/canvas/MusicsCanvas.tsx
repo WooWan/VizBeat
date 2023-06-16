@@ -3,6 +3,8 @@ import { Canvas } from '@react-three/fiber';
 import { Environment, ScrollControls } from '@react-three/drei';
 import MusicList from '@/components/MusicList';
 import { Music } from '@prisma/client';
+import { useMediaQuery } from '@/hooks/queries/useMediaQuery';
+import { mediaQuery } from '@/utils/mediaQuery';
 
 type Props = {
   handleMusicSelect: (id: string) => void;
@@ -12,11 +14,13 @@ type Props = {
 };
 
 const MusicsCanvas = ({ handleMusicSelect, musics, setSelectedMusic, selectedMusic }: Props) => {
+  const matches = useMediaQuery(mediaQuery.LG);
+
   return (
     <Canvas
-      className="h-32 scrollbar scrollbar-thumb-red-400"
+      className="scrollbar"
       camera={{
-        zoom: 1,
+        zoom: matches ? 1 : 0.5,
         position: [10, 1, 0],
         fov: 100
       }}
