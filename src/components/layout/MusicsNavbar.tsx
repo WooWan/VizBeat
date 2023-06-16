@@ -77,33 +77,33 @@ const MusicsNavbar = ({ selectedMusic, setSelectedMusic, musics, handleMusicSele
     });
   };
 
-  const splitMusic = async () => {
-    const moises_url = 'https://developer-api.moises.ai/api/job';
-    const res = await axios.post(
-      moises_url,
-      {
-        name: 'google_drive',
-        workflow: 'moises/stems-vocals-accompaniment',
-        params: {
-          inputUrl: 'https://drive.google.com/uc?id=1fzk3VWZ1MmwljyD3clRi-EAW7jO9IliM&authuser=0&export=download'
-          // inputUrl: 'https://sgfbjtwrqhjzbyuhnknq.supabase.co/storage/v1/object/public/music/music/green_day'
-          // inputUrl: data.publicUrl
-          // inputUrl: 'https://www.dropbox.com/s/n041ztnvb47o0pc/Basket%20Case-7-Green%20Day.mp3?dl=1'
-          // 'https://sgfbjtwrqhjzbyuhnknq.supabase.co/storage/v1/object/public/music/music/night_dancer?download='
-          // 'https://sgfbjtwrqhjzbyuhnknq.supabase.co/storage/v1/object/public/music/music/night_dancer?t=2023-05-29T06%3A36%3A52.366Z?download='
-        }
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'fb0bcedf-09dd-4c70-9df8-0282a7428843'
-        }
-      }
-    );
-  };
+  // const splitMusic = async () => {
+  //   const moises_url = 'https://developer-api.moises.ai/api/job';
+  //   const res = await axios.post(
+  //     moises_url,
+  //     {
+  //       name: 'google_drive',
+  //       workflow: 'moises/stems-vocals-accompaniment',
+  //       params: {
+  //         inputUrl: 'https://drive.google.com/uc?id=1fzk3VWZ1MmwljyD3clRi-EAW7jO9IliM&authuser=0&export=download'
+  //         // inputUrl: 'https://sgfbjtwrqhjzbyuhnknq.supabase.co/storage/v1/object/public/music/music/green_day'
+  //         // inputUrl: data.publicUrl
+  //         // inputUrl: 'https://www.dropbox.com/s/n041ztnvb47o0pc/Basket%20Case-7-Green%20Day.mp3?dl=1'
+  //         // 'https://sgfbjtwrqhjzbyuhnknq.supabase.co/storage/v1/object/public/music/music/night_dancer?download='
+  //         // 'https://sgfbjtwrqhjzbyuhnknq.supabase.co/storage/v1/object/public/music/music/night_dancer?t=2023-05-29T06%3A36%3A52.366Z?download='
+  //       }
+  //     },
+  //     {
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         Authorization: 'fb0bcedf-09dd-4c70-9df8-0282a7428843'
+  //       }
+  //     }
+  //   );
+  // };
 
   return (
-    <nav className={'flex flex-col bg-white bg-opacity-90 px-6'}>
+    <nav className={'hidden flex-col bg-white bg-opacity-90 px-6 lg:flex'}>
       <h2 className={'pt-2 text-h1'}>Music</h2>
       <AudioPlayer selectedMusic={selectedMusic} skipNextMusic={skipToNextMusic} />
       <ul
