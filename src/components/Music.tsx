@@ -36,7 +36,7 @@ const MusicAlbum = ({ music, index, handleClick, groupY, selectedMusic, musics, 
   const router = useRouter();
 
   const handlePlayMusic = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (!selectedMusic) return;
+    if (selectedMusic?.id !== music.id) return;
     setIsMusicPlay(true);
     router.push('/stage');
     event.stopPropagation();
@@ -112,13 +112,13 @@ const MusicAlbum = ({ music, index, handleClick, groupY, selectedMusic, musics, 
         <button
           onClick={handlePlayMusic}
           className={cn(
-            'absolute left-1/2 top-1/2 flex h-24 w-24 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white/[0.7] opacity-0',
+            'absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/[0.7] opacity-0 lg:h-20 lg:w-20',
             {
               'opacity-100': selectedMusic?.id === music.id
             }
           )}
         >
-          <Play size={48} className={'fill-current text-black/[0.85]'} />
+          <Play className={'h-6 w-6 fill-current text-black/[0.85] lg:h-10 lg:w-10'} />
         </button>
       </Html>
       <boxGeometry args={[10, 0.7, 10]} />
