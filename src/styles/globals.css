@@ -184,3 +184,13 @@
   background: #65c4fa;
   filter: blur(150px);
 }
+
+.scrollbar-hide {
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* This will hide the scrollbar for IE and Edge, Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

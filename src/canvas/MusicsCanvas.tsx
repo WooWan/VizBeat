@@ -15,10 +15,9 @@ type Props = {
 
 const MusicsCanvas = ({ handleMusicSelect, musics, setSelectedMusic, selectedMusic }: Props) => {
   const matches = useMediaQuery(mediaQuery.LG);
-
   return (
     <Canvas
-      className="scrollbar"
+      className="scrollbar-hide"
       camera={{
         zoom: matches ? 1 : 0.5,
         position: [10, 1, 0],
@@ -26,8 +25,7 @@ const MusicsCanvas = ({ handleMusicSelect, musics, setSelectedMusic, selectedMus
       }}
     >
       <Environment files={'/background/dawn.hdr'} background blur={0.6} />
-      {/* style for hide scroll bar */}
-      <ScrollControls damping={0} style={{ left: '15px' }}>
+      <ScrollControls damping={0}>
         <MusicList
           handleClick={handleMusicSelect}
           setSelectedMusic={setSelectedMusic}
