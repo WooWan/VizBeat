@@ -129,6 +129,9 @@ devDependencies:
   eslint-config-next:
     specifier: 13.3.1
     version: 13.3.1(eslint@8.39.0)(typescript@4.9.5)
+  postcss-nesting:
+    specifier: ^11.3.0
+    version: 11.3.0(postcss@8.4.23)
   prettier:
     specifier: ^2.8.8
     version: 2.8.8
@@ -1647,6 +1650,15 @@ packages:
     resolution: { integrity: sha512-hBzuU5+JjB2cqNZyszkDHZgOSrUUT8V3dhgRl8Q9Gp6dAj/H5+KILGjbhDpc3Iy9qmqlm/akuOI2ut9VUtzJxQ== }
     dev: false
 
+  /@csstools/selector-specificity@2.2.0(postcss-selector-parser@6.0.13):
+    resolution: { integrity: sha512-+OJ9konv95ClSTOJCmMZqpd5+YGsB2S+x6w3E1oaM8UuR5j8nTNHYSz8c9BEPGDOCMQYIEEGlVPj/VY64iTbGw== }
+    engines: { node: ^14 || ^16 || >=18 }
+    peerDependencies:
+      postcss-selector-parser: ^6.0.10
+    dependencies:
+      postcss-selector-parser: 6.0.13
+    dev: true
+
   /@emotion/is-prop-valid@0.8.8:
     resolution: { integrity: sha512-u5WtneEAr5IDG2Wv65yhunPSMLIpuKsbuOktRojfrEiEvRyC85LgPMZI63cr7NUqT8ZIGdSVg8ZKGxIug4lXcA== }
     requiresBuild: true
@@ -2958,6 +2970,7 @@ packages:
 
   /@sinonjs/fake-timers@10.2.0:
     resolution: { integrity: sha512-OPwQlEdg40HAj5KNF8WW6q2KG4Z+cBCZb3m4ninfTZKaBmbIJodviQsDBoYMPHkOyJJMHnOJo5j2+LKDOhOACg== }
+    deprecated: Use version 10.1.0. Version 10.2.0 has potential breaking issues
     dependencies:
       '@sinonjs/commons': 3.0.0
     dev: false
@@ -7443,6 +7456,17 @@ packages:
       postcss-selector-parser: 6.0.13
     dev: true
 
+  /postcss-nesting@11.3.0(postcss@8.4.23):
+    resolution: { integrity: sha512-JlS10AQm/RzyrUGgl5irVkAlZYTJ99mNueUl+Qab+TcHhVedLiylWVkKBhRale+rS9yWIJK48JVzQlq3LcSdeA== }
+    engines: { node: ^14 || ^16 || >=18 }
+    peerDependencies:
+      postcss: ^8.4
+    dependencies:
+      '@csstools/selector-specificity': 2.2.0(postcss-selector-parser@6.0.13)
+      postcss: 8.4.23
+      postcss-selector-parser: 6.0.13
+    dev: true
+
   /postcss-selector-parser@6.0.13:
     resolution: { integrity: sha512-EaV1Gl4mUEV4ddhDnv/xtj7sxwrwxdetHdWUGnT4VJQf+4d05v6lHYZr8N573k5Z0BViss7BDhfWtKS3+sfAqQ== }
     engines: { node: '>=4' }
@@ -7899,7 +7923,7 @@ packages:
     dependencies:
       object-assign: 4.1.1
       react: 18.2.0
-      react-is: 16.13.1
+      react-is: 18.2.0
     dev: false
 
   /react-spring@9.7.1(@react-three/fiber@8.12.2)(konva@9.2.0)(react-dom@18.2.0)(react-konva@18.2.9)(react-native@0.71.10)(react-zdog@1.0.11)(react@18.2.0)(three@0.151.3)(zdog@1.1.3):
