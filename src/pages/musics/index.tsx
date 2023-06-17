@@ -7,14 +7,10 @@ import MusicsCanvas from '@/canvas/MusicsCanvas';
 import { useGLTF } from '@react-three/drei';
 import { instruments } from '@/constants/music';
 import { stages } from '@/constants/stage';
-import { Canvas } from '@react-three/fiber';
-import { useMediaQuery } from '@/hooks/queries/useMediaQuery';
-import { mediaQuery } from '@/utils/mediaQuery';
 
 const MusicsPage = () => {
   const { data: musics, isLoading, isError } = useMusics();
   const [selectedMusic, setSelectedMusic] = useState<Music | null>(null);
-  const matches = useMediaQuery(mediaQuery.LG);
 
   const handleMusicSelect = (id: string) => {
     const music = musics?.find((music) => music.id === id);
@@ -38,21 +34,12 @@ const MusicsPage = () => {
         handleMusicSelect={handleMusicSelect}
       />
       <section className={'relative flex justify-center'}>
-        <Canvas
-          className="scrollbar"
-          camera={{
-            zoom: matches ? 1 : 0.5,
-            position: [10, 1, 0],
-            fov: 100
-          }}
-        >
-          <MusicsCanvas
-            handleMusicSelect={handleMusicSelect}
-            musics={musics}
-            selectedMusic={selectedMusic}
-            setSelectedMusic={setSelectedMusic}
-          />
-        </Canvas>
+        <MusicsCanvas
+          handleMusicSelect={handleMusicSelect}
+          musics={musics}
+          selectedMusic={selectedMusic}
+          setSelectedMusic={setSelectedMusic}
+        />
       </section>
     </div>
   );
