@@ -1,5 +1,11 @@
 ## Music visualizer
 
+### 0. Main Thought
+**청각적인** 음악 감상 경험을 **시각적 경험**으로 확장할 수 있을까? 🎶🎸🎧
+
+
+---
+
 ### 1. Description
 
 * `Music visualizer`는 music splitter를 이용하여 사용자가 원하는 음원을 보컬, 피아노, 기타, 드럼, 베이스 별로 분리하여 각 트랙을
