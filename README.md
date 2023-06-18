@@ -11,6 +11,14 @@
 
 * 사용자가 원하는 무대배경, 악기 디자인을 선택하고 위치를 조정하여 자신만의 무대를 만들 수 있습니다.
 
-### 2. Architecture
+### 2. 3d 무대 시연영상
+
+
+
+https://github.com/WooWan/Capstone/assets/47740690/eacf4bb4-8768-4d66-a3e6-ff8128cf6373
+
+
+
+### 3. Architecture
 
 ![public/img.png](public/images/architecture.png)
