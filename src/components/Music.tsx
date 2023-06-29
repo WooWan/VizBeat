@@ -19,7 +19,7 @@ type Props = {
   handleClick: (id: string) => void;
   groupY: number;
   selectedMusic: Music | null;
-  musics: Music[];
+  musics?: Music[];
   setSelectedMusic: React.Dispatch<React.SetStateAction<Music | null>>;
 };
 
@@ -31,7 +31,7 @@ const MusicAlbum = ({ music, index, handleClick, groupY, selectedMusic, musics, 
   const setIsMusicPlay = useMusicPlayStore((state) => state.setIsMusicPlay);
   const meshRef = useRef<THREE.Mesh>(null!);
   const cover = useLoader(TextureLoader, music.albumCover);
-  const texture = useLoader(TextureLoader, '/cdtexture.jpg');
+  const texture = useLoader(TextureLoader, '/images/cdtexture.jpg');
   const scroll = useScroll();
   const router = useRouter();
 
@@ -60,6 +60,7 @@ const MusicAlbum = ({ music, index, handleClick, groupY, selectedMusic, musics, 
   };
 
   useFrame(() => {
+    if (!musics) return;
     if (selectedMusic === null) return; //아무것도 선택 안됬을때
     const selectedIdx = musics.findIndex((music) => music.id === selectedMusic?.id);
     //내가 선택됬을떄
