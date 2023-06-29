@@ -17,7 +17,7 @@ export const instruments = [
     position: [73, -6, 12],
     rotation: [0, RADIAN * -0.75, 0],
     scale: [2.25, 2.25, 2.25],
-    url: '/gltf/guitar1/scene.gltf'
+    url: '/gltf/bass/scene.gltf'
   },
   {
     position: [-75, -10, 8],
