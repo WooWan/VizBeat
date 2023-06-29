@@ -1,12 +1,17 @@
-import { useState } from 'react';
+'use client';
 import { motion } from 'framer-motion';
-import { exploreWorlds } from '@/constants';
+import { ExploreCardId, exploreWorlds } from '@/constants';
 import { staggerContainer } from '@/utils/motion';
 import { TitleText, TypingText } from '@/components/CustomTexts';
 import ExploreCard from '@/components/ExploreCard';
+import { useState } from 'react';
 
 const Explore = () => {
-  const [active, setActive] = useState('instrument-3');
+  const [selected, setSelected] = useState<ExploreCardId>('instrument-2');
+
+  const selectCard = (card: ExploreCardId) => {
+    setSelected(card);
+  };
 
   return (
     <section className={`paddings`} id="explore">
@@ -28,7 +33,7 @@ const Explore = () => {
         />
         <div className="mt-[50px] flex min-h-[70vh] flex-col gap-5 lg:flex-row">
           {exploreWorlds.map((world, index) => (
-            <ExploreCard key={world.id} {...world} index={index} active={active} handleClick={setActive} />
+            <ExploreCard key={world.id} {...world} index={index} active={selected} selectCard={selectCard} />
           ))}
         </div>
       </motion.div>

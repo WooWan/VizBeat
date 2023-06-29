@@ -1,6 +1,8 @@
 import MusicIcon from '@/icons/MusicIcon';
 import PlayIcon from '@/icons/PlayIcon';
 
+export type ExploreCardId = (typeof exploreWorlds)[number]['id'];
+
 export const exploreWorlds = [
   {
     id: 'instrument-2',
@@ -22,7 +24,7 @@ export const exploreWorlds = [
     imgUrl: '/images/bass_guitar.png',
     title: 'Bass Guitar'
   }
-];
+] as const;
 
 export const startingFeatures = [
   'Upload your music that you want to split',
