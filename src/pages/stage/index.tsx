@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
+import { OrbitControls, useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import { create } from 'zustand';
 import StageGround from '@/components/StageGround';
@@ -12,6 +12,7 @@ import Loading from '@/components/Loading';
 import { useMusicPlayStore } from '@/store/music';
 import MusicPlayToggleButton from '@/components/MusicPlayToggleButton';
 import { instruments } from '@/constants/music';
+import { stages } from '@/constants/stage';
 
 type ThreeState = {
   target: THREE.Object3D | null;
@@ -123,5 +124,8 @@ const StagePage = () => {
     </section>
   );
 };
+
+useGLTF.preload(instruments.map((instrument) => instrument.url));
+useGLTF.preload(stages.map((stage) => stage.url));
 
 export default StagePage;
