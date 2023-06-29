@@ -8,7 +8,7 @@ import { mediaQuery } from '@/utils/mediaQuery';
 
 type Props = {
   handleMusicSelect: (id: string) => void;
-  musics: Music[];
+  musics?: Music[];
   selectedMusic: Music | null;
   setSelectedMusic: React.Dispatch<React.SetStateAction<Music | null>>;
 };

@@ -7,7 +7,7 @@ import { Music } from '@prisma/client';
 
 type Props = {
   handleClick: (id: string) => void;
-  musicList: Music[];
+  musicList?: Music[];
   selectedMusic: Music | null;
   setSelectedMusic: React.Dispatch<SetStateAction<Music | null>>;
 };

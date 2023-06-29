@@ -24,7 +24,7 @@ const formSchema = z.object({
 });
 
 type Props = {
-  musics: Music[];
+  musics?: Music[];
   selectedMusic: Music | null;
   setSelectedMusic: React.Dispatch<React.SetStateAction<Music | null>>;
   handleMusicSelect: (id: string) => void;
@@ -49,9 +49,6 @@ const MusicsNavbar = ({ selectedMusic, setSelectedMusic, musics, handleMusicSele
   };
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log(audioFile);
-    console.log(audioMetadata);
-    console.log('data', data);
     await axios.post('/api/music', {
       ...audioFile,
       ...audioMetadata,
