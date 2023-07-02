@@ -2,7 +2,6 @@ import React from 'react';
 import { signIn, useSession } from 'next-auth/react';
 import { Canvas } from '@react-three/fiber';
 import { Html, OrbitControls } from '@react-three/drei';
-import { Physics } from '@react-three/cannon';
 import Ground from '@/components/3d/Ground';
 import Image from 'next/image';
 
@@ -35,9 +34,7 @@ const LoginPage = () => {
             )}
           </nav>
         </Html>
-        <Physics>
-          <Ground />
-        </Physics>
+        <Ground />
         <ambientLight />
         <pointLight position={[10, 10, 10]} />
       </Canvas>
