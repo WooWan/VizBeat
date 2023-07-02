@@ -5,7 +5,7 @@ const Loading = () => {
   return (
     <section className={'flex h-screen w-screen items-center justify-center bg-black'}>
       <Image
-        src={'/images/vinyl_record.png'}
+        src={'/images/vinyl_record.webp'}
         alt={'loading'}
         width={300}
         height={300}
