@@ -1,13 +1,13 @@
 import React, { useRef } from 'react';
-import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { lerp } from 'three/src/math/MathUtils';
+import { Mesh, Vector3 } from 'three';
 
 type Props = {
   radius: number;
   index: number;
   centerPos: number[];
-  position: THREE.Vector3;
+  position: Vector3;
   theta: number;
   color: string;
   meanRef: React.MutableRefObject<number>;
@@ -15,7 +15,7 @@ type Props = {
 };
 
 export default function Bar({ radius, index, centerPos, position, theta, color, meanRef, dataArrayRef }: Props) {
-  const barRef = useRef<THREE.Mesh>(null!);
+  const barRef = useRef<Mesh>(null!);
   const heightRef = useRef(0);
   const angleRef = useRef(theta);
   const radian = Math.PI / 180;

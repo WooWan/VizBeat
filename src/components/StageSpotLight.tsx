@@ -1,16 +1,16 @@
 import { SpotLight } from '@react-three/drei';
 import React, { useEffect, useRef } from 'react';
-import * as THREE from 'three';
+import { SpotLight as SpotLightType, Vector3 } from 'three';
 
 type Props = {
-  target: THREE.Vector3;
-  position: THREE.Vector3;
+  target: Vector3;
+  position: Vector3;
   color: number;
   angle: number;
 };
 
 export default function StageSpotLight({ target, position, color, angle }: Props) {
-  const spotLightRef = useRef<THREE.SpotLight>(null!);
+  const spotLightRef = useRef<SpotLightType>(null!);
 
   useEffect(() => {
     spotLightRef.current.target.position.lerp(target, 0.1);

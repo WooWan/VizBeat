@@ -1,9 +1,9 @@
 import React, { SetStateAction, useRef } from 'react';
-import * as THREE from 'three';
 import { useScroll } from '@react-three/drei';
 import MusicAlbum from '@/components/Music';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Music } from '@prisma/client';
+import { Group } from 'three';
 
 type Props = {
   handleClick: (id: string) => void;
@@ -13,7 +13,7 @@ type Props = {
 };
 
 const MusicList = ({ handleClick, musicList, selectedMusic, setSelectedMusic }: Props) => {
-  const groupRef = useRef<THREE.Group>(null!);
+  const groupRef = useRef<Group>(null!);
   const three = useThree();
   const scroll = useScroll();
 

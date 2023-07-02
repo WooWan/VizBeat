@@ -1,7 +1,6 @@
 import React, { Suspense, useEffect, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, useGLTF } from '@react-three/drei';
-import * as THREE from 'three';
 import { create } from 'zustand';
 import StageGround from '@/components/StageGround';
 import Rig from '@/components/Rig';
@@ -13,10 +12,11 @@ import { useMusicPlayStore } from '@/store/music';
 import MusicPlayToggleButton from '@/components/MusicPlayToggleButton';
 import { instruments } from '@/constants/music';
 import { stages } from '@/constants/stage';
+import { Object3D, Vector3 } from 'three';
 
 type ThreeState = {
-  target: THREE.Object3D | null;
-  setTarget: (target: THREE.Object3D) => void;
+  target: Object3D | null;
+  setTarget: (target: Object3D) => void;
 };
 
 export const useStore = create<ThreeState>((set) => ({
@@ -83,32 +83,32 @@ const StagePage = () => {
               <StageSpotLight
                 color={0xffee93}
                 angle={0.22}
-                target={new THREE.Vector3(750, 0, 100)}
-                position={new THREE.Vector3(75, 60, 10)}
+                target={new Vector3(750, 0, 100)}
+                position={new Vector3(75, 60, 10)}
               />
               <StageSpotLight
                 color={0xffee93}
                 angle={0.22}
-                target={new THREE.Vector3(-750, 0, 100)}
-                position={new THREE.Vector3(-75, 60, 10)}
+                target={new Vector3(-750, 0, 100)}
+                position={new Vector3(-75, 60, 10)}
               />
               <StageSpotLight
                 color={0xffee93}
                 angle={0.32}
-                target={new THREE.Vector3(320, 0, -100)}
-                position={new THREE.Vector3(32, 60, 10)}
+                target={new Vector3(320, 0, -100)}
+                position={new Vector3(32, 60, 10)}
               />
               <StageSpotLight
                 color={0xffee93}
                 angle={0.32}
-                target={new THREE.Vector3(-320, 0, -100)}
-                position={new THREE.Vector3(-32, 60, 10)}
+                target={new Vector3(-320, 0, -100)}
+                position={new Vector3(-32, 60, 10)}
               />
               <StageSpotLight
                 color={0xffee93}
                 angle={0.25}
-                target={new THREE.Vector3(0, 0, 300)}
-                position={new THREE.Vector3(0, 60, 30)}
+                target={new Vector3(0, 0, 300)}
+                position={new Vector3(0, 60, 30)}
               />
               <MusicAnalyzer music={guitarRef} fftSize={128} centerPos={[75, -26, 10]} radius={6} />
               <MusicAnalyzer music={vocalRef} fftSize={128} centerPos={[0, -26, 30]} radius={6} />

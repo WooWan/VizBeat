@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
 import Bar from './Bar';
 import { useMusicPlayStore } from '@/store/music';
+import { Vector3 } from 'three';
 
 type Props = {
   music: React.MutableRefObject<HTMLAudioElement>;
@@ -27,7 +27,7 @@ export default function MusicAnalyzer({ music, fftSize, centerPos, radius }: Pro
       const z = centerPos[2] + radius * Math.sin(theta);
       const hue = (i / fftSize) * 360; // Vary hue based on position in array
       const color = `hsl(${hue}, 100%, 50%)`; //
-      bars.push({ position: new THREE.Vector3(x, y, z), theta: theta, color: color });
+      bars.push({ position: new Vector3(x, y, z), theta: theta, color: color });
     }
     return bars;
   }, [fftSize, radius]);

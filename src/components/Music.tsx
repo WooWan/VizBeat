@@ -1,5 +1,4 @@
-import * as THREE from 'three';
-import { TextureLoader } from 'three';
+import { Mesh, TextureLoader } from 'three';
 import { useFrame, useLoader } from '@react-three/fiber';
 import { Html, useScroll } from '@react-three/drei';
 import React, { useEffect, useRef, useState } from 'react';
@@ -29,7 +28,7 @@ const MusicAlbum = ({ music, index, handleClick, groupY, selectedMusic, musics, 
   const [originalPosition] = useState(2 - index * 1.5);
   const [rotation, setRotation] = useState(radian * 10 * index);
   const setIsMusicPlay = useMusicPlayStore((state) => state.setIsMusicPlay);
-  const meshRef = useRef<THREE.Mesh>(null!);
+  const meshRef = useRef<Mesh>(null!);
   const cover = useLoader(TextureLoader, music.albumCover);
   const texture = useLoader(TextureLoader, '/images/cdtexture.jpg');
   const scroll = useScroll();
