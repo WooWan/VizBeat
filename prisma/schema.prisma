@@ -61,7 +61,12 @@ model Music {
   title      String
   artist     String
   albumCover String
-  musicLink  String
+  musicUrl  String 
+  bassUrl  String
+  guitarUrl String
+  drumUrl String
+  pianoUrl String
+  vocalUrl String
   userId     String @map("user_id")
   user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
