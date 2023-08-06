@@ -4,7 +4,7 @@ import { Music } from '@prisma/client';
 import MusicsNavbar from '@/components/layout/MusicsNavbar';
 import MusicsCanvas from '@/canvas/MusicsCanvas';
 
-const Musics = () => {
+const MusicsPage = () => {
   const { data: musics } = useMusics();
   const [selectedMusic, setSelectedMusic] = useState<Music | null>(null);
 
@@ -40,4 +40,4 @@ const Musics = () => {
   );
 };
 
-export default Musics;
+export default MusicsPage;
