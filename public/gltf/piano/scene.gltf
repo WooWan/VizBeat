@@ -4,16 +4,8 @@
       "bufferView": 2,
       "componentType": 5126,
       "count": 1578,
-      "max": [
-        30.084299087524414,
-        6.462299823760986,
-        48.319400787353516
-      ],
-      "min": [
-        -30.084299087524414,
-        -18.070899963378906,
-        0.0
-      ],
+      "max": [30.084299087524414, 6.462299823760986, 48.319400787353516],
+      "min": [-30.084299087524414, -18.070899963378906, 0.0],
       "type": "VEC3"
     },
     {
@@ -21,48 +13,24 @@
       "byteOffset": 18936,
       "componentType": 5126,
       "count": 1578,
-      "max": [
-        1.0,
-        1.0,
-        1.0
-      ],
-      "min": [
-        -1.0,
-        -1.0,
-        -1.0
-      ],
+      "max": [1.0, 1.0, 1.0],
+      "min": [-1.0, -1.0, -1.0],
       "type": "VEC3"
     },
     {
       "bufferView": 3,
       "componentType": 5126,
       "count": 1578,
-      "max": [
-        1.0,
-        1.0,
-        1.0,
-        1.0
-      ],
-      "min": [
-        -1.0,
-        -1.0,
-        -1.0,
-        -1.0
-      ],
+      "max": [1.0, 1.0, 1.0, 1.0],
+      "min": [-1.0, -1.0, -1.0, -1.0],
       "type": "VEC4"
     },
     {
       "bufferView": 1,
       "componentType": 5126,
       "count": 1578,
-      "max": [
-        0.9908999800682068,
-        0.9914000034332275
-      ],
-      "min": [
-        0.0038999998942017555,
-        0.006000000052154064
-      ],
+      "max": [0.9908999800682068, 0.9914000034332275],
+      "min": [0.0038999998942017555, 0.006000000052154064],
       "type": "VEC2"
     },
     {
@@ -122,13 +90,13 @@
   ],
   "images": [
     {
-      "uri": "textures/Material__27_baseColor.png"
+      "uri": "textures/Material__27_baseColor.webp"
     },
     {
-      "uri": "textures/Material__27_metallicRoughness.png"
+      "uri": "textures/Material__27_metallicRoughness.webp"
     },
     {
-      "uri": "textures/Material__27_normal.png"
+      "uri": "textures/Material__27_normal.webp"
     }
   ],
   "materials": [
@@ -170,33 +138,15 @@
   ],
   "nodes": [
     {
-      "children": [
-        1
-      ],
+      "children": [1],
       "matrix": [
-        1.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        2.220446049250313e-16,
-        -1.0,
-        0.0,
-        0.0,
-        1.0,
-        2.220446049250313e-16,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
+        1.0, 0.0, 0.0, 0.0, 0.0, 2.220446049250313e-16, -1.0, 0.0, 0.0, 1.0, 2.220446049250313e-16, 0.0, 0.0, 0.0, 0.0,
         1.0
       ],
       "name": "Sketchfab_model"
     },
     {
-      "children": [
-        2
-      ],
+      "children": [2],
       "name": "b6f019c097ef4851b9efc4ae64f9eb35.obj.cleaner.gles"
     },
     {
@@ -216,9 +166,7 @@
   "scenes": [
     {
       "name": "Sketchfab_Scene",
-      "nodes": [
-        0
-      ]
+      "nodes": [0]
     }
   ],
   "textures": [
