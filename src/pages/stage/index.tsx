@@ -11,7 +11,6 @@ import Loading from '@/components/Loading';
 import { useMusicPlayStore } from '@/store/music';
 import MusicPlayToggleButton from '@/components/MusicPlayToggleButton';
 import { instruments } from '@/constants/music';
-import { stages } from '@/constants/stage';
 import { Object3D, Vector3 } from 'three';
 
 type ThreeState = {
@@ -126,6 +125,5 @@ const StagePage = () => {
 };
 
 useGLTF.preload(instruments.map((instrument) => instrument.url));
-useGLTF.preload(stages.map((stage) => stage.url));
 
 export default StagePage;

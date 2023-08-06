@@ -5,7 +5,7 @@ export const instruments = [
     position: [32, -10, -20],
     rotation: [0, RADIAN * -20, 0],
     scale: [18, 18, 18],
-    url: '/gltf/drum/scene.gltf'
+    url: '/gltf/drum/scene.glb'
   },
   {
     position: [-32, -10, -16],
