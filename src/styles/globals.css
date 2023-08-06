@@ -95,10 +95,9 @@
 
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
   }
 }
-
 
 * {
   margin: 0;
@@ -110,14 +109,14 @@
 
 .gradient-01 {
   background-image: linear-gradient(
-          270deg,
-          #ee969c 0%,
-          hsl(284deg 70% 73%) 26%,
-          #ec682b 39%,
-          #f5cdca 50%,
-          hsl(215deg 77% 81%) 61%,
-          #ee969c 70%,
-          #fb392c 100%
+    270deg,
+    #ee969c 0%,
+    hsl(284deg 70% 73%) 26%,
+    #ec682b 39%,
+    #f5cdca 50%,
+    hsl(215deg 77% 81%) 61%,
+    #ee969c 70%,
+    #fb392c 100%
   );
   filter: blur(125px);
 }
