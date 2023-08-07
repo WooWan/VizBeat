@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import AudioPlayer from '@/components/AudioPlayer';
 import { Music } from '@prisma/client';
 import clsx from 'clsx';
@@ -7,20 +7,20 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Dropzone from '@/components/Dropzone';
 import * as musicMetadata from 'music-metadata-browser';
-import { IAudioMetadata } from 'music-metadata-browser';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
+import { Spotify } from '@/types/spotify';
+import { useDebounce } from '@/hooks/useDebounce';
+import { spotifyClient } from '@/service/httpClient';
 
 const formSchema = z.object({
-  music: z.string().min(1).max(50),
-  artist: z.string().min(1).max(50),
-  album: z.string().min(1).max(50),
-  genre: z.string().min(1).max(20)
+  title: z.string().min(1).max(50),
+  artist: z.string().min(1).max(50)
 });
 
 type Props = {
@@ -30,17 +30,43 @@ type Props = {
   handleMusicSelect: (id: string) => void;
 };
 
+export type MusicEssential = Pick<Music, 'title' | 'artist' | 'albumCover'>;
 export interface AudioFile extends File {
   path: string;
 }
 
+const fetchMusicFromSpotify = async (musicKeyword: string): Promise<Spotify> => {
+  const res = await spotifyClient().get('/search', {
+    params: {
+      q: musicKeyword,
+      type: 'track',
+      limit: 2
+    }
+  });
+  return res.data;
+};
+
 const MusicsNavbar = ({ selectedMusic, setSelectedMusic, musics, handleMusicSelect }: Props) => {
   const listRefs = useRef<(HTMLLIElement | null)[]>([]);
   const [audioFile, setAudioFile] = useState<AudioFile | null>(null);
-  const [audioMetadata, setAudioMetadata] = useState<IAudioMetadata | null>(null);
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema)
+  const [musicKeyword, setMusicKeyword] = useState<string>('');
+  const debouncedKeyword = useDebounce(musicKeyword, 250);
+  const { data } = useQuery({
+    queryKey: ['spotify-music', musicKeyword],
+    queryFn: () => fetchMusicFromSpotify(musicKeyword),
+    enabled: !!debouncedKeyword,
+    retry: 1
   });
+  const [selectedTrack, setSelectedTrack] = useState<MusicEssential | undefined>(undefined);
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      title: '',
+      artist: ''
+    }
+  });
+  const hasSelectMusic = form.formState.isDirty || selectedTrack;
+
   const skipToNextMusic = () => {
     if (!musics) return;
     const index = musics.findIndex((music) => music.id === selectedMusic?.id);
@@ -49,11 +75,7 @@ const MusicsNavbar = ({ selectedMusic, setSelectedMusic, musics, handleMusicSele
   };
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    await axios.post('/api/music', {
-      ...audioFile,
-      ...audioMetadata,
-      ...data
-    });
+    console.log(data);
   };
 
   const onDropMusicFile = (acceptedFiles: File[]) => {
@@ -61,43 +83,32 @@ const MusicsNavbar = ({ selectedMusic, setSelectedMusic, musics, handleMusicSele
       const reader = new FileReader();
       reader.onload = async () => {
         const audio = await musicMetadata.parseBlob(file);
-        form.setValue('music', audio.common.title || '', {
-          shouldDirty: true
+        setSelectedTrack({
+          title: audio.common.title || '',
+          artist: audio.common.artist || '',
+          albumCover: URL.createObjectURL(
+            new Blob([audio.common.picture?.[0].data || ''], {
+              type: audio.common.picture?.[0].format
+            })
+          )
         });
-        form.setValue('artist', audio.common.artist || '');
-        form.setValue('album', audio.common.album || '');
-        form.setValue('genre', audio.common.genre?.join(', ') || '');
-        setAudioMetadata(audio);
       };
       setAudioFile(file as AudioFile);
       reader.readAsArrayBuffer(file);
     });
   };
 
-  // const splitMusic = async () => {
-  //   const moises_url = 'https://developer-api.moises.ai/api/job';
-  //   const res = await axios.post(
-  //     moises_url,
-  //     {
-  //       name: 'google_drive',
-  //       workflow: 'moises/stems-vocals-accompaniment',
-  //       params: {
-  //         inputUrl: 'https://drive.google.com/uc?id=1fzk3VWZ1MmwljyD3clRi-EAW7jO9IliM&authuser=0&export=download'
-  //         // inputUrl: 'https://sgfbjtwrqhjzbyuhnknq.supabase.co/storage/v1/object/public/music/music/green_day'
-  //         // inputUrl: data.publicUrl
-  //         // inputUrl: 'https://www.dropbox.com/s/n041ztnvb47o0pc/Basket%20Case-7-Green%20Day.mp3?dl=1'
-  //         // 'https://sgfbjtwrqhjzbyuhnknq.supabase.co/storage/v1/object/public/music/music/night_dancer?download='
-  //         // 'https://sgfbjtwrqhjzbyuhnknq.supabase.co/storage/v1/object/public/music/music/night_dancer?t=2023-05-29T06%3A36%3A52.366Z?download='
-  //       }
-  //     },
-  //     {
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         Authorization: 'fb0bcedf-09dd-4c70-9df8-0282a7428843'
-  //       }
-  //     }
-  //   );
-  // };
+  const handleSearchMusic = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMusicKeyword(e.target.value);
+  };
+
+  useEffect(() => {
+    if (!selectedTrack) return;
+    form.setValue('title', selectedTrack?.title, {
+      shouldDirty: true
+    });
+    form.setValue('artist', selectedTrack?.artist);
+  }, [selectedTrack]);
 
   return (
     <nav className={'hidden flex-col bg-white bg-opacity-90 px-6 lg:flex'}>
@@ -132,20 +143,45 @@ const MusicsNavbar = ({ selectedMusic, setSelectedMusic, musics, handleMusicSele
           <Button variant="outline">음악 추가하기</Button>
         </DialogTrigger>
         <DialogContent
-          className={cn('max-h-[300px] overflow-hidden transition-all duration-700 sm:max-w-[425px]', {
-            'max-h-[820px]': form.formState.isDirty
+          className={cn('max-h-[300px] overflow-auto transition-all duration-700 sm:max-w-[425px]', {
+            'max-h-[820px]': hasSelectMusic
           })}
         >
           <DialogHeader>
             <DialogTitle>음악을 업로드 해보세요 🎸</DialogTitle>
           </DialogHeader>
-          {audioMetadata?.common.picture ? (
+          <section>
+            <h3>음악을 검색해보세요</h3>
+            <input type="text" onChange={handleSearchMusic} className="rounded-lg bg-gray-100 p-2" />
+            <ul className="flex flex-col gap-y-3 px-1 py-4">
+              {data?.tracks.tracks.map((track) => {
+                return (
+                  <li
+                    key={track.id}
+                    onClick={() =>
+                      setSelectedTrack({
+                        title: track.name,
+                        artist: track.artists[0].name,
+                        albumCover: track.album.images[0].url
+                      })
+                    }
+                    className={cn('flex gap-x-3 rounded-lg py-3 pl-3', {
+                      'bg-gray-100': selectedTrack?.title === track.name
+                    })}
+                  >
+                    <Image src={track.album.images[0].url} width={50} height={50} alt="album-cover" />
+                    <div>
+                      <h5 className="text-md font-semibold">{track.artists[0].name}</h5>
+                      <span>{track.name}</span>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+          {hasSelectMusic ? (
             <Image
-              src={URL.createObjectURL(
-                new Blob([audioMetadata.common.picture[0].data], {
-                  type: audioMetadata.common.picture[0].format
-                })
-              )}
+              src={selectedTrack?.albumCover || ''}
               className={'justify-self-center'}
               alt={'album'}
               height={250}
@@ -158,12 +194,12 @@ const MusicsNavbar = ({ selectedMusic, setSelectedMusic, musics, handleMusicSele
             <form
               onSubmit={form.handleSubmit(onSubmit)}
               className={cn('hidden', {
-                block: form.formState.isDirty
+                block: hasSelectMusic
               })}
             >
               <FormField
                 control={form.control}
-                name="music"
+                name="title"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Music</FormLabel>
@@ -180,32 +216,6 @@ const MusicsNavbar = ({ selectedMusic, setSelectedMusic, musics, handleMusicSele
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>artist</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="album"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>album</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="genre"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>genre</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
