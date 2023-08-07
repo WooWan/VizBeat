@@ -1,64 +1,11 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import EventEmitter from 'events';
 import Multitrack from 'wavesurfer-multitrack';
 
 type Props = {};
 
 export default function index({}: Props) {
-  //   const [ee] = useState(new EventEmitter());
-
-  //   useEffect(() => {
-  //     const container = document.getElementById('playlist');
-  //     const playlist = WaveformPlaylist(
-  //       {
-  //         samplesPerPixel: 1000,
-  //         mono: true,
-  //         waveHeight: 150,
-  //         container: container,
-  //         timescale: true,
-  //         state: 'cursor',
-  //         colors: {
-  //           waveOutlineColor: 'black',
-  //           timeColor: 'gray',
-  //           fadeColor: 'blue'
-  //         },
-  //         controls: {
-  //           show: true,
-  //           width: 150
-  //         },
-  //         zoomLevels: [500, 1000, 3000, 5000]
-  //       },
-  //       ee
-  //     );
-  //     playlist.load([
-  //       {
-  //         src: '/music/vocal.aac',
-  //         name: 'vocal',
-  //         gain: 0.5
-  //       },
-  //       {
-  //         src: '/music/drum.aac',
-  //         name: 'drum',
-  //         gain: 0.5
-  //       },
-  //       {
-  //         src: '/music/guitar.aac',
-  //         name: 'guitar',
-  //         gain: 0.5
-  //       },
-  //       {
-  //         src: '/music/bass.aac',
-  //         name: 'bass',
-  //         gain: 0.5
-  //       },
-  //       {
-  //         src: '/music/piano.aac',
-  //         name: 'piano',
-  //         gain: 0.5
-  //       }
-  //     ]);
-  //   }, []);
   const [ws, setWs] = useState<any>(null);
+  const [volumes, setVolumes] = useState<Array<Number>>([0.5, 0.5, 0.5, 0.5, 0.5]);
 
   useEffect(() => {
     const multitrack = Multitrack.create(
@@ -67,6 +14,7 @@ export default function index({}: Props) {
           id: 0,
           url: '/music/mp3/vocal.mp3',
           volume: 0.5,
+          //@ts-ignore
           options: {
             waveColor: 'hsl(46, 87%, 49%)',
             progressColor: 'hsl(46, 87%, 20%)'
@@ -76,6 +24,7 @@ export default function index({}: Props) {
           id: 1,
           url: '/music/mp3/drum.mp3',
           volume: 0.5,
+          //@ts-ignore
           options: {
             waveColor: 'hsl(46, 87%, 49%)',
             progressColor: 'hsl(46, 87%, 20%)'
@@ -85,6 +34,7 @@ export default function index({}: Props) {
           id: 2,
           url: '/music/mp3/guitar.mp3',
           volume: 0.5,
+          //@ts-ignore
           options: {
             waveColor: 'hsl(46, 87%, 49%)',
             progressColor: 'hsl(46, 87%, 20%)'
@@ -94,6 +44,7 @@ export default function index({}: Props) {
           id: 3,
           url: '/music/mp3/bass.mp3',
           volume: 0.5,
+          //@ts-ignore
           options: {
             waveColor: 'hsl(46, 87%, 49%)',
             progressColor: 'hsl(46, 87%, 20%)'
@@ -103,6 +54,7 @@ export default function index({}: Props) {
           id: 4,
           url: '/music/mp3/piano.mp3',
           volume: 0.5,
+          //@ts-ignore
           options: {
             waveColor: 'hsl(46, 87%, 49%)',
             progressColor: 'hsl(46, 87%, 20%)'
@@ -137,25 +89,54 @@ export default function index({}: Props) {
   };
 
   const handleClick1 = () => {
-    console.log(ws);
-    ws.envelopes[0].destroy();
-    // ws.audios[0].mute();
+    for (let i = 0; i < ws.envelopes.length; i++) {
+      ws.setTrackVolume(i, 0);
+    }
   };
 
   const handleChange = (track: number, event: ChangeEvent<HTMLInputElement>) => {
     const v = event.target.valueAsNumber / 100;
+    let newVolumes = [...volumes];
+    newVolumes[track] = v;
+    setVolumes(newVolumes);
     ws.setTrackVolume(track, v);
   };
 
-  const handleVolumeChange = (id: string) => {};
+  const muteBtn = (track: number, event: React.MouseEvent<HTMLElement>) => {
+    console.log(volumes[track]);
+    if (ws.envelopes[track].volume) {
+      console.log('mute');
+      ws.setTrackVolume(track, 0);
+    } else {
+      console.log('unmute');
+      ws.setTrackVolume(track, volumes[track]);
+    }
+  };
+
+  const soloBtn = (track: number, event: React.MouseEvent<HTMLElement>) => {
+    console.log('click');
+    console.log(ws.envelopes.length);
+    for (let i = 0; i < ws.envelopes.length; i++) {
+      if (i != track) {
+        ws.setTrackVolume(i, 0);
+      }
+    }
+  };
+
   const tracks = [0, 1, 2, 3, 4];
   return (
     <>
-      <button onClick={handleClick}>pause</button>
-      <button onClick={handleClick1}>mute</button>
-      {/* <label>
-        volume: <input onChange={handleChange} type="range" min="0" max="100" />
-      </label> */}
+      <div className="flex gap-x-2">
+        <label className="block">
+          volume: <input type="range" min="0" max="100" />
+        </label>
+        <button className="rounded bg-blue-500 px-3" onClick={handleClick}>
+          pause
+        </button>
+        <button className="rounded bg-blue-500 px-3" onClick={handleClick1}>
+          pause
+        </button>
+      </div>
       <section className="flex">
         <ul className="flex h-full min-h-[668px] flex-col justify-evenly">
           {tracks.map((track) => {
@@ -165,8 +146,12 @@ export default function index({}: Props) {
                   volume: <input onChange={(e) => handleChange(track, e)} type="range" min="0" max="100" />
                 </label>
                 <div className="flex gap-x-2">
-                  <button className="rounded bg-blue-500 px-3">mute</button>
-                  <button className="rounded bg-blue-500 px-3">solo</button>
+                  <button className="rounded bg-blue-500 px-3" onClick={(e) => muteBtn(track, e)}>
+                    mute
+                  </button>
+                  <button className="rounded bg-blue-500 px-3" onClick={(e) => soloBtn(track, e)}>
+                    solo
+                  </button>
                 </div>
               </div>
             );
