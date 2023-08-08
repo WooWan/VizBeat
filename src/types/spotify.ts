@@ -4,7 +4,7 @@ export type Spotify = {
 
 export type TrackPage = {
   href: string;
-  tracks: Track[];
+  items: Track[];
   limit: number;
   next: string;
   offset: number;
