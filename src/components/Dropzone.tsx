@@ -15,7 +15,7 @@ const baseStyle = {
   color: '#bdbdbd',
   outline: 'none',
   transition: 'border .24s ease-in-out'
-};
+} as const;
 
 const focusedStyle = {
   borderColor: '#2196f3'
@@ -49,10 +49,9 @@ const Dropzone = ({ onDropMusicFile }: Props) => {
   );
 
   return (
-    // @ts-ignore
-    <div {...getRootProps({ style })} className={'bg-purple-300'}>
+    <div {...getRootProps({ style })}>
       <input {...getInputProps()} />
-      <p>{`Drag 'n' drop some files here, or click to select files`}</p>
+      <p>{`Drag and drop an audio file`}</p>
     </div>
   );
 };
