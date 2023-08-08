@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { UploadCloudIcon } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
 
 const baseStyle = {
@@ -8,13 +9,14 @@ const baseStyle = {
   alignItems: 'center',
   padding: '20px',
   borderWidth: 2,
-  borderRadius: 2,
+  borderRadius: 6,
   borderColor: '#eeeeee',
   borderStyle: 'dashed',
   backgroundColor: '#fafafa',
   color: '#bdbdbd',
   outline: 'none',
-  transition: 'border .24s ease-in-out'
+  transition: 'border .24s ease-in-out',
+  cursor: 'pointer'
 } as const;
 
 const focusedStyle = {
@@ -51,6 +53,7 @@ const Dropzone = ({ onDropMusicFile }: Props) => {
   return (
     <div {...getRootProps({ style })}>
       <input {...getInputProps()} />
+      <UploadCloudIcon className="mb-2 h-10 w-10" />
       <p>{`Drag and drop an audio file`}</p>
     </div>
   );
