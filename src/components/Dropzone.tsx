@@ -7,6 +7,7 @@ const baseStyle = {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
+  justifyContent: 'center',
   padding: '20px',
   borderWidth: 2,
   borderRadius: 6,
@@ -16,15 +17,12 @@ const baseStyle = {
   color: '#bdbdbd',
   outline: 'none',
   transition: 'border .24s ease-in-out',
-  cursor: 'pointer'
+  cursor: 'pointer',
+  maxHeight: '120px'
 } as const;
 
-const focusedStyle = {
-  borderColor: '#2196f3'
-};
-
 const acceptStyle = {
-  borderColor: '#00e676'
+  borderColor: '#2196f3'
 };
 
 const rejectStyle = {
@@ -35,7 +33,7 @@ type Props = {
   onDropMusicFile: (acceptedFiles: File[]) => void;
 };
 const Dropzone = ({ onDropMusicFile }: Props) => {
-  const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } = useDropzone({
+  const { getRootProps, getInputProps, isDragAccept, isDragReject } = useDropzone({
     onDrop: onDropMusicFile,
     multiple: false
   });
@@ -43,11 +41,10 @@ const Dropzone = ({ onDropMusicFile }: Props) => {
   const style = useMemo(
     () => ({
       ...baseStyle,
-      ...(isFocused ? focusedStyle : {}),
       ...(isDragAccept ? acceptStyle : {}),
       ...(isDragReject ? rejectStyle : {})
     }),
-    [isFocused, isDragAccept, isDragReject]
+    [isDragAccept, isDragReject]
   );
 
   return (
