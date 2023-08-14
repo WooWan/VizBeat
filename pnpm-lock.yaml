@@ -56,6 +56,9 @@ dependencies:
   clsx:
     specifier: ^2.0.0
     version: 2.0.0
+  form-data:
+    specifier: ^4.0.0
+    version: 4.0.0
   framer-motion:
     specifier: ^10.12.11
     version: 10.12.11(react-dom@18.2.0)(react@18.2.0)

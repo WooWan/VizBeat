@@ -29,6 +29,7 @@
     "axios": "^1.4.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "form-data": "^4.0.0",
     "framer-motion": "^10.12.11",
     "leva": "^0.9.35",
     "lucide-react": "0.263.1",
