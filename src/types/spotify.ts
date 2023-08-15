@@ -1,6 +1,6 @@
 import { Music } from '@prisma/client';
 
-export type Spotify = {
+export type SpotifyMusic = {
   tracks: TrackPage;
 };
 

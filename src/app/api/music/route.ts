@@ -1,70 +1,75 @@
-import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { exec } from 'child_process';
+import { NextRequest, NextResponse } from 'next/server';
+import path from 'path';
+import fs from 'fs/promises';
+import { createReadStream } from 'node:fs';
+import FormData from 'form-data';
+import { Readable } from 'stream';
+import axios from 'axios';
+import { UploadMusicUrl } from '@/types/spotify';
 
-// const fs = require('fs');
+const audioPath = './audio';
 
-// export const addMusic = async (music: any) => {
-//   const res = await prisma.music.create({
-//     data: {
-//       title: music.title,
-//       artist: music.artist,
-//       albumCover: music.album,
-//       musicLink: '',
-//       user: {
-//         connect: {
-//           id: music.userId
-//         }
-//       }
-//     }
-//   });
-//   return res;
-// };
+async function findMP3(directory: string): Promise<string | null> {
+  const entries = await fs.readdir(directory, { withFileTypes: true });
 
-export async function POST(request: Request) {
-  // return withSessionUser(async (user) => {
-  //   return addMusic('dd').then((data) => NextResponse.json(data));
-  // });
+  for (const entry of entries) {
+    const entryPath = path.join(directory, entry.name);
+    if (entry.isFile() && entry.name.endsWith('.mp3')) {
+      return entryPath;
+    }
 
-  const res = await request.json();
-  const imgUInt = res.common.picture[0].data;
-  const buffer = Buffer.from(imgUInt.data);
-  const { data } = await supabase.storage.from('music').upload('dbuffer3.jpeg', buffer, {
-    contentType: 'image/jpeg'
+    if (entry.isDirectory()) {
+      const found = findMP3(entryPath);
+      if (found) return found;
+    }
+  }
+
+  return null;
+}
+
+export async function downloadSpotify(url: string): Promise<string | null> {
+  return new Promise((resolve, reject) => {
+    exec(`spotifydl --o ${audioPath} ${url}`, async (err) => {
+      if (err) {
+        reject(err);
+      }
+      const audioDir = path.join(process.cwd(), 'audio');
+
+      const mp3Path = await findMP3(audioDir);
+      resolve(mp3Path);
+    });
   });
-  // const img = await fs.writeFile('test.jpeg', imgUInt.data, 'binary',
-  console.log(data);
-  // console.log(res.common.picture[0]);
-  // // const imgFile = new File([imgUInt.data], 'test.jpg', { type: 'image/jpeg' });
-  // console.log(imgUInt);
-  // const imgFile2 = await convertBlobToImage(imgUInt.data);
-  // console.log(imgFile2);
-  // console.log(imgFile);
-  // const imgBlob = uInt8ArrayToBlob(imgUInt, 'image/jpeg');
-  // console.log('res', audioArray);
-  // console.log(typeof audioArray);
-  // const file = await sharp(audioArray, {
-  //   raw: {
-  //     width: 2,
-  //     height: 1,
-  //     channels: 3
-  //   }
-  // }).toFile('output.png');
-  // console.log('file', file);
-  // await prisma.music.create({
-  //   data: {
-  //     title: res.title,
-  //     artist: res.artist,
-  //     albumCover: res.album,
-  //     musicLink: '',
-  //     user: {
-  //       connect: {
-  //         id: res.userId
-  //       }
-  //     }
-  //   }
-  // });
-  return NextResponse.json('hello');
+}
 
-  // const res = await prisma.music.findMany();
-  // return NextResponse.json(res);
+export async function removeFile(path: string) {
+  await fs.rm(audioPath, { recursive: true, force: true });
+}
+
+export async function POST(request: NextRequest) {
+  const music = (await request.json()) as UploadMusicUrl;
+  const formData = new FormData();
+
+  const mp3path = await downloadSpotify(music.url);
+
+  if (!mp3path) {
+    return NextResponse.json({
+      status: 400,
+      message: 'Failed to download music'
+    });
+  }
+  const readStream = createReadStream(mp3path);
+  formData.append('audio', readStream);
+
+  await removeFile(mp3path);
+
+  formData.append('title', music.title);
+  formData.append('artist', music.artist);
+  formData.append('albumCover', music.albumCover);
+  const res = await axios.post(`http://127.0.0.1:8000/music-separation`, formData, {
+    headers: {
+      'Content-Type': `multipart/form-data=; boundary=${formData.getBoundary()}`
+    }
+  });
+  return NextResponse.json({ ...res.data });
 }
