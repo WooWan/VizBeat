@@ -173,7 +173,7 @@ const AudioPlayer = ({ skipNextMusic, selectedMusic }: Props) => {
           </div>
         </div>
       </div>
-      <audio ref={audioRef} src={selectedMusic?.musicLink} onTimeUpdate={handleTimeUpdate} />
+      <audio ref={audioRef} src={selectedMusic?.musicUrl} onTimeUpdate={handleTimeUpdate} />
     </div>
   );
 };
