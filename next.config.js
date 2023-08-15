@@ -10,6 +10,14 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'sgfbjtwrqhjzbyuhnknq.supabase.co'
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.scdn.co'
+      },
+      {
+        protocol: 'https',
+        hostname: 'vizbeats.s3.ap-northeast-2.amazonaws.com'
       }
     ]
   }

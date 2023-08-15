@@ -1,26 +1,28 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import AudioPlayer from '@/components/AudioPlayer';
 import { Music } from '@prisma/client';
-import clsx from 'clsx';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Dropzone from '@/components/Dropzone';
 import * as musicMetadata from 'music-metadata-browser';
-import { IAudioMetadata } from 'music-metadata-browser';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
+import { MusicUpload } from '@/types/spotify';
+import { useDebounce } from '@/hooks/useDebounce';
+import { httpClient } from '@/service/httpClient';
+import { isUploadWithFile, isUploadWithSpotify } from '@/utils/typeGuards';
+import { fetchMusicFromSpotify } from '@/service/musics';
+import { useSeparateMusic } from '@/hooks/queries/music/useMusics';
 
 const formSchema = z.object({
-  music: z.string().min(1).max(50),
-  artist: z.string().min(1).max(50),
-  album: z.string().min(1).max(50),
-  genre: z.string().min(1).max(20)
+  title: z.string().min(1).max(50),
+  artist: z.string().min(1).max(50)
 });
 
 type Props = {
@@ -30,17 +32,28 @@ type Props = {
   handleMusicSelect: (id: string) => void;
 };
 
-export interface AudioFile extends File {
-  path: string;
-}
-
 const MusicsNavbar = ({ selectedMusic, setSelectedMusic, musics, handleMusicSelect }: Props) => {
   const listRefs = useRef<(HTMLLIElement | null)[]>([]);
-  const [audioFile, setAudioFile] = useState<AudioFile | null>(null);
-  const [audioMetadata, setAudioMetadata] = useState<IAudioMetadata | null>(null);
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema)
+  const [musicKeyword, setMusicKeyword] = useState<string>('');
+  const debouncedKeyword = useDebounce(musicKeyword, 250);
+  const { data } = useQuery({
+    queryKey: ['spotify-music', debouncedKeyword],
+    queryFn: () => fetchMusicFromSpotify(debouncedKeyword),
+    enabled: debouncedKeyword !== '',
+    retry: 1
   });
+  const [selectedTrack, setSelectedTrack] = useState<MusicUpload>();
+  const [imagePreview, setImagePreview] = useState('');
+  const separateMusic = useSeparateMusic();
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      title: '',
+      artist: ''
+    }
+  });
+  const hasSelectMusic = form.formState.isDirty || selectedTrack;
+
   const skipToNextMusic = () => {
     if (!musics) return;
     const index = musics.findIndex((music) => music.id === selectedMusic?.id);
@@ -49,11 +62,19 @@ const MusicsNavbar = ({ selectedMusic, setSelectedMusic, musics, handleMusicSele
   };
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    await axios.post('/api/music', {
-      ...audioFile,
-      ...audioMetadata,
-      ...data
-    });
+    if (!selectedTrack) return;
+
+    if (isUploadWithFile(selectedTrack)) {
+      const formData = new FormData();
+      formData.append('audio', selectedTrack.audioFile);
+      formData.append('albumCover', selectedTrack?.albumCover);
+      formData.append('title', data.title);
+      formData.append('artist', data.artist);
+
+      separateMusic.mutate(formData);
+    } else if (isUploadWithSpotify(selectedTrack)) {
+      await httpClient.post('/music', selectedTrack);
+    }
   };
 
   const onDropMusicFile = (acceptedFiles: File[]) => {
@@ -61,43 +82,35 @@ const MusicsNavbar = ({ selectedMusic, setSelectedMusic, musics, handleMusicSele
       const reader = new FileReader();
       reader.onload = async () => {
         const audio = await musicMetadata.parseBlob(file);
-        form.setValue('music', audio.common.title || '', {
-          shouldDirty: true
+        setSelectedTrack({
+          title: audio.common.title || '',
+          artist: audio.common.artist || '',
+          albumCover: new Blob([audio.common.picture?.[0].data || '']),
+          audioFile: file
         });
-        form.setValue('artist', audio.common.artist || '');
-        form.setValue('album', audio.common.album || '');
-        form.setValue('genre', audio.common.genre?.join(', ') || '');
-        setAudioMetadata(audio);
+        setImagePreview(
+          URL.createObjectURL(
+            new Blob([audio.common.picture?.[0].data || ''], {
+              type: audio.common.picture?.[0].format
+            })
+          )
+        );
       };
-      setAudioFile(file as AudioFile);
       reader.readAsArrayBuffer(file);
     });
   };
 
-  // const splitMusic = async () => {
-  //   const moises_url = 'https://developer-api.moises.ai/api/job';
-  //   const res = await axios.post(
-  //     moises_url,
-  //     {
-  //       name: 'google_drive',
-  //       workflow: 'moises/stems-vocals-accompaniment',
-  //       params: {
-  //         inputUrl: 'https://drive.google.com/uc?id=1fzk3VWZ1MmwljyD3clRi-EAW7jO9IliM&authuser=0&export=download'
-  //         // inputUrl: 'https://sgfbjtwrqhjzbyuhnknq.supabase.co/storage/v1/object/public/music/music/green_day'
-  //         // inputUrl: data.publicUrl
-  //         // inputUrl: 'https://www.dropbox.com/s/n041ztnvb47o0pc/Basket%20Case-7-Green%20Day.mp3?dl=1'
-  //         // 'https://sgfbjtwrqhjzbyuhnknq.supabase.co/storage/v1/object/public/music/music/night_dancer?download='
-  //         // 'https://sgfbjtwrqhjzbyuhnknq.supabase.co/storage/v1/object/public/music/music/night_dancer?t=2023-05-29T06%3A36%3A52.366Z?download='
-  //       }
-  //     },
-  //     {
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         Authorization: 'fb0bcedf-09dd-4c70-9df8-0282a7428843'
-  //       }
-  //     }
-  //   );
-  // };
+  const handleSearchMusic = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMusicKeyword(e.target.value);
+  };
+
+  useEffect(() => {
+    if (!selectedTrack) return;
+    form.setValue('title', selectedTrack?.title, {
+      shouldDirty: true
+    });
+    form.setValue('artist', selectedTrack?.artist);
+  }, [selectedTrack]);
 
   return (
     <nav className={'hidden flex-col bg-white bg-opacity-90 px-6 lg:flex'}>
@@ -108,64 +121,96 @@ const MusicsNavbar = ({ selectedMusic, setSelectedMusic, musics, handleMusicSele
           'flex max-h-[160px] snap-y snap-mandatory flex-col items-center overflow-y-scroll bg-white bg-opacity-90 py-4 scrollbar-thin scrollbar-thumb-gray-900'
         }
       >
-        {musics?.map((music, index) => {
-          return (
-            <li
-              key={index}
-              className={clsx(
-                'grid w-full cursor-pointer snap-center grid-cols-[200px_1fr] border-b-[1px] border-y-slate-700 px-4 py-2 hover:bg-slate-100',
-                {
-                  'bg-slate-100': selectedMusic === music
-                }
-              )}
-              ref={(el) => (listRefs.current[index] = el)}
-              onClick={() => handleMusicSelect(music.id)}
-            >
-              <span>{music.artist}</span>
-              <span>{music.title}</span>
-            </li>
-          );
-        })}
+        {musics?.map((music, index) => (
+          <li
+            key={index}
+            className={cn(
+              'grid w-full cursor-pointer snap-center grid-cols-[200px_1fr] border-b-[1px] border-y-slate-700 px-4 py-2 hover:bg-slate-100',
+              {
+                'bg-slate-100': selectedMusic === music
+              }
+            )}
+            ref={(el) => (listRefs.current[index] = el)}
+            onClick={() => handleMusicSelect(music.id)}
+          >
+            <span>{music.artist}</span>
+            <span>{music.title}</span>
+          </li>
+        ))}
       </ul>
       <Dialog>
         <DialogTrigger asChild>
           <Button variant="outline">음악 추가하기</Button>
         </DialogTrigger>
         <DialogContent
-          className={cn('max-h-[300px] overflow-hidden transition-all duration-700 sm:max-w-[425px]', {
-            'max-h-[820px]': form.formState.isDirty
+          className={cn('flex max-h-[320px] flex-col overflow-auto transition-all duration-[1500ms] sm:max-w-[425px]', {
+            'max-h-[820px]': hasSelectMusic || musicKeyword
           })}
         >
-          <DialogHeader>
-            <DialogTitle>음악을 업로드 해보세요 🎸</DialogTitle>
+          <DialogHeader className="pb-3">
+            <DialogTitle>Upload your music 🎸</DialogTitle>
           </DialogHeader>
-          {audioMetadata?.common.picture ? (
+          {!hasSelectMusic && (
+            <>
+              <Dropzone onDropMusicFile={onDropMusicFile} />
+              <div className="mt-6 border-t-[1px] border-gray-200 text-center">
+                <span className="inline-block -translate-y-3 bg-white px-2 text-gray-400">OR</span>
+              </div>
+            </>
+          )}
+          <section>
+            <Input
+              type="text"
+              placeholder="Search Music"
+              onChange={handleSearchMusic}
+              className="mb-3 rounded-lg bg-gray-100 p-1.5 placeholder:text-gray-400"
+            />
+            <ul className="flex max-h-[150px] flex-col overflow-auto">
+              {data?.tracks.items.map((track) => (
+                <li
+                  key={track.id}
+                  onClick={() =>
+                    setSelectedTrack({
+                      title: track.name,
+                      artist: track.artists[0].name,
+                      albumCover: track.album.images[0].url,
+                      url: track.external_urls.spotify
+                    })
+                  }
+                  className={cn('flex gap-x-3 rounded-sm border-b-[1px] py-3 pl-3 hover:bg-gray-200', {
+                    'bg-gray-200': selectedTrack?.title === track.name
+                  })}
+                >
+                  {/* <Image src={encodeURI(track.album.images[0].url)} width={50} height={50} alt="album-cover" /> */}
+                  <div>
+                    <h5 className="text-md font-semibold">{track.artists[0].name}</h5>
+                    <span>{track.name}</span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+          {hasSelectMusic && (
             <Image
-              src={URL.createObjectURL(
-                new Blob([audioMetadata.common.picture[0].data], {
-                  type: audioMetadata.common.picture[0].format
-                })
-              )}
-              className={'justify-self-center'}
+              src={imagePreview}
+              className={'mt-3 justify-self-center rounded-md'}
               alt={'album'}
               height={250}
               width={250}
             />
-          ) : (
-            <Dropzone onDropMusicFile={onDropMusicFile} />
           )}
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className={cn('hidden', {
-                block: form.formState.isDirty
+              className={cn('hidden pt-3', {
+                block: hasSelectMusic
               })}
             >
               <FormField
                 control={form.control}
-                name="music"
+                name="title"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="mb-2">
                     <FormLabel>Music</FormLabel>
                     <FormControl>
                       <Input {...field} />
@@ -179,7 +224,7 @@ const MusicsNavbar = ({ selectedMusic, setSelectedMusic, musics, handleMusicSele
                 name="artist"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>artist</FormLabel>
+                    <FormLabel>Artist</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -187,33 +232,9 @@ const MusicsNavbar = ({ selectedMusic, setSelectedMusic, musics, handleMusicSele
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="album"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>album</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="genre"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>genre</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit">Submit</Button>
+              <footer className="flex justify-end pt-4">
+                <Button type="submit">Submit</Button>
+              </footer>
             </form>
           </Form>
         </DialogContent>
