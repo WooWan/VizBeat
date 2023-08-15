@@ -1,3 +1,5 @@
+import { Music } from '@prisma/client';
+
 export type Spotify = {
   tracks: TrackPage;
 };
@@ -70,3 +72,17 @@ export type Image = {
 export type ExternalIDS = {
   isrc: string;
 };
+
+export type MusicEssential = Pick<Music, 'title' | 'artist'>;
+
+export type UploadMusicUrl = MusicEssential & {
+  url: string;
+  albumCover: string;
+};
+
+export type UploadMusicFile = MusicEssential & {
+  audioFile: Blob;
+  albumCover: Blob;
+};
+
+export type MusicUpload = UploadMusicUrl | UploadMusicFile;
