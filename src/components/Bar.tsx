@@ -34,7 +34,7 @@ export default function Bar({ radius, index, centerPos, position, theta, color, 
     angleRef.current = (angleRef.current + radian) % 360;
     const power = mean < 0 ? 0 : Math.round(mean * 10000) / 10000;
     const nx = centerPos[0] + (radius + power * 500) * Math.cos(angleRef.current);
-    const ny = centerPos[1] + heightRef.current * heightRef.current * 1200;
+    const ny = centerPos[1] + heightRef.current * heightRef.current * 3000;
     const nz = centerPos[2] + (radius + power * 500) * Math.sin(angleRef.current);
 
     barRef.current.position.x = lerp(barRef.current.position.x, nx, 0.02);
