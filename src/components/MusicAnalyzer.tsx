@@ -5,18 +5,17 @@ import { useMusicPlayStore } from '@/store/music';
 import { Vector3 } from 'three';
 
 type Props = {
-  music: HTMLAudioElement;
   fftSize: number;
   centerPos: number[];
   radius: number;
+  audio: HTMLAudioElement;
 };
 
-export default function MusicAnalyzer({ music, fftSize, centerPos, radius }: Props) {
+export default function MusicAnalyzer({ fftSize, centerPos, radius, audio }: Props) {
   const [analyser, setAnalyser] = useState<AnalyserNode | null>(null);
   const dataArrayRef = useRef<Uint8Array | null>(null);
   const meanRef = useRef(0);
   const [sourceNode, setSourceNode] = useState<MediaElementAudioSourceNode | null>(null);
-  const isMusicPlay = useMusicPlayStore((state) => state.isMusicPlay);
 
   const bars = useMemo(() => {
     const bars = [];
@@ -33,11 +32,9 @@ export default function MusicAnalyzer({ music, fftSize, centerPos, radius }: Pro
   }, [fftSize, radius]);
 
   useEffect(() => {
-    console.log(music);
-    if (!isMusicPlay || sourceNode) return;
     const audioContext = new window.AudioContext();
     const analyser = audioContext.createAnalyser();
-    const source = audioContext.createMediaElementSource(music);
+    const source = audioContext.createMediaElementSource(audio as HTMLAudioElement);
     setSourceNode(source);
     source.connect(analyser);
     source.connect(audioContext.destination);
@@ -45,35 +42,32 @@ export default function MusicAnalyzer({ music, fftSize, centerPos, radius }: Pro
     analyser.fftSize = fftSize;
 
     setAnalyser(analyser);
-  }, [isMusicPlay]);
+  }, []);
 
   const newData = new Uint8Array(fftSize);
   useFrame(() => {
     if (analyser) {
       analyser.getByteTimeDomainData(newData);
-
+      // console.log(newData);
       meanRef.current = newData.reduce((a, b) => a + b) / (128 * newData.length);
       dataArrayRef.current = newData;
     }
   });
-  if (isMusicPlay) {
-    return (
-      <group>
-        {bars.map((item, index) => (
-          <Bar
-            key={index}
-            index={index}
-            radius={radius}
-            centerPos={centerPos}
-            dataArrayRef={dataArrayRef}
-            meanRef={meanRef}
-            position={item.position}
-            theta={item.theta}
-            color={item.color}
-          />
-        ))}
-      </group>
-    );
-  }
-  return <></>;
+  return (
+    <group>
+      {bars.map((item, index) => (
+        <Bar
+          key={index}
+          index={index}
+          radius={radius}
+          centerPos={centerPos}
+          dataArrayRef={dataArrayRef}
+          meanRef={meanRef}
+          position={item.position}
+          theta={item.theta}
+          color={item.color}
+        />
+      ))}
+    </group>
+  );
 }

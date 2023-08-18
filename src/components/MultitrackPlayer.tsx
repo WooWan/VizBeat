@@ -21,7 +21,11 @@ export default function MultitrackPlayer({}: Props) {
   const pauseResumeRef = useRef<any>(null);
   const [ws, setWs] = useState<any>(null);
   const [volumes, setVolumes] = useState<any>([0.5, 0.5, 0.5, 0.5, 0.5]);
-  const [vocalTrack, setVocalTrack] = useState();
+  const [vocalAudio, setVocalAudio] = useState<HTMLAudioElement | null>(null);
+  const [guitarAudio, setGuitarAudio] = useState<HTMLAudioElement | null>(null);
+  const [drumAudio, setDrumAudio] = useState<HTMLAudioElement | null>(null);
+  const [pianoAudio, setPianoAudio] = useState<HTMLAudioElement | null>(null);
+  const [bassAudio, setBassAudio] = useState<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     const multitrack = Multitrack.create(
@@ -95,15 +99,16 @@ export default function MultitrackPlayer({}: Props) {
         }
       }
     );
-    setWs(multitrack);
-    // multitrack.once('canplay', () => {
-    //   console.log(multitrack.wavesurfers[0]);
-    //   console.log('vocal', multitrack.wavesurfers[0].decodedData);
-    //   // setVocalTrack(multitrack.audios[0]);
-    // });
-    // console.log(multitrack.isPlaying());
+    multitrack.once('canplay', () => {
+      const audios = (multitrack as any).audios;
+      setVocalAudio(audios[0]);
+      setDrumAudio(audios[1]);
+      setGuitarAudio(audios[2]);
+      setBassAudio(audios[3]);
+      setPianoAudio(audios[4]);
+      setWs(multitrack);
+    });
 
-    // console.log(multitrack.envelopes.at[0]);
     return () => {
       multitrack.destroy();
     };
@@ -248,11 +253,11 @@ export default function MultitrackPlayer({}: Props) {
                 target={new Vector3(0, 0, 300)}
                 position={new Vector3(0, 60, 30)}
               />
-              {/* {vocalTrack && <MusicAnalyzer music={ws.audios[0]} fftSize={128} centerPos={[75, -26, 10]} radius={6} />} */}
-              {/* {vocalTrack && <MusicAnalyzer music={vocalTrack} fftSize={128} centerPos={[0, -26, 30]} radius={6} />} */}
-              {/* <MusicAnalyzer music={ws.tracks[2].url} fftSize={128} centerPos={[-75, -26, 10]} radius={2} /> */}
-              {/* <MusicAnalyzer music={ws.tracks[3].url} fftSize={128} centerPos={[32, -26, -10]} radius={16} /> */}
-              {/* <MusicAnalyzer music={ws.tracks[4].url} fftSize={128} centerPos={[-32, -26, -10]} radius={16} /> */}
+              {guitarAudio && <MusicAnalyzer audio={guitarAudio} fftSize={128} centerPos={[75, -26, 10]} radius={8} />}
+              {vocalAudio && <MusicAnalyzer audio={vocalAudio} fftSize={128} centerPos={[0, -26, 30]} radius={8} />}
+              {bassAudio && <MusicAnalyzer audio={bassAudio} fftSize={128} centerPos={[-75, -26, 10]} radius={4} />}
+              {drumAudio && <MusicAnalyzer audio={drumAudio} fftSize={128} centerPos={[32, -26, -10]} radius={18} />}
+              {pianoAudio && <MusicAnalyzer audio={pianoAudio} fftSize={128} centerPos={[-32, -26, -10]} radius={18} />}
             </Rig>
           </Suspense>
           <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
