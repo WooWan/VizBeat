@@ -5,7 +5,7 @@ import { useMusicPlayStore } from '@/store/music';
 import { Vector3 } from 'three';
 
 type Props = {
-  music: React.MutableRefObject<HTMLAudioElement>;
+  music: HTMLAudioElement;
   fftSize: number;
   centerPos: number[];
   radius: number;
@@ -33,10 +33,11 @@ export default function MusicAnalyzer({ music, fftSize, centerPos, radius }: Pro
   }, [fftSize, radius]);
 
   useEffect(() => {
+    console.log(music);
     if (!isMusicPlay || sourceNode) return;
     const audioContext = new window.AudioContext();
     const analyser = audioContext.createAnalyser();
-    const source = audioContext.createMediaElementSource(music.current);
+    const source = audioContext.createMediaElementSource(music);
     setSourceNode(source);
     source.connect(analyser);
     source.connect(audioContext.destination);
