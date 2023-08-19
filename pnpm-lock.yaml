@@ -101,6 +101,9 @@ dependencies:
   three:
     specifier: ^0.151.3
     version: 0.151.3
+  wavesurfer-multitrack:
+    specifier: ^0.1.0
+    version: 0.1.0
   zod:
     specifier: ^3.21.4
     version: 3.21.4
@@ -4913,6 +4916,16 @@ packages:
     dependencies:
       glob-to-regexp: 0.4.1
       graceful-fs: 4.2.11
+    dev: false
+
+  /wavesurfer-multitrack@0.1.0:
+    resolution: {integrity: sha512-kK5rYnOg1NAGA4I2ezLs3utxSaBS9f3VBZlYe1KUxbmRqd+r8g7jDSLYhQqv6aaOwKQYS8MT/fzRTuCQL23n3Q==}
+    dependencies:
+      wavesurfer.js: 7.1.5
+    dev: false
+
+  /wavesurfer.js@7.1.5:
+    resolution: {integrity: sha512-2zb82LxQzeFn5/O5JhEs1uytdlkksUDALWt7TPN8ppP4jrajuigwcM2g4wx6b+SO4Frweg/r99L1hznr0lsBEg==}
     dev: false
 
   /webgl-constants@1.1.1:
