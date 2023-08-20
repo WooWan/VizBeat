@@ -54,13 +54,6 @@ const MusicsNavbar = ({ selectedMusic, musics, handleMusicSelect }: Props) => {
   });
   const hasSelectMusic = form.formState.isDirty || selectedTrack;
 
-  const skipToNextMusic = () => {
-    if (!musics) return;
-    const index = musics.findIndex((music) => music.id === selectedMusic?.id);
-    const nextIndex = index === musics.length - 1 ? 0 : index + 1;
-    handleMusicSelect(musics[nextIndex].id);
-  };
-
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     if (!selectedTrack) return;
 
@@ -116,7 +109,7 @@ const MusicsNavbar = ({ selectedMusic, musics, handleMusicSelect }: Props) => {
   return (
     <nav className={'hidden flex-col bg-white bg-opacity-90 px-6 lg:flex'}>
       <h2 className={'pt-2 text-h1'}>Music</h2>
-      <AudioPlayer selectedMusic={selectedMusic} skipNextMusic={skipToNextMusic} />
+      <AudioPlayer musics={musics} selectedMusic={selectedMusic} handleMusicSelect={handleMusicSelect} />
       <ul
         className={
           'flex max-h-[160px] snap-y snap-mandatory flex-col items-center overflow-y-scroll bg-white bg-opacity-90 py-4 scrollbar-thin scrollbar-thumb-gray-900'

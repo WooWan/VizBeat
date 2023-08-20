@@ -6,11 +6,12 @@ import { formatTime } from '@/utils/time';
 import { Music } from '@prisma/client';
 
 type Props = {
-  skipNextMusic: () => void;
+  musics?: Music[];
+  handleMusicSelect: (id: string) => void;
   selectedMusic: Music | null;
 };
 
-const AudioPlayer = ({ skipNextMusic, selectedMusic }: Props) => {
+const AudioPlayer = ({ musics, handleMusicSelect, selectedMusic }: Props) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -46,6 +47,20 @@ const AudioPlayer = ({ skipNextMusic, selectedMusic }: Props) => {
     audioRef.current?.play();
     setIsPlaying(true);
   }, [selectedMusic]);
+
+  const skipToNextMusic = () => {
+    if (!musics) return;
+    const index = musics.findIndex((music) => music.id === selectedMusic?.id);
+    const nextIndex = index === musics.length - 1 ? 0 : index + 1;
+    handleMusicSelect(musics[nextIndex].id);
+  };
+
+  const skipToPrevMusic = () => {
+    if (!musics) return;
+    const index = musics.findIndex((music) => music.id === selectedMusic?.id);
+    const previndex = index === 0 ? musics.length - 1 : index - 1;
+    handleMusicSelect(musics[previndex].id);
+  };
 
   const toggleMusic = () => {
     if (!audioRef.current) return;
@@ -125,6 +140,7 @@ const AudioPlayer = ({ skipNextMusic, selectedMusic }: Props) => {
           <div className={'flex items-center gap-x-8 justify-self-end px-10'}>
             <button
               className={'group flex h-8 w-8 items-center justify-center rounded-md hover:bg-gray-300'}
+              onClick={skipToPrevMusic}
               disabled={selectedMusic === null}
             >
               <SkipBack
@@ -157,7 +173,7 @@ const AudioPlayer = ({ skipNextMusic, selectedMusic }: Props) => {
             </button>
             <button
               className={'group flex h-8 w-8 items-center justify-center rounded-md hover:bg-gray-300'}
-              onClick={skipNextMusic}
+              onClick={skipToNextMusic}
               disabled={selectedMusic === null}
             >
               <SkipForward
