@@ -19,6 +19,7 @@ import { httpClient } from '@/service/httpClient';
 import { isUploadWithFile, isUploadWithSpotify } from '@/utils/typeGuards';
 import { fetchMusicFromSpotify } from '@/service/musics';
 import { useSeparateMusic } from '@/hooks/queries/music/useMusics';
+import { v4 as uuidv4 } from 'uuid';
 
 const formSchema = z.object({
   title: z.string().min(1).max(50),
@@ -28,11 +29,10 @@ const formSchema = z.object({
 type Props = {
   musics?: Music[];
   selectedMusic: Music | null;
-  setSelectedMusic: React.Dispatch<React.SetStateAction<Music | null>>;
   handleMusicSelect: (id: string) => void;
 };
 
-const MusicsNavbar = ({ selectedMusic, setSelectedMusic, musics, handleMusicSelect }: Props) => {
+const MusicsNavbar = ({ selectedMusic, musics, handleMusicSelect }: Props) => {
   const listRefs = useRef<(HTMLLIElement | null)[]>([]);
   const [musicKeyword, setMusicKeyword] = useState<string>('');
   const debouncedKeyword = useDebounce(musicKeyword, 250);
@@ -58,7 +58,7 @@ const MusicsNavbar = ({ selectedMusic, setSelectedMusic, musics, handleMusicSele
     if (!musics) return;
     const index = musics.findIndex((music) => music.id === selectedMusic?.id);
     const nextIndex = index === musics.length - 1 ? 0 : index + 1;
-    setSelectedMusic(musics[nextIndex]);
+    handleMusicSelect(musics[nextIndex].id);
   };
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
@@ -83,6 +83,7 @@ const MusicsNavbar = ({ selectedMusic, setSelectedMusic, musics, handleMusicSele
       reader.onload = async () => {
         const audio = await musicMetadata.parseBlob(file);
         setSelectedTrack({
+          id: uuidv4(),
           title: audio.common.title || '',
           artist: audio.common.artist || '',
           albumCover: new Blob([audio.common.picture?.[0].data || '']),
@@ -169,19 +170,27 @@ const MusicsNavbar = ({ selectedMusic, setSelectedMusic, musics, handleMusicSele
               {data?.tracks.items.map((track) => (
                 <li
                   key={track.id}
-                  onClick={() =>
+                  onClick={() => {
                     setSelectedTrack({
+                      id: track.id,
                       title: track.name,
                       artist: track.artists[0].name,
                       albumCover: track.album.images[0].url,
                       url: track.external_urls.spotify
-                    })
-                  }
-                  className={cn('flex gap-x-3 rounded-sm border-b-[1px] py-3 pl-3 hover:bg-gray-200', {
-                    'bg-gray-200': selectedTrack?.title === track.name
+                    });
+                    setImagePreview(track.album.images[0].url);
+                  }}
+                  className={cn('flex gap-x-3.5 rounded-sm border-b-[1px] py-3 pl-3 hover:bg-gray-200', {
+                    'bg-gray-200': selectedTrack?.id === track.id
                   })}
                 >
-                  {/* <Image src={encodeURI(track.album.images[0].url)} width={50} height={50} alt="album-cover" /> */}
+                  <Image
+                    className="rounded-md"
+                    src={encodeURI(track.album.images[0].url)}
+                    width={50}
+                    height={50}
+                    alt="album-cover"
+                  />
                   <div>
                     <h5 className="text-md font-semibold">{track.artists[0].name}</h5>
                     <span>{track.name}</span>

@@ -20,12 +20,7 @@ const MusicsPage = () => {
 
   return (
     <div className={'grid h-full lg:grid-cols-[480px_minmax(900px,_1fr)]'}>
-      <MusicsNavbar
-        musics={musics}
-        selectedMusic={selectedMusic}
-        setSelectedMusic={setSelectedMusic}
-        handleMusicSelect={handleMusicSelect}
-      />
+      <MusicsNavbar musics={musics} selectedMusic={selectedMusic} handleMusicSelect={handleMusicSelect} />
       <section className={'relative flex justify-center'}>
         <Suspense>
           <MusicsCanvas
