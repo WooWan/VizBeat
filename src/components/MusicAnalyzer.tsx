@@ -42,6 +42,11 @@ export default function MusicAnalyzer({ fftSize, centerPos, radius, audio }: Pro
     analyser.fftSize = fftSize;
 
     setAnalyser(analyser);
+
+    return () => {
+      source.disconnect();
+      console.log('disconect');
+    };
   }, []);
 
   const newData = new Uint8Array(fftSize);
