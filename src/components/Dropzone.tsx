@@ -1,6 +1,69 @@
-import React, { useMemo } from 'react';
+import React, { SetStateAction, useCallback, useMemo } from 'react';
 import { UploadCloudIcon } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
+import { MusicUpload } from '@/types/spotify';
+import * as musicMetadata from 'music-metadata-browser';
+import { v4 as uuidv4 } from 'uuid';
+import { set } from 'react-hook-form';
+
+type Props = {
+  setSelectedTrack: React.Dispatch<SetStateAction<MusicUpload | undefined>>;
+  setImagePreview: React.Dispatch<SetStateAction<string>>;
+};
+
+const Dropzone = ({ setSelectedTrack, setImagePreview }: Props) => {
+  const onDropMusicFile = useCallback(
+    (acceptedFiles: File[]) => {
+      acceptedFiles.map((file) => {
+        const reader = new FileReader();
+        reader.onload = async () => {
+          const audio = await musicMetadata.parseBlob(file);
+          console.log('select track');
+          setSelectedTrack({
+            id: uuidv4(),
+            title: audio.common.title || '',
+            artist: audio.common.artist || '',
+            albumCover: new Blob([audio.common.picture?.[0].data || '']),
+            audioFile: file
+          });
+          setImagePreview(
+            URL.createObjectURL(
+              new Blob([audio.common.picture?.[0].data || ''], {
+                type: audio.common.picture?.[0].format
+              })
+            )
+          );
+        };
+        reader.readAsArrayBuffer(file);
+      });
+    },
+    [setSelectedTrack, setImagePreview]
+  );
+
+  const { getRootProps, getInputProps, isDragAccept, isDragReject } = useDropzone({
+    onDrop: onDropMusicFile,
+    multiple: false
+  });
+
+  const style = useMemo(
+    () => ({
+      ...baseStyle,
+      ...(isDragAccept ? acceptStyle : {}),
+      ...(isDragReject ? rejectStyle : {})
+    }),
+    [isDragAccept, isDragReject]
+  );
+
+  return (
+    <div {...getRootProps({ style })}>
+      <input {...getInputProps()} />
+      <UploadCloudIcon className="mb-2 h-10 w-10" />
+      <p>{`Drag and drop an audio file`}</p>
+    </div>
+  );
+};
+
+export default Dropzone;
 
 const baseStyle = {
   flex: 1,
@@ -28,32 +91,3 @@ const acceptStyle = {
 const rejectStyle = {
   borderColor: '#ff1744'
 };
-
-type Props = {
-  onDropMusicFile: (acceptedFiles: File[]) => void;
-};
-const Dropzone = ({ onDropMusicFile }: Props) => {
-  const { getRootProps, getInputProps, isDragAccept, isDragReject } = useDropzone({
-    onDrop: onDropMusicFile,
-    multiple: false
-  });
-
-  const style = useMemo(
-    () => ({
-      ...baseStyle,
-      ...(isDragAccept ? acceptStyle : {}),
-      ...(isDragReject ? rejectStyle : {})
-    }),
-    [isDragAccept, isDragReject]
-  );
-
-  return (
-    <div {...getRootProps({ style })}>
-      <input {...getInputProps()} />
-      <UploadCloudIcon className="mb-2 h-10 w-10" />
-      <p>{`Drag and drop an audio file`}</p>
-    </div>
-  );
-};
-
-export default Dropzone;

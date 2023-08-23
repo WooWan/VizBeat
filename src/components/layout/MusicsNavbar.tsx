@@ -1,30 +1,18 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import AudioPlayer from '@/components/AudioPlayer';
 import { Music } from '@prisma/client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Dropzone from '@/components/Dropzone';
-import * as musicMetadata from 'music-metadata-browser';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useQuery } from '@tanstack/react-query';
 import { MusicUpload } from '@/types/spotify';
 import { useDebounce } from '@/hooks/useDebounce';
-import { httpClient } from '@/service/httpClient';
-import { isUploadWithFile, isUploadWithSpotify } from '@/utils/typeGuards';
 import { fetchMusicFromSpotify } from '@/service/musics';
-import { useSeparateMusic } from '@/hooks/queries/music/useMusics';
-import { v4 as uuidv4 } from 'uuid';
-
-const formSchema = z.object({
-  title: z.string().min(1).max(50),
-  artist: z.string().min(1).max(50)
-});
+import MusicUploadForm from '../form/MusicUploadForm';
+import { XIcon } from 'lucide-react';
 
 type Props = {
   musics?: Music[];
@@ -44,67 +32,10 @@ const MusicsNavbar = ({ selectedMusic, musics, handleMusicSelect }: Props) => {
   });
   const [selectedTrack, setSelectedTrack] = useState<MusicUpload>();
   const [imagePreview, setImagePreview] = useState('');
-  const separateMusic = useSeparateMusic();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: '',
-      artist: ''
-    }
-  });
-  const hasSelectMusic = form.formState.isDirty || selectedTrack;
-
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    if (!selectedTrack) return;
-
-    if (isUploadWithFile(selectedTrack)) {
-      const formData = new FormData();
-      formData.append('audio', selectedTrack.audioFile);
-      formData.append('albumCover', selectedTrack?.albumCover);
-      formData.append('title', data.title);
-      formData.append('artist', data.artist);
-
-      separateMusic.mutate(formData);
-    } else if (isUploadWithSpotify(selectedTrack)) {
-      await httpClient.post('/music', selectedTrack);
-    }
-  };
-
-  const onDropMusicFile = (acceptedFiles: File[]) => {
-    acceptedFiles.map((file) => {
-      const reader = new FileReader();
-      reader.onload = async () => {
-        const audio = await musicMetadata.parseBlob(file);
-        setSelectedTrack({
-          id: uuidv4(),
-          title: audio.common.title || '',
-          artist: audio.common.artist || '',
-          albumCover: new Blob([audio.common.picture?.[0].data || '']),
-          audioFile: file
-        });
-        setImagePreview(
-          URL.createObjectURL(
-            new Blob([audio.common.picture?.[0].data || ''], {
-              type: audio.common.picture?.[0].format
-            })
-          )
-        );
-      };
-      reader.readAsArrayBuffer(file);
-    });
-  };
 
   const handleSearchMusic = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMusicKeyword(e.target.value);
   };
-
-  useEffect(() => {
-    if (!selectedTrack) return;
-    form.setValue('title', selectedTrack?.title, {
-      shouldDirty: true
-    });
-    form.setValue('artist', selectedTrack?.artist);
-  }, [selectedTrack]);
 
   return (
     <nav className={'hidden flex-col bg-white bg-opacity-90 px-6 lg:flex'}>
@@ -138,15 +69,15 @@ const MusicsNavbar = ({ selectedMusic, musics, handleMusicSelect }: Props) => {
         </DialogTrigger>
         <DialogContent
           className={cn('flex max-h-[320px] flex-col overflow-auto transition-all duration-[1500ms] sm:max-w-[425px]', {
-            'max-h-[820px]': hasSelectMusic || musicKeyword
+            'max-h-[820px]': selectedTrack || musicKeyword
           })}
         >
           <DialogHeader className="pb-3">
             <DialogTitle>Upload your music 🎸</DialogTitle>
           </DialogHeader>
-          {!hasSelectMusic && (
+          {!selectedTrack && (
             <>
-              <Dropzone onDropMusicFile={onDropMusicFile} />
+              <Dropzone setImagePreview={setImagePreview} setSelectedTrack={setSelectedTrack} />
               <div className="mt-6 border-t-[1px] border-gray-200 text-center">
                 <span className="inline-block -translate-y-3 bg-white px-2 text-gray-400">OR</span>
               </div>
@@ -192,53 +123,24 @@ const MusicsNavbar = ({ selectedMusic, musics, handleMusicSelect }: Props) => {
               ))}
             </ul>
           </section>
-          {hasSelectMusic && (
-            <Image
-              src={imagePreview}
-              className={'mt-3 justify-self-center rounded-md'}
-              alt={'album'}
-              height={250}
-              width={250}
-            />
+          {selectedTrack && (
+            <section className="px-3">
+              <div className="relative mt-4 flex items-center justify-center">
+                <XIcon
+                  className="absolute -top-2 right-0 z-10 h-5 w-5 cursor-pointer text-gray-400"
+                  onClick={() => setSelectedTrack(undefined)}
+                />
+                <Image
+                  src={imagePreview}
+                  width={256}
+                  height={256}
+                  className={'justify-self-center rounded-md'}
+                  alt={'cover'}
+                />
+              </div>
+              <MusicUploadForm selectedTrack={selectedTrack} />
+            </section>
           )}
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className={cn('hidden pt-3', {
-                block: hasSelectMusic
-              })}
-            >
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem className="mb-2">
-                    <FormLabel>Music</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="artist"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Artist</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <footer className="flex justify-end pt-4">
-                <Button type="submit">Submit</Button>
-              </footer>
-            </form>
-          </Form>
         </DialogContent>
       </Dialog>
     </nav>
