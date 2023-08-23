@@ -5,15 +5,17 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import StageGround from '@/components/StageGround';
 import Rig from '@/components/Rig';
-import StageSpotLight from '@/components/StageSpotLight';
 import MusicAnalyzer from '@/components/MusicAnalyzer';
 import Instrument from '@/components/Instrumental';
 import Loading from '@/components/Loading';
 import { instruments } from '@/constants/music';
-import { Vector3 } from 'three';
 import MusicPlayToggleButton from './MusicPlayToggleButton';
+import { useTrasksMutedStore, useMusicPlayStore } from '@/store/music';
+import { Track } from '@/store/types';
 
 type Props = {};
+
+const TrackArray: Track[] = ['vocal', 'drum', 'guitar', 'bass', 'piano'];
 
 export default function MultitrackPlayer({}: Props) {
   const overlayRef = useRef<any>(null);
@@ -26,7 +28,9 @@ export default function MultitrackPlayer({}: Props) {
   const [drumAudio, setDrumAudio] = useState<HTMLAudioElement | null>(null);
   const [pianoAudio, setPianoAudio] = useState<HTMLAudioElement | null>(null);
   const [bassAudio, setBassAudio] = useState<HTMLAudioElement | null>(null);
-  const [isReady, setIsReady] = useState(true);
+  const [isReady, setIsReady] = useState(false);
+  const tracksMuted = useTrasksMutedStore();
+  const { isMusicPlay, setIsMusicPlay } = useMusicPlayStore();
 
   useEffect(() => {
     const multitrack = Multitrack.create(
@@ -108,12 +112,31 @@ export default function MultitrackPlayer({}: Props) {
       setBassAudio(audios[3]);
       setPianoAudio(audios[4]);
       setWs(multitrack);
+      setIsReady(true);
     });
 
     return () => {
       multitrack.destroy();
     };
   }, []);
+
+  useEffect(() => {
+    if (isReady) {
+      for (let i = 0; i < TrackArray.length; i++) {
+        if (tracksMuted[TrackArray[i]].isMuted) {
+          ws.audios[i].volume = 0;
+        } else {
+          ws.audios[i].volume = volumes[i];
+        }
+      }
+    }
+  }, [tracksMuted]);
+
+  useEffect(() => {
+    if (isReady) {
+      pauseAndResumeAll();
+    }
+  }, [isMusicPlay]);
 
   const setMasterVolume = (event: ChangeEvent<HTMLInputElement>) => {
     const v = event.target.valueAsNumber / 100;
@@ -130,8 +153,7 @@ export default function MultitrackPlayer({}: Props) {
   };
 
   const pauseAndResumeAll = () => {
-    console.log(ws.currentTime);
-    console.log(ws.isPlaying());
+    console.log('ws', ws);
     if (ws.isPlaying()) {
       ws.pause();
       pauseResumeRef.current.textContent = 'play';
@@ -139,18 +161,21 @@ export default function MultitrackPlayer({}: Props) {
       ws.play();
       pauseResumeRef.current.textContent = 'pause';
     }
-    console.log(ws.isPlaying());
   };
 
   const muteAll = () => {
     for (let i = 0; i < 5; i++) {
-      ws.audios[i].volume = 0;
+      if (!tracksMuted[TrackArray[i]].isMuted) {
+        tracksMuted[TrackArray[i]].setIsMuted(true);
+      }
     }
   };
 
   const unmuteAll = () => {
     for (let i = 0; i < 5; i++) {
-      ws.audios[i].volume = volumes[i];
+      if (tracksMuted[TrackArray[i]].isMuted) {
+        tracksMuted[TrackArray[i]].setIsMuted(false);
+      }
     }
   };
 
@@ -163,20 +188,16 @@ export default function MultitrackPlayer({}: Props) {
     setVolumes(newVolumes);
   };
 
-  const muteTrack = (track: number, event: React.MouseEvent<HTMLElement>) => {
-    if (ws.audios[track].volume) {
-      ws.audios[track].volume = 0;
-    } else {
-      ws.audios[track].volume = volumes[track];
-    }
+  const muteTrack = (track: number) => {
+    tracksMuted[TrackArray[track]].setIsMuted(!tracksMuted[TrackArray[track]].isMuted);
   };
 
   const soloTrack = (track: number, event: React.MouseEvent<HTMLElement>) => {
     for (let i = 0; i < 5; i++) {
       if (i != track) {
-        ws.audios[i].volume = 0;
+        tracksMuted[TrackArray[i]].setIsMuted(true);
       } else {
-        ws.audios[i].volume = volumes[i];
+        tracksMuted[TrackArray[i]].setIsMuted(false);
       }
     }
   };
@@ -196,7 +217,7 @@ export default function MultitrackPlayer({}: Props) {
   const tracks = [0, 1, 2, 3, 4];
   return (
     <main>
-      {/* <MusicPlayToggleButton /> */}
+      <MusicPlayToggleButton />
       <Suspense fallback={<Loading />}>
         <Canvas
           camera={{
@@ -215,6 +236,7 @@ export default function MultitrackPlayer({}: Props) {
               {instruments.map((instrument, index) => (
                 <Instrument
                   key={index}
+                  idx={instrument.idx}
                   position={instrument.position}
                   rotation={instrument.rotation}
                   scale={instrument.scale}
@@ -222,9 +244,10 @@ export default function MultitrackPlayer({}: Props) {
                   SpotLightTarget={instrument.spotLightTarget}
                   SpotLightPosition={instrument.spotLightPosition}
                   SpotLightAngle={instrument.spotLightAngle}
+                  track={TrackArray[instrument.idx]}
                 />
               ))}
-              {guitarAudio && isReady && (
+              {/* {guitarAudio && isReady && (
                 <MusicAnalyzer audio={guitarAudio} fftSize={128} centerPos={[75, -26, 10]} radius={8} />
               )}
               {vocalAudio && isReady && (
@@ -238,7 +261,7 @@ export default function MultitrackPlayer({}: Props) {
               )}
               {pianoAudio && isReady && (
                 <MusicAnalyzer audio={pianoAudio} fftSize={128} centerPos={[-32, -26, -10]} radius={18} />
-              )}
+              )} */}
             </Rig>
           </Suspense>
           <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
@@ -286,7 +309,7 @@ export default function MultitrackPlayer({}: Props) {
                         />
                       </label>
                       <div className="flex gap-x-2">
-                        <button className="rounded bg-blue-500 px-3" onClick={(e) => muteTrack(track, e)}>
+                        <button className="rounded bg-blue-500 px-3" onClick={(e) => muteTrack(track)}>
                           mute
                         </button>
                         <button className="rounded bg-blue-500 px-3" onClick={(e) => soloTrack(track, e)}>

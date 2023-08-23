@@ -4,10 +4,7 @@ import { useMusicPlayStore } from '@/store/music';
 import { PauseIcon, PlayIcon } from 'lucide-react';
 
 const MusicPlayToggleButton = () => {
-  const { isMusicPlay, setIsMusicPlay } = useMusicPlayStore((state) => ({
-    isMusicPlay: state.isMusicPlay,
-    setIsMusicPlay: state.setIsMusicPlay
-  }));
+  const { isMusicPlay, setIsMusicPlay } = useMusicPlayStore();
 
   const transitions = useTransition(isMusicPlay, {
     initial: {
