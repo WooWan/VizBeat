@@ -1,8 +1,6 @@
 import { SpotLight } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
 import React, { useEffect, useRef } from 'react';
 import { SpotLight as SpotLightType, Vector3 } from 'three';
-import { lerp } from 'three/src/math/MathUtils';
 
 type Props = {
   target: Vector3;
@@ -17,7 +15,6 @@ export default function StageSpotLight({ target, position, color, angle }: Props
   useEffect(() => {
     spotLightRef.current.target.position.lerp(target, 0.1);
     spotLightRef.current.target.updateMatrixWorld();
-    console.log(spotLightRef.current.intensity);
   }, []);
 
   return (
