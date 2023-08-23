@@ -104,12 +104,6 @@ export default function MultitrackPlayer({}: Props) {
       }
     );
     multitrack.once('canplay', () => {
-      const audios = (multitrack as any).audios;
-      setVocalAudio(audios[0]);
-      setDrumAudio(audios[1]);
-      setGuitarAudio(audios[2]);
-      setBassAudio(audios[3]);
-      setPianoAudio(audios[4]);
       setWs(multitrack);
     });
 
@@ -245,11 +239,20 @@ export default function MultitrackPlayer({}: Props) {
                   track={TrackArray[instrument.idx]}
                 />
               ))}
-              {guitarAudio && <MusicAnalyzer audio={guitarAudio} fftSize={128} centerPos={[75, -26, 10]} radius={8} />}
-              {vocalAudio && <MusicAnalyzer audio={vocalAudio} fftSize={128} centerPos={[0, -26, 30]} radius={8} />}
-              {bassAudio && <MusicAnalyzer audio={bassAudio} fftSize={128} centerPos={[-75, -26, 10]} radius={4} />}
-              {drumAudio && <MusicAnalyzer audio={drumAudio} fftSize={128} centerPos={[32, -26, -10]} radius={18} />}
-              {pianoAudio && <MusicAnalyzer audio={pianoAudio} fftSize={128} centerPos={[-32, -26, -10]} radius={18} />}
+              {/* {ws && (
+                <>
+                  <MusicAnalyzer audio={ws.wavesurfers[2].media} fftSize={128} centerPos={[75, -26, 10]} radius={8} />
+                  <MusicAnalyzer audio={ws.wavesurfers[0].media} fftSize={128} centerPos={[0, -26, 30]} radius={8} />
+                  <MusicAnalyzer audio={ws.wavesurfers[3].media} fftSize={128} centerPos={[-75, -26, 10]} radius={4} />
+                  <MusicAnalyzer audio={ws.wavesurfers[1].media} fftSize={128} centerPos={[32, -26, -10]} radius={18} />
+                  <MusicAnalyzer
+                    audio={ws.wavesurfers[4].media}
+                    fftSize={128}
+                    centerPos={[-32, -26, -10]}
+                    radius={18}
+                  />
+                </>
+              )} */}
             </Rig>
           </Suspense>
           <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
