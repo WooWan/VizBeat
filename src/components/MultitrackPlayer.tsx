@@ -5,15 +5,17 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import StageGround from '@/components/StageGround';
 import Rig from '@/components/Rig';
-import StageSpotLight from '@/components/StageSpotLight';
 import MusicAnalyzer from '@/components/MusicAnalyzer';
 import Instrument from '@/components/Instrumental';
 import Loading from '@/components/Loading';
 import { instruments } from '@/constants/music';
-import { Vector3 } from 'three';
 import MusicPlayToggleButton from './MusicPlayToggleButton';
+import { useTrasksMutedStore, useMusicPlayStore } from '@/store/music';
+import { Track } from '@/store/types';
 
 type Props = {};
+
+const TrackArray: Track[] = ['vocal', 'drum', 'guitar', 'bass', 'piano'];
 
 export default function MultitrackPlayer({}: Props) {
   const overlayRef = useRef<any>(null);
@@ -26,6 +28,8 @@ export default function MultitrackPlayer({}: Props) {
   const [drumAudio, setDrumAudio] = useState<HTMLAudioElement | null>(null);
   const [pianoAudio, setPianoAudio] = useState<HTMLAudioElement | null>(null);
   const [bassAudio, setBassAudio] = useState<HTMLAudioElement | null>(null);
+  const tracksMuted = useTrasksMutedStore();
+  const { isMusicPlay, setIsMusicPlay } = useMusicPlayStore();
 
   useEffect(() => {
     const multitrack = Multitrack.create(
@@ -100,12 +104,6 @@ export default function MultitrackPlayer({}: Props) {
       }
     );
     multitrack.once('canplay', () => {
-      const audios = (multitrack as any).audios;
-      setVocalAudio(audios[0]);
-      setDrumAudio(audios[1]);
-      setGuitarAudio(audios[2]);
-      setBassAudio(audios[3]);
-      setPianoAudio(audios[4]);
       setWs(multitrack);
     });
 
@@ -114,12 +112,31 @@ export default function MultitrackPlayer({}: Props) {
     };
   }, []);
 
+  useEffect(() => {
+    if (ws) {
+      for (let i = 0; i < TrackArray.length; i++) {
+        if (tracksMuted[TrackArray[i]].isMuted) {
+          ws.audios[i].volume = 0;
+        } else {
+          ws.audios[i].volume = volumes[i];
+        }
+      }
+    }
+  }, [tracksMuted]);
+
+  useEffect(() => {
+    if (ws) {
+      pauseAndResumeAll();
+    }
+  }, [isMusicPlay]);
+
   const setMasterVolume = (event: ChangeEvent<HTMLInputElement>) => {
     const v = event.target.valueAsNumber / 100;
     const newVolumes = [];
-    for (let i = 0; i < ws.envelopes.length; i++) {
+    console.log(ws);
+    for (let i = 0; i < 5; i++) {
       newVolumes.push(v);
-      ws.setTrackVolume(i, v);
+      ws.audios[i].volume = v;
       const id = 'volume' + i;
       (document.getElementById(id) as any).value = event.target.valueAsNumber;
     }
@@ -128,8 +145,7 @@ export default function MultitrackPlayer({}: Props) {
   };
 
   const pauseAndResumeAll = () => {
-    console.log(ws.currentTime);
-    console.log(ws.isPlaying());
+    console.log('ws', ws);
     if (ws.isPlaying()) {
       ws.pause();
       pauseResumeRef.current.textContent = 'play';
@@ -137,19 +153,21 @@ export default function MultitrackPlayer({}: Props) {
       ws.play();
       pauseResumeRef.current.textContent = 'pause';
     }
-    console.log(ws.isPlaying());
   };
 
   const muteAll = () => {
-    for (let i = 0; i < ws.envelopes.length; i++) {
-      ws.setTrackVolume(i, 0);
+    for (let i = 0; i < 5; i++) {
+      if (!tracksMuted[TrackArray[i]].isMuted) {
+        tracksMuted[TrackArray[i]].setIsMuted(true);
+      }
     }
   };
 
   const unmuteAll = () => {
-    console.log(volumes);
-    for (let i = 0; i < ws.envelopes.length; i++) {
-      ws.setTrackVolume(i, volumes[i]);
+    for (let i = 0; i < 5; i++) {
+      if (tracksMuted[TrackArray[i]].isMuted) {
+        tracksMuted[TrackArray[i]].setIsMuted(false);
+      }
     }
   };
 
@@ -158,27 +176,20 @@ export default function MultitrackPlayer({}: Props) {
     let newVolumes = [...volumes];
     console.log(newVolumes);
     newVolumes[track] = v;
-    ws.setTrackVolume(track, v);
+    ws.audios[track].volume = v;
     setVolumes(newVolumes);
   };
 
-  const muteTrack = (track: number, event: React.MouseEvent<HTMLElement>) => {
-    if (ws.envelopes[track].volume) {
-      console.log('mute');
-      ws.setTrackVolume(track, 0);
-    } else {
-      console.log('unmute');
-      ws.setTrackVolume(track, volumes[track]);
-    }
-    console.log(ws.envelopes[track].volume);
+  const muteTrack = (track: number) => {
+    tracksMuted[TrackArray[track]].setIsMuted(!tracksMuted[TrackArray[track]].isMuted);
   };
 
   const soloTrack = (track: number, event: React.MouseEvent<HTMLElement>) => {
-    for (let i = 0; i < ws.envelopes.length; i++) {
+    for (let i = 0; i < 5; i++) {
       if (i != track) {
-        ws.setTrackVolume(i, 0);
+        tracksMuted[TrackArray[i]].setIsMuted(true);
       } else {
-        ws.setTrackVolume(i, volumes[i]);
+        tracksMuted[TrackArray[i]].setIsMuted(false);
       }
     }
   };
@@ -217,103 +228,93 @@ export default function MultitrackPlayer({}: Props) {
               {instruments.map((instrument, index) => (
                 <Instrument
                   key={index}
+                  idx={instrument.idx}
                   position={instrument.position}
                   rotation={instrument.rotation}
                   scale={instrument.scale}
                   url={instrument.url}
+                  SpotLightTarget={instrument.spotLightTarget}
+                  SpotLightPosition={instrument.spotLightPosition}
+                  SpotLightAngle={instrument.spotLightAngle}
+                  track={TrackArray[instrument.idx]}
                 />
               ))}
-              <StageSpotLight
-                color={0xffee93}
-                angle={0.22}
-                target={new Vector3(750, 0, 100)}
-                position={new Vector3(75, 60, 10)}
-              />
-              <StageSpotLight
-                color={0xffee93}
-                angle={0.22}
-                target={new Vector3(-750, 0, 100)}
-                position={new Vector3(-75, 60, 10)}
-              />
-              <StageSpotLight
-                color={0xffee93}
-                angle={0.32}
-                target={new Vector3(320, 0, -100)}
-                position={new Vector3(32, 60, 10)}
-              />
-              <StageSpotLight
-                color={0xffee93}
-                angle={0.32}
-                target={new Vector3(-320, 0, -100)}
-                position={new Vector3(-32, 60, 10)}
-              />
-              <StageSpotLight
-                color={0xffee93}
-                angle={0.25}
-                target={new Vector3(0, 0, 300)}
-                position={new Vector3(0, 60, 30)}
-              />
-              {guitarAudio && <MusicAnalyzer audio={guitarAudio} fftSize={128} centerPos={[75, -26, 10]} radius={8} />}
-              {vocalAudio && <MusicAnalyzer audio={vocalAudio} fftSize={128} centerPos={[0, -26, 30]} radius={8} />}
-              {bassAudio && <MusicAnalyzer audio={bassAudio} fftSize={128} centerPos={[-75, -26, 10]} radius={4} />}
-              {drumAudio && <MusicAnalyzer audio={drumAudio} fftSize={128} centerPos={[32, -26, -10]} radius={18} />}
-              {pianoAudio && <MusicAnalyzer audio={pianoAudio} fftSize={128} centerPos={[-32, -26, -10]} radius={18} />}
+              {/* {ws && (
+                <>
+                  <MusicAnalyzer audio={ws.wavesurfers[2].media} fftSize={128} centerPos={[75, -26, 10]} radius={8} />
+                  <MusicAnalyzer audio={ws.wavesurfers[0].media} fftSize={128} centerPos={[0, -26, 30]} radius={8} />
+                  <MusicAnalyzer audio={ws.wavesurfers[3].media} fftSize={128} centerPos={[-75, -26, 10]} radius={4} />
+                  <MusicAnalyzer audio={ws.wavesurfers[1].media} fftSize={128} centerPos={[32, -26, -10]} radius={18} />
+                  <MusicAnalyzer
+                    audio={ws.wavesurfers[4].media}
+                    fftSize={128}
+                    centerPos={[-32, -26, -10]}
+                    radius={18}
+                  />
+                </>
+              )} */}
             </Rig>
           </Suspense>
           <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
           <ambientLight intensity={0.4} />
         </Canvas>
       </Suspense>
-      <Button onClick={showController} className="fixed bottom-5 right-5 z-10">
-        Show Controller
-      </Button>
-      <div
-        ref={overlayRef}
-        className="fixed top-[100%] z-20 h-[80%] w-full overflow-y-scroll bg-white p-5 transition-transform duration-300  ease-in-out"
-      >
-        <div className="flex gap-x-2">
-          <label className="block">
-            volume: <input type="range" min="0" max="100" onChange={setMasterVolume} />
-          </label>
-          <button ref={pauseResumeRef} className="rounded bg-blue-500 px-3" onClick={pauseAndResumeAll}>
-            play
-          </button>
-          <button className="rounded bg-blue-500 px-3" onClick={muteAll}>
-            mute
-          </button>
-          <button className="rounded bg-blue-500 px-3" onClick={unmuteAll}>
-            unmute
-          </button>
+      <div>
+        <Button onClick={showController} className="fixed bottom-5 right-5 z-10">
+          Show Controller
+        </Button>
+        <div
+          ref={overlayRef}
+          className="fixed top-[100%] z-20 h-[80%] w-full overflow-y-scroll bg-white p-5 transition-transform duration-300  ease-in-out"
+        >
+          <div>
+            <div className="flex gap-x-2">
+              <label className="block">
+                volume: <input type="range" min="0" max="100" onChange={setMasterVolume} />
+              </label>
+              <button ref={pauseResumeRef} className="rounded bg-blue-500 px-3" onClick={pauseAndResumeAll}>
+                play
+              </button>
+              <button className="rounded bg-blue-500 px-3" onClick={muteAll}>
+                mute
+              </button>
+              <button className="rounded bg-blue-500 px-3" onClick={unmuteAll}>
+                unmute
+              </button>
+            </div>
+          </div>
+          <section className="flex">
+            <div>
+              <ul className="flex h-full min-h-[600px] flex-col justify-evenly">
+                {tracks.map((track) => {
+                  return (
+                    <div className="flex min-h-[120px] flex-col items-center justify-center" key={track}>
+                      <label className="block">
+                        volume:{' '}
+                        <input
+                          id={'volume' + track}
+                          onChange={(e) => setTrackVolume(track, e)}
+                          type="range"
+                          min="0"
+                          max="100"
+                        />
+                      </label>
+                      <div className="flex gap-x-2">
+                        <button className="rounded bg-blue-500 px-3" onClick={(e) => muteTrack(track)}>
+                          mute
+                        </button>
+                        <button className="rounded bg-blue-500 px-3" onClick={(e) => soloTrack(track, e)}>
+                          solo
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </ul>
+            </div>
+            <div className="w-full" ref={playerRef}></div>
+          </section>
         </div>
-        <section className="flex">
-          <ul className="flex h-full min-h-[600px] flex-col justify-evenly">
-            {tracks.map((track) => {
-              return (
-                <div className="flex min-h-[120px] flex-col items-center justify-center" key={track}>
-                  <label className="block">
-                    volume:{' '}
-                    <input
-                      id={'volume' + track}
-                      onChange={(e) => setTrackVolume(track, e)}
-                      type="range"
-                      min="0"
-                      max="100"
-                    />
-                  </label>
-                  <div className="flex gap-x-2">
-                    <button className="rounded bg-blue-500 px-3" onClick={(e) => muteTrack(track, e)}>
-                      mute
-                    </button>
-                    <button className="rounded bg-blue-500 px-3" onClick={(e) => soloTrack(track, e)}>
-                      solo
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </ul>
-          <div className="w-full" ref={playerRef}></div>
-        </section>
       </div>
     </main>
   );
