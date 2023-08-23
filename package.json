@@ -41,6 +41,7 @@
     "react-dom": "18.2.0",
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.43.9",
+    "spotify-dl": "^1.1.2",
     "tailwind-merge": "^1.12.0",
     "tailwind-scrollbar-hide": "^1.1.7",
     "three": "^0.151.3",
