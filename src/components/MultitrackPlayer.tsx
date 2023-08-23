@@ -28,7 +28,6 @@ export default function MultitrackPlayer({}: Props) {
   const [drumAudio, setDrumAudio] = useState<HTMLAudioElement | null>(null);
   const [pianoAudio, setPianoAudio] = useState<HTMLAudioElement | null>(null);
   const [bassAudio, setBassAudio] = useState<HTMLAudioElement | null>(null);
-  const [isReady, setIsReady] = useState(false);
   const tracksMuted = useTrasksMutedStore();
   const { isMusicPlay, setIsMusicPlay } = useMusicPlayStore();
 
@@ -112,7 +111,6 @@ export default function MultitrackPlayer({}: Props) {
       setBassAudio(audios[3]);
       setPianoAudio(audios[4]);
       setWs(multitrack);
-      setIsReady(true);
     });
 
     return () => {
@@ -121,7 +119,7 @@ export default function MultitrackPlayer({}: Props) {
   }, []);
 
   useEffect(() => {
-    if (isReady) {
+    if (ws) {
       for (let i = 0; i < TrackArray.length; i++) {
         if (tracksMuted[TrackArray[i]].isMuted) {
           ws.audios[i].volume = 0;
@@ -133,7 +131,7 @@ export default function MultitrackPlayer({}: Props) {
   }, [tracksMuted]);
 
   useEffect(() => {
-    if (isReady) {
+    if (ws) {
       pauseAndResumeAll();
     }
   }, [isMusicPlay]);
@@ -247,21 +245,11 @@ export default function MultitrackPlayer({}: Props) {
                   track={TrackArray[instrument.idx]}
                 />
               ))}
-              {/* {guitarAudio && isReady && (
-                <MusicAnalyzer audio={guitarAudio} fftSize={128} centerPos={[75, -26, 10]} radius={8} />
-              )}
-              {vocalAudio && isReady && (
-                <MusicAnalyzer audio={vocalAudio} fftSize={128} centerPos={[0, -26, 30]} radius={8} />
-              )}
-              {bassAudio && isReady && (
-                <MusicAnalyzer audio={bassAudio} fftSize={128} centerPos={[-75, -26, 10]} radius={4} />
-              )}
-              {drumAudio && isReady && (
-                <MusicAnalyzer audio={drumAudio} fftSize={128} centerPos={[32, -26, -10]} radius={18} />
-              )}
-              {pianoAudio && isReady && (
-                <MusicAnalyzer audio={pianoAudio} fftSize={128} centerPos={[-32, -26, -10]} radius={18} />
-              )} */}
+              {guitarAudio && <MusicAnalyzer audio={guitarAudio} fftSize={128} centerPos={[75, -26, 10]} radius={8} />}
+              {vocalAudio && <MusicAnalyzer audio={vocalAudio} fftSize={128} centerPos={[0, -26, 30]} radius={8} />}
+              {bassAudio && <MusicAnalyzer audio={bassAudio} fftSize={128} centerPos={[-75, -26, 10]} radius={4} />}
+              {drumAudio && <MusicAnalyzer audio={drumAudio} fftSize={128} centerPos={[32, -26, -10]} radius={18} />}
+              {pianoAudio && <MusicAnalyzer audio={pianoAudio} fftSize={128} centerPos={[-32, -26, -10]} radius={18} />}
             </Rig>
           </Suspense>
           <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
