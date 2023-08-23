@@ -121,7 +121,7 @@ export default function MultitrackPlayer({}: Props) {
     console.log(ws);
     for (let i = 0; i < 5; i++) {
       newVolumes.push(v);
-      ws.setTrackVolume(i, v);
+      ws.audios[i].volume = v;
       const id = 'volume' + i;
       (document.getElementById(id) as any).value = event.target.valueAsNumber;
     }
@@ -143,15 +143,14 @@ export default function MultitrackPlayer({}: Props) {
   };
 
   const muteAll = () => {
-    for (let i = 0; i < ws.envelopes.length; i++) {
-      ws.setTrackVolume(i, 0);
+    for (let i = 0; i < 5; i++) {
+      ws.audios[i].volume = 0;
     }
   };
 
   const unmuteAll = () => {
-    // console.log(volumes);
-    for (let i = 0; i < ws.envelopes.length; i++) {
-      ws.setTrackVolume(i, volumes[i]);
+    for (let i = 0; i < 5; i++) {
+      ws.audios[i].volume = volumes[i];
     }
   };
 
@@ -160,29 +159,24 @@ export default function MultitrackPlayer({}: Props) {
     let newVolumes = [...volumes];
     console.log(newVolumes);
     newVolumes[track] = v;
-    ws.setTrackVolume(track, v);
+    ws.audios[track].volume = v;
     setVolumes(newVolumes);
   };
 
   const muteTrack = (track: number, event: React.MouseEvent<HTMLElement>) => {
-    // console.log('');
-
     if (ws.audios[track].volume) {
-      console.log('mute');
-      ws.setTrackVolume(track, 0);
+      ws.audios[track].volume = 0;
     } else {
-      console.log('unmute');
-      ws.setTrackVolume(track, volumes[track]);
+      ws.audios[track].volume = volumes[track];
     }
   };
 
   const soloTrack = (track: number, event: React.MouseEvent<HTMLElement>) => {
-    console.log(ws.envelopes);
-    for (let i = 0; i < ws.envelopes.length; i++) {
+    for (let i = 0; i < 5; i++) {
       if (i != track) {
-        ws.setTrackVolume(i, 0);
+        ws.audios[i].volume = 0;
       } else {
-        ws.setTrackVolume(i, volumes[i]);
+        ws.audios[i].volume = volumes[i];
       }
     }
   };
