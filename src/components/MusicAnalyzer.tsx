@@ -11,11 +11,15 @@ type Props = {
   audio: HTMLAudioElement;
 };
 
+type AudioNode = {
+  sourceNode: MediaElementAudioSourceNode;
+  analyzerNode: AnalyserNode;
+};
+
 export default function MusicAnalyzer({ fftSize, centerPos, radius, audio }: Props) {
-  const [analyser, setAnalyser] = useState<AnalyserNode | null>(null);
+  const [audioMap, setAudioMap] = useState({} as AudioNode);
   const dataArrayRef = useRef<Uint8Array | null>(null);
   const meanRef = useRef(0);
-  const [sourceNode, setSourceNode] = useState<MediaElementAudioSourceNode | null>(null);
 
   const bars = useMemo(() => {
     const bars = [];
@@ -32,32 +36,39 @@ export default function MusicAnalyzer({ fftSize, centerPos, radius, audio }: Pro
   }, [fftSize, radius]);
 
   useEffect(() => {
-    if (sourceNode) return;
-    const audioContext = new AudioContext();
-    const analyser = audioContext.createAnalyser();
-    const source = audioContext.createMediaElementSource(audio);
-    setSourceNode(source);
+    if (audioMap) return;
 
-    source.connect(analyser);
-    source.connect(audioContext.destination);
+    const audioCtx = new AudioContext();
 
-    analyser.fftSize = fftSize;
+    const sourceNode2 = audioCtx.createMediaElementSource(audio);
+    const analyzerNode = audioCtx.createAnalyser();
+    sourceNode2?.connect(analyzerNode);
+    sourceNode2?.connect(audioCtx.destination);
+    analyzerNode.fftSize = fftSize;
 
-    setAnalyser(analyser);
+    console.log('ehhelhl');
+
+    setAudioMap({
+      sourceNode: sourceNode2,
+      analyzerNode: analyzerNode
+    });
+
     return () => {
-      source.disconnect();
+      sourceNode2?.disconnect();
+      analyzerNode?.disconnect();
     };
   }, []);
 
-  const newData = new Uint8Array(fftSize);
+  const newData = useMemo(() => new Uint8Array(fftSize), [fftSize]);
   useFrame(() => {
-    if (analyser) {
-      analyser.getByteTimeDomainData(newData);
-      // console.log(newData);
+    const analyzerNode = audioMap.analyzerNode;
+    if (analyzerNode) {
+      analyzerNode.getByteTimeDomainData(newData);
       meanRef.current = newData.reduce((a, b) => a + b) / (128 * newData.length);
       dataArrayRef.current = newData;
     }
   });
+
   return (
     <group>
       {bars.map((item, index) => (
