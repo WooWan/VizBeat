@@ -1,4 +1,5 @@
 import { Music } from '@prisma/client';
+import { record } from 'zod';
 
 export type AudioData = {
   source: AudioBufferSourceNode;
@@ -30,3 +31,10 @@ export type MusicPlayState = {
   isMusicPlay: boolean;
   setIsMusicPlay: (isMusicPlay: boolean) => void;
 };
+
+export type TrackMutedState = {
+  isMuted: boolean;
+  setIsMuted: (isMusicPlay: boolean) => void;
+};
+
+export type Track = 'vocal' | 'guitar' | 'drum' | 'piano' | 'bass';

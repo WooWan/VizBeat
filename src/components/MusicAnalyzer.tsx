@@ -32,16 +32,21 @@ export default function MusicAnalyzer({ fftSize, centerPos, radius, audio }: Pro
   }, [fftSize, radius]);
 
   useEffect(() => {
-    const audioContext = new window.AudioContext();
+    if (sourceNode) return;
+    const audioContext = new AudioContext();
     const analyser = audioContext.createAnalyser();
-    const source = audioContext.createMediaElementSource(audio as HTMLAudioElement);
+    const source = audioContext.createMediaElementSource(audio);
     setSourceNode(source);
+
     source.connect(analyser);
     source.connect(audioContext.destination);
 
     analyser.fftSize = fftSize;
 
     setAnalyser(analyser);
+    return () => {
+      source.disconnect();
+    };
   }, []);
 
   const newData = new Uint8Array(fftSize);
