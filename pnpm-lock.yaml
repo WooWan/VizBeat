@@ -108,8 +108,8 @@ dependencies:
     specifier: ^9.0.0
     version: 9.0.0
   wavesurfer-multitrack:
-    specifier: ^0.1.0
-    version: 0.1.0
+    specifier: ^0.1.2
+    version: 0.1.2
   zod:
     specifier: ^3.21.4
     version: 3.21.4
@@ -2198,7 +2198,7 @@ packages:
       normalize-path: 3.0.0
       readdirp: 3.6.0
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: 2.3.3
     dev: true
 
   /chownr@1.1.4:
@@ -3401,8 +3401,8 @@ packages:
   /fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
 
-  /fsevents@2.3.2:
-    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
+  /fsevents@2.3.3:
+    resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
     requiresBuild: true
@@ -6523,8 +6523,8 @@ packages:
       graceful-fs: 4.2.11
     dev: false
 
-  /wavesurfer-multitrack@0.1.0:
-    resolution: {integrity: sha512-kK5rYnOg1NAGA4I2ezLs3utxSaBS9f3VBZlYe1KUxbmRqd+r8g7jDSLYhQqv6aaOwKQYS8MT/fzRTuCQL23n3Q==}
+  /wavesurfer-multitrack@0.1.2:
+    resolution: {integrity: sha512-D736De2VnJvmsmdLVBl3L6KIpJfYdUTXE+i+he8xjLX6+Pao7KTAAybgZHEvQ9jtHnWSQaEfWJNEPtV/omvekQ==}
     dependencies:
       wavesurfer.js: 7.1.5
     dev: false

@@ -46,7 +46,7 @@
     "tailwind-scrollbar-hide": "^1.1.7",
     "three": "^0.151.3",
     "uuid": "^9.0.0",
-    "wavesurfer-multitrack": "^0.1.0",
+    "wavesurfer-multitrack": "^0.1.2",
     "zod": "^3.21.4",
     "zustand": "^4.3.7"
   },
