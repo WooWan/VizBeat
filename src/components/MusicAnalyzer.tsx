@@ -20,6 +20,7 @@ export default function MusicAnalyzer({ fftSize, centerPos, radius, audio }: Pro
   const [audioMap, setAudioMap] = useState({} as AudioNode);
   const dataArrayRef = useRef<Uint8Array | null>(null);
   const meanRef = useRef(0);
+  const newData = useMemo(() => new Uint8Array(fftSize), [fftSize]);
 
   const bars = useMemo(() => {
     const bars = [];
@@ -36,37 +37,34 @@ export default function MusicAnalyzer({ fftSize, centerPos, radius, audio }: Pro
   }, [fftSize, radius]);
 
   useEffect(() => {
-    if (audioMap) return;
+    if (audioMap.sourceNode) return;
 
     const audioCtx = new AudioContext();
 
-    const sourceNode2 = audioCtx.createMediaElementSource(audio);
+    const soureNode = audioCtx.createMediaElementSource(audio);
     const analyzerNode = audioCtx.createAnalyser();
-    sourceNode2?.connect(analyzerNode);
-    sourceNode2?.connect(audioCtx.destination);
+    soureNode?.connect(analyzerNode);
+    soureNode?.connect(audioCtx.destination);
     analyzerNode.fftSize = fftSize;
 
-    console.log('ehhelhl');
-
     setAudioMap({
-      sourceNode: sourceNode2,
+      sourceNode: soureNode,
       analyzerNode: analyzerNode
     });
 
     return () => {
-      sourceNode2?.disconnect();
+      soureNode?.disconnect();
       analyzerNode?.disconnect();
     };
   }, []);
 
-  const newData = useMemo(() => new Uint8Array(fftSize), [fftSize]);
   useFrame(() => {
     const analyzerNode = audioMap.analyzerNode;
-    if (analyzerNode) {
-      analyzerNode.getByteTimeDomainData(newData);
-      meanRef.current = newData.reduce((a, b) => a + b) / (128 * newData.length);
-      dataArrayRef.current = newData;
-    }
+    if (!analyzerNode) return;
+
+    analyzerNode.getByteTimeDomainData(newData);
+    meanRef.current = newData.reduce((a, b) => a + b) / (128 * newData.length);
+    dataArrayRef.current = newData;
   });
 
   return (
