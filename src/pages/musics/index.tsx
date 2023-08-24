@@ -4,7 +4,7 @@ import { Music } from '@prisma/client';
 import MusicsNavbar from '@/components/layout/MusicsNavbar';
 import MusicsCanvas from '@/canvas/MusicsCanvas';
 import { cn } from '@/lib/utils';
-import { PlayIcon } from 'lucide-react';
+import { Music4Icon } from 'lucide-react';
 import Link from 'next/link';
 import { useMusicPlayStore } from '@/store/music';
 
@@ -31,13 +31,14 @@ const MusicsPage = () => {
           href="/stage"
           onClick={() => setIsMusicPlay(true)}
           className={cn(
-            'absolute left-1/2 top-1/2 z-50 hidden h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/[0.7] lg:h-20 lg:w-20',
+            'absolute left-1/2 top-1/2 z-50 hidden h-12 w-12 translate-x-16 translate-y-20 items-center justify-center rounded-full bg-zinc-950/[0.7] text-white lg:h-16 lg:w-48',
             {
-              flex: selectedMusic
+              'flex items-center justify-center gap-x-2.5': selectedMusic
             }
           )}
         >
-          <PlayIcon className={'h-6 w-6 fill-current text-black/[0.85] lg:h-10 lg:w-10'} />
+          <Music4Icon className="h-6 w-6 text-rose-100 lg:h-7 lg:w-7" />
+          <span className="text-lg font-bold">Go to Stage</span>
         </Link>
         <Suspense>
           <MusicsCanvas
