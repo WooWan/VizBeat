@@ -24,8 +24,8 @@ dependencies:
     specifier: ^1.0.1
     version: 1.0.1(react@18.2.0)
   '@react-spring/three':
-    specifier: ^9.7.2
-    version: 9.7.2(@react-three/fiber@8.12.2)(react@18.2.0)(three@0.151.3)
+    specifier: ^9.7.3
+    version: 9.7.3(@react-three/fiber@8.12.2)(react@18.2.0)(three@0.151.3)
   '@react-spring/web':
     specifier: ^9.7.3
     version: 9.7.3(react-dom@18.2.0)(react@18.2.0)
@@ -1186,8 +1186,8 @@ packages:
       three: 0.151.3
     dev: false
 
-  /@react-spring/three@9.7.2(@react-three/fiber@8.12.2)(react@18.2.0)(three@0.151.3):
-    resolution: {integrity: sha512-u7VAjc+az82PM+WOC2sTbZQLBixuN+0jX/oahzyjEnIds5eUJgaBqZRYAAEMupuzGGl8H3QqL3bFgBEQLq6ADQ==}
+  /@react-spring/three@9.7.3(@react-three/fiber@8.12.2)(react@18.2.0)(three@0.151.3):
+    resolution: {integrity: sha512-Q1p512CqUlmMK8UMBF/Rj79qndhOWq4XUTayxMP9S892jiXzWQuj+xC3Xvm59DP/D4JXusXpxxqfgoH+hmOktA==}
     peerDependencies:
       '@react-three/fiber': '>=6.0'
       react: ^16.8.0 || ^17.0.0 || ^18.0.0

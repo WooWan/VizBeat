@@ -1,5 +1,5 @@
 import { useRef, useState, useTransition } from 'react';
-import { animated, useSpring } from '@react-spring/three';
+import { animated, useSpring } from '@react-spring/web';
 import { useGLTF } from '@react-three/drei';
 import StageSpotLight from './StageSpotLight';
 import { useTrasksMutedStore } from '@/store/music';
