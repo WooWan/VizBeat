@@ -1,90 +1,77 @@
-import { Track, MusicAction, MusicPlayState, MusicState, TrackMutedState } from '@/store/types';
-import { createAudio, mockData } from '@/utils/music';
-import { Music } from '@prisma/client';
+import { MusicAction, MusicState } from '@/store/types';
+import { InstrumentType } from '@/types/instrument';
 import { create } from 'zustand';
+import { immer } from 'zustand/middleware/immer';
+import { devtools } from 'zustand/middleware';
 
-export const useMusicPlayStore = create<MusicPlayState>()((set) => ({
-  isMusicPlay: false,
-  setIsMusicPlay: (isMusicPlay: boolean) => set({ isMusicPlay })
-}));
-
-export const useTrasksMutedStore = create<Record<Track, TrackMutedState>>((set) => ({
-  vocal: {
-    isMuted: false,
-    setIsMuted: (isPlay) =>
-      set((state) => ({
-        vocal: { ...state.vocal, isMuted: isPlay }
-      }))
-  },
-  guitar: {
-    isMuted: false,
-    setIsMuted: (isPlay) =>
-      set((state) => ({
-        guitar: { ...state.guitar, isMuted: isPlay }
-      }))
-  },
-  drum: {
-    isMuted: false,
-    setIsMuted: (isPlay) =>
-      set((state) => ({
-        drum: { ...state.drum, isMuted: isPlay }
-      }))
-  },
-  piano: {
-    isMuted: false,
-    setIsMuted: (isPlay) =>
-      set((state) => ({
-        piano: { ...state.piano, isMuted: isPlay }
-      }))
-  },
-  bass: {
-    isMuted: false,
-    setIsMuted: (isPlay) =>
-      set((state) => ({
-        bass: { ...state.bass, isMuted: isPlay }
-      }))
-  }
-}));
-
-export const useMusicStore = create<MusicState & MusicAction>()((set, get) => {
-  return {
-    audio: {
-      drums: mockData(),
-      audio: mockData()
-    },
-    isLoaded: false,
-    isPlaying: false,
-    api: {
-      selectMusic(music: Music) {
-        set({ music });
-      },
-      async load(url: string) {
-        set({
-          isLoaded: true,
-          audio: {
-            audio: await createAudio(url),
-            drums: await createAudio(url)
+export const useMusicStore = create(
+  devtools(
+    immer<MusicState & MusicAction>((set, get) => {
+      return {
+        instruments: {
+          bass: {
+            isMuted: false,
+            audio: null,
+            volume: 0.5
+          },
+          guitar: {
+            isMuted: false,
+            audio: null,
+            volume: 0.5
+          },
+          piano: {
+            isMuted: false,
+            audio: null,
+            volume: 0.5
+          },
+          drum: {
+            isMuted: false,
+            audio: null,
+            volume: 0.5
+          },
+          vocal: {
+            isMuted: false,
+            audio: null,
+            volume: 0.5
           }
-        });
-      },
-      playMusic() {
-        const audio = get().audio.audio;
-        audio.source?.start(0);
-        set({ isPlaying: true });
-      },
-      playInstruments() {
-        const audio = get().audio;
-        const files = Object.values(audio);
-        files.forEach(({ source }) => source?.start(0));
-        set({ isPlaying: true });
-      },
-      stop() {
-        const audio = get().audio;
-        const files = Object.values(audio);
-        files.forEach(({ source }) => {
-          source?.stop();
-        });
-      }
-    }
-  };
-});
+        },
+        isLoaded: false,
+        isPlaying: false,
+        api: {
+          muteAudio(key: InstrumentType) {
+            set((state) => {
+              state.instruments[key].isMuted = true;
+            });
+          },
+          unMuteAudio(key: InstrumentType) {
+            set((state) => {
+              state.instruments[key].isMuted = false;
+            });
+          },
+          updateVolume(key: InstrumentType, volume: number) {
+            set((state) => {
+              state.instruments[key].volume = volume;
+            });
+          },
+          initializeAudio(url: string) {
+            const audio = new Audio(url);
+            set({
+              isLoaded: true,
+              audio: audio
+            });
+          },
+          playMusic() {
+            const audio = get().audio;
+            audio?.play();
+            set({ isPlaying: true });
+          },
+          stopMusic() {
+            const audio = get().audio;
+            audio?.pause();
+            set({ isPlaying: false });
+          }
+        }
+      };
+    })
+  )
+);

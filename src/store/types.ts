@@ -1,5 +1,5 @@
+import { InstrumentType } from '@/types/instrument';
 import { Music } from '@prisma/client';
-import { record } from 'zod';
 
 export type AudioData = {
   source: AudioBufferSourceNode;
@@ -9,9 +9,13 @@ export type AudioData = {
 
 export type MusicState = {
   music?: Music;
-  audio: {
-    audio: AudioData;
-    drums: AudioData;
+  audio?: HTMLAudioElement;
+  instruments: {
+    [key in InstrumentType]: {
+      isMuted: boolean;
+      volume: number;
+      audio: HTMLAudioElement | null;
+    };
   };
   isLoaded: boolean;
   isPlaying: boolean;
@@ -19,22 +23,16 @@ export type MusicState = {
 
 export type MusicAction = {
   api: {
-    selectMusic: (music: Music) => void;
-    load: (url: string) => Promise<void>;
+    initializeAudio: (url: string) => void;
     playMusic: () => void;
-    stop: () => void;
-    playInstruments: () => void;
+    stopMusic: () => void;
+    muteAudio: (instrument: InstrumentType) => void;
+    unMuteAudio: (instrument: InstrumentType) => void;
+    updateVolume: (instrument: InstrumentType, volume: number) => void;
   };
-};
-
-export type MusicPlayState = {
-  isMusicPlay: boolean;
-  setIsMusicPlay: (isMusicPlay: boolean) => void;
 };
 
 export type TrackMutedState = {
   isMuted: boolean;
   setIsMuted: (isMusicPlay: boolean) => void;
 };
-
-export type Track = 'vocal' | 'guitar' | 'drum' | 'piano' | 'bass';
