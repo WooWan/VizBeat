@@ -6,13 +6,10 @@ import { Music } from '@prisma/client';
 import { Group } from 'three';
 
 type Props = {
-  handleClick: (id: string) => void;
   musicList?: Music[];
-  selectedMusic: Music | null;
-  setSelectedMusic: React.Dispatch<SetStateAction<Music | null>>;
 };
 
-const MusicList = ({ handleClick, musicList, selectedMusic, setSelectedMusic }: Props) => {
+const MusicList = ({ musicList }: Props) => {
   const groupRef = useRef<Group>(null!);
   const three = useThree();
   const scroll = useScroll();
@@ -28,9 +25,6 @@ const MusicList = ({ handleClick, musicList, selectedMusic, setSelectedMusic }: 
           key={i}
           music={music}
           index={i}
-          handleClick={handleClick}
-          selectedMusic={selectedMusic}
-          setSelectedMusic={setSelectedMusic}
           musics={musicList}
           groupY={scroll.offset * three.viewport.height * 0.25}
         />

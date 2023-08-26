@@ -73,7 +73,7 @@ export type ExternalIDS = {
   isrc: string;
 };
 
-export type MusicEssential = Pick<Music, 'title' | 'artist'>;
+export type MusicEssential = Pick<Music, 'id' | 'title' | 'artist'>;
 
 export type UploadMusicUrl = MusicEssential & {
   url: string;
