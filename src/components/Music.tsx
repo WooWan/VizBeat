@@ -5,25 +5,28 @@ import React, { useEffect, useRef, useState } from 'react';
 import { lerp } from 'three/src/math/MathUtils';
 import { MeshAxis, YAxis } from '@/types/Axis';
 import { Music } from '@prisma/client';
+import { useMusicStore } from '@/store/music';
+import { shallow } from 'zustand/shallow';
 
 const radian = Math.PI / 180;
 
 type Props = {
   music: Music;
   index: number;
-  handleClick: (id: string) => void;
   groupY: number;
-  selectedMusic: Music | null;
   musics?: Music[];
-  setSelectedMusic: React.Dispatch<React.SetStateAction<Music | null>>;
 };
 
 const LERP_FACTOR = 0.05;
 
-const MusicAlbum = ({ music, index, handleClick, groupY, selectedMusic, musics, setSelectedMusic }: Props) => {
+const MusicAlbum = ({ music, index, groupY, musics }: Props) => {
   const [originalPosition] = useState(2 - index * 1.5);
   const [rotation, setRotation] = useState(radian * 10 * index);
   const meshRef = useRef<Mesh>(null!);
+  const { api, music: selectedMusic } = useMusicStore(
+    (state) => ({ api: state.api, isAudioPlaying: state.isAudioPlaying, music: state.musicInfo }),
+    shallow
+  );
   const cover = useLoader(TextureLoader, music.albumCover);
   const texture = useLoader(TextureLoader, '/images/cdtexture.jpg');
   const scroll = useScroll();
@@ -40,14 +43,14 @@ const MusicAlbum = ({ music, index, handleClick, groupY, selectedMusic, musics, 
 
   useFrame(() => {
     if (!musics) return;
-    if (selectedMusic === null) return; //아무것도 선택 안됬을때
+    if (!selectedMusic) return; //아무것도 선택 안 됐을 때
     const selectedIdx = musics.findIndex((music) => music.id === selectedMusic?.id);
-    //내가 선택됬을떄
-    if (selectedMusic.id === music.id) {
+    //내가 선택 됐을 때
+    if (selectedMusic?.id === music?.id) {
       updateRotation({ x: radian * 90, y: 0, z: radian * -90 });
       updatePosition({ y: -groupY });
     } else {
-      //남이 선택됬을때
+      //남이 선택 됐을 때
       const indexGap = index - selectedIdx;
       if (indexGap < 0) {
         updatePosition({ y: 10 - groupY - indexGap * 1.5 });
@@ -85,7 +88,8 @@ const MusicAlbum = ({ music, index, handleClick, groupY, selectedMusic, musics, 
     if (selectedMusic !== null) {
       updatePosition({ y: originalPosition });
       updateRotation({ x: 0, y: 0, z: 0 });
-      setSelectedMusic(null);
+      api.clear();
+      // setSelectedMusic(null);
     }
   }, [scroll.offset]);
 
@@ -93,7 +97,7 @@ const MusicAlbum = ({ music, index, handleClick, groupY, selectedMusic, musics, 
     <mesh
       ref={meshRef}
       onClick={(e) => {
-        handleClick(music.id);
+        api.selectAudio(music);
         e.stopPropagation();
       }}
     >

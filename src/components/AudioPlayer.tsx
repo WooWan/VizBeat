@@ -1,26 +1,32 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Pause, Play, SkipBack, SkipForward } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { formatTime } from '@/utils/time';
 import { Music } from '@prisma/client';
+import { useMusicStore } from '@/store/music';
+import { shallow } from 'zustand/shallow';
 
 type Props = {
   musics?: Music[];
-  handleMusicSelect: (id: string) => void;
-  selectedMusic: Music | null;
 };
 
-const AudioPlayer = ({ musics, handleMusicSelect, selectedMusic }: Props) => {
-  const [isPlaying, setIsPlaying] = useState(false);
+const AudioPlayer = ({ musics }: Props) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [progress, setProgress] = useState(0);
-  const audioRef = useRef<HTMLAudioElement>(null!);
   const [seekProgress, setSeekProgress] = useState(0);
+  const {
+    api,
+    isAudioPlaying,
+    music: selectedMusic,
+    audio
+  } = useMusicStore(
+    (state) => ({ api: state.api, isAudioPlaying: state.isAudioPlaying, music: state.musicInfo, audio: state.audio }),
+    shallow
+  );
 
   useEffect(() => {
-    const audio = audioRef.current;
     if (!audio) return;
 
     const setAudioData = () => {
@@ -40,47 +46,29 @@ const AudioPlayer = ({ musics, handleMusicSelect, selectedMusic }: Props) => {
       audio.removeEventListener('loadeddata', setAudioData);
       audio.removeEventListener('timeupdate', setAudioTime);
     };
-  }, []);
-
-  useEffect(() => {
-    if (selectedMusic === null || !isPlaying) return;
-    audioRef.current?.play();
-    setIsPlaying(true);
-  }, [selectedMusic]);
+  }, [audio]);
 
   const skipToNextMusic = () => {
     if (!musics) return;
-    const index = musics.findIndex((music) => music.id === selectedMusic?.id);
+    const index = musics.findIndex((music) => music.id === music?.id);
     const nextIndex = index === musics.length - 1 ? 0 : index + 1;
-    handleMusicSelect(musics[nextIndex].id);
+    console.log('next ', musics[nextIndex]);
+    api.selectAudio(musics[nextIndex]);
   };
 
   const skipToPrevMusic = () => {
     if (!musics) return;
     const index = musics.findIndex((music) => music.id === selectedMusic?.id);
     const previndex = index === 0 ? musics.length - 1 : index - 1;
-    handleMusicSelect(musics[previndex].id);
+    api.selectAudio(musics[previndex]);
   };
 
-  const toggleMusic = () => {
-    if (!audioRef.current) return;
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play();
-    }
-    setIsPlaying(!isPlaying);
-  };
+  const toggleMusic = () => (isAudioPlaying ? api.stopAudio() : api.playAudio());
 
-  const playFromClickedPosition = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    audioRef.current.currentTime = (seekProgress * audioRef.current.duration) / 100;
+  const playFromClickedPosition = () => {
+    if (!audio) return;
+    audio.currentTime = (seekProgress * audio.duration) / 100;
     setProgress(seekProgress);
-  };
-
-  const handleTimeUpdate = () => {
-    if (!audioRef.current) return;
-    setCurrentTime(audioRef.current.currentTime);
-    setDuration(audioRef.current.duration);
   };
 
   const seekHover = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -98,7 +86,7 @@ const AudioPlayer = ({ musics, handleMusicSelect, selectedMusic }: Props) => {
           className={cn(
             'absolute left-[15px] right-[15px] top-0 z-10 h-24 rounded-t-xl bg-[#fff7f7] py-3 pl-60 pr-5 transition-transform duration-700',
             {
-              '-translate-y-24': isPlaying
+              '-translate-y-24': selectedMusic
             }
           )}
         >
@@ -133,7 +121,7 @@ const AudioPlayer = ({ musics, handleMusicSelect, selectedMusic }: Props) => {
               alt={'album_cover'}
               fill
               className={cn('-z-10 animate-spin-slow object-cover', {
-                'z-10': !isPlaying
+                'z-10': !isAudioPlaying
               })}
             />
           </div>
@@ -155,7 +143,7 @@ const AudioPlayer = ({ musics, handleMusicSelect, selectedMusic }: Props) => {
               onClick={toggleMusic}
               disabled={selectedMusic === null}
             >
-              {isPlaying ? (
+              {isAudioPlaying ? (
                 <Pause
                   size={24}
                   className={cn('fill-current text-gray-300 group-hover:text-white', {
@@ -189,7 +177,6 @@ const AudioPlayer = ({ musics, handleMusicSelect, selectedMusic }: Props) => {
           </div>
         </div>
       </div>
-      <audio ref={audioRef} src={selectedMusic?.musicUrl} onTimeUpdate={handleTimeUpdate} />
     </div>
   );
 };

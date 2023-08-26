@@ -1,35 +1,32 @@
 import React, { ChangeEvent, useEffect, useRef, useState, Suspense } from 'react';
-import Multitrack from 'wavesurfer-multitrack';
 import { Button } from './ui/button';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import StageGround from '@/components/StageGround';
 import Rig from '@/components/Rig';
 import MusicAnalyzer from '@/components/MusicAnalyzer';
-import Instrument from '@/components/Instrumental';
 import Loading from '@/components/Loading';
 import { instruments } from '@/constants/music';
 import MusicPlayToggleButton from './MusicPlayToggleButton';
-import { useTrasksMutedStore, useMusicPlayStore } from '@/store/music';
-import { Track } from '@/store/types';
+import { useMusicStore } from '@/store/music';
+import Instrument from './Instrument';
+import { Volume2Icon, VolumeXIcon } from 'lucide-react';
+import { InstrumentData } from '@/types/instrument';
+import Multitrack from 'wavesurfer-multitrack';
+import { shallow } from 'zustand/shallow';
 
-type Props = {};
+const TRACK_HEIGHT = 100;
 
-const TrackArray: Track[] = ['vocal', 'drum', 'guitar', 'bass', 'piano'];
-
-export default function MultitrackPlayer({}: Props) {
+export default function MultitrackPlayer() {
   const overlayRef = useRef<any>(null);
   const playerRef = useRef<any>(null);
-  const pauseResumeRef = useRef<any>(null);
   const [ws, setWs] = useState<any>(null);
-  const [volumes, setVolumes] = useState<any>([0.5, 0.5, 0.5, 0.5, 0.5]);
-  const [vocalAudio, setVocalAudio] = useState<HTMLAudioElement | null>(null);
-  const [guitarAudio, setGuitarAudio] = useState<HTMLAudioElement | null>(null);
-  const [drumAudio, setDrumAudio] = useState<HTMLAudioElement | null>(null);
-  const [pianoAudio, setPianoAudio] = useState<HTMLAudioElement | null>(null);
-  const [bassAudio, setBassAudio] = useState<HTMLAudioElement | null>(null);
-  const tracksMuted = useTrasksMutedStore();
-  const { isMusicPlay, setIsMusicPlay } = useMusicPlayStore();
+  const { instrumentState, api } = useMusicStore(
+    (state) => ({ instrumentState: state.instruments, api: state.api }),
+    shallow
+  );
+  const instrumentRef = useRef(null);
+  const allMuted = Object.values(instrumentState).every((instrument) => instrument.isMuted);
 
   useEffect(() => {
     const multitrack = Multitrack.create(
@@ -38,9 +35,10 @@ export default function MultitrackPlayer({}: Props) {
           id: 0,
           url: '/music/mp3/vocal.mp3',
           volume: 0.5,
+          startPosition: 0,
           //@ts-ignore
           options: {
-            height: 120,
+            height: TRACK_HEIGHT,
             waveColor: 'hsl(46, 87%, 49%)',
             progressColor: 'hsl(46, 87%, 20%)'
           }
@@ -49,9 +47,10 @@ export default function MultitrackPlayer({}: Props) {
           id: 1,
           url: '/music/mp3/drum.mp3',
           volume: 0.5,
+          startPosition: 0,
           //@ts-ignore
           options: {
-            height: 120,
+            height: TRACK_HEIGHT,
             waveColor: 'hsl(46, 87%, 49%)',
             progressColor: 'hsl(46, 87%, 20%)'
           }
@@ -60,9 +59,10 @@ export default function MultitrackPlayer({}: Props) {
           id: 2,
           url: '/music/mp3/guitar.mp3',
           volume: 0.5,
+          startPosition: 0,
           //@ts-ignore
           options: {
-            height: 120,
+            height: TRACK_HEIGHT,
             waveColor: 'hsl(46, 87%, 49%)',
             progressColor: 'hsl(46, 87%, 20%)'
           }
@@ -71,9 +71,10 @@ export default function MultitrackPlayer({}: Props) {
           id: 3,
           url: '/music/mp3/bass.mp3',
           volume: 0.5,
+          startPosition: 0,
           //@ts-ignore
           options: {
-            height: 120,
+            height: TRACK_HEIGHT,
             waveColor: 'hsl(46, 87%, 49%)',
             progressColor: 'hsl(46, 87%, 20%)'
           }
@@ -82,6 +83,7 @@ export default function MultitrackPlayer({}: Props) {
           id: 4,
           url: '/music/mp3/piano.mp3',
           volume: 0.5,
+          startPosition: 0,
           //@ts-ignore
           options: {
             height: 120,
@@ -98,7 +100,7 @@ export default function MultitrackPlayer({}: Props) {
         cursorColor: '#D72F21', // 진행 바 색상
         trackBorderColor: 'black',
         envelopeOptions: {
-          lineWidth: 0,
+          lineWidth: '0',
           dragPointSize: 0
         }
       }
@@ -112,90 +114,68 @@ export default function MultitrackPlayer({}: Props) {
     };
   }, []);
 
-  useEffect(() => {
-    if (ws) {
-      for (let i = 0; i < TrackArray.length; i++) {
-        if (tracksMuted[TrackArray[i]].isMuted) {
-          ws.audios[i].volume = 0;
-        } else {
-          ws.audios[i].volume = volumes[i];
-        }
-      }
-    }
-  }, [tracksMuted]);
-
-  useEffect(() => {
-    if (ws) {
-      pauseAndResumeAll();
-    }
-  }, [isMusicPlay]);
-
-  const setMasterVolume = (event: ChangeEvent<HTMLInputElement>) => {
-    const v = event.target.valueAsNumber / 100;
-    const newVolumes = [];
-    console.log(ws);
-    for (let i = 0; i < 5; i++) {
-      newVolumes.push(v);
-      ws.audios[i].volume = v;
-      const id = 'volume' + i;
-      (document.getElementById(id) as any).value = event.target.valueAsNumber;
-    }
-    console.log(newVolumes);
-    setVolumes(newVolumes);
+  const updateMasterVolume = (event: ChangeEvent<HTMLInputElement>) => {
+    const updatedVolume = event.target.valueAsNumber / 100;
+    Object.values(instruments).forEach((instrument, index) => {
+      api.updateVolume(instrument.type, updatedVolume);
+      ws.audios[index].volume = updatedVolume;
+    });
   };
 
   const pauseAndResumeAll = () => {
-    console.log('ws', ws);
     if (ws.isPlaying()) {
+      api.stopAudio();
       ws.pause();
-      pauseResumeRef.current.textContent = 'play';
     } else {
+      api.playAudio();
       ws.play();
-      pauseResumeRef.current.textContent = 'pause';
     }
   };
 
   const muteAll = () => {
-    for (let i = 0; i < 5; i++) {
-      if (!tracksMuted[TrackArray[i]].isMuted) {
-        tracksMuted[TrackArray[i]].setIsMuted(true);
-      }
-    }
+    Object.values(instruments).forEach((instrument, index) => {
+      api.muteAudio(instrument.type);
+      ws.audios[index].volume = 0;
+    });
   };
 
   const unmuteAll = () => {
-    for (let i = 0; i < 5; i++) {
-      if (tracksMuted[TrackArray[i]].isMuted) {
-        tracksMuted[TrackArray[i]].setIsMuted(false);
-      }
-    }
+    Object.values(instruments).forEach((instrument, index) => {
+      api.unMuteAudio(instrument.type);
+      ws.audios[index].volume = instrumentState[instrument.type].volume;
+    });
   };
 
-  const setTrackVolume = (track: number, event: ChangeEvent<HTMLInputElement>) => {
-    const v = event.target.valueAsNumber / 100;
-    let newVolumes = [...volumes];
-    console.log(newVolumes);
-    newVolumes[track] = v;
-    ws.audios[track].volume = v;
-    setVolumes(newVolumes);
+  const updateTrackVolume = (id: string, event: ChangeEvent<HTMLInputElement>) => {
+    const updatedVolume = event.target.valueAsNumber / 100;
+    const audioIndex = instruments.findIndex((instrument) => instrument.id === id);
+    const instrument = instruments[audioIndex];
+    api.updateVolume(instrument.type, updatedVolume);
+    ws.audios[audioIndex].volume = updatedVolume;
   };
 
-  const muteTrack = (track: number) => {
-    tracksMuted[TrackArray[track]].setIsMuted(!tracksMuted[TrackArray[track]].isMuted);
+  const muteToggle = (track: InstrumentData) => {
+    const isMuted = instrumentState[track.type].isMuted;
+    const instrumentIndex = instruments.findIndex((instrument) => instrument.id === track.id);
+    const instrument = instrumentState[track.type];
+    ws.audios[instrumentIndex].volume = isMuted ? instrument.volume : 0;
+    isMuted ? api.unMuteAudio(track.type) : api.muteAudio(track.type);
   };
 
-  const soloTrack = (track: number, event: React.MouseEvent<HTMLElement>) => {
-    for (let i = 0; i < 5; i++) {
-      if (i != track) {
-        tracksMuted[TrackArray[i]].setIsMuted(true);
+  const soloTrack = (type: string) => {
+    Object.values(instruments).forEach((instrument, index) => {
+      if (instrument.type === type) {
+        api.unMuteAudio(instrument.type);
+        ws.audios[index].volume = instrumentState[instrument.type].volume;
       } else {
-        tracksMuted[TrackArray[i]].setIsMuted(false);
+        api.muteAudio(instrument.type);
+        ws.audios[index].volume = 0;
       }
-    }
+    });
   };
 
   const showController = () => {
-    overlayRef.current.style.transform = 'translateY(-80vh)';
+    overlayRef.current.style.transform = 'translateY(-50vh)';
     const opacity = document.createElement('div');
     opacity.className = 'fixed w-full min-h-full top-0 bg-gray-200 opacity-50 z-10';
     document.querySelector('main')?.appendChild(opacity);
@@ -206,10 +186,14 @@ export default function MultitrackPlayer({}: Props) {
     });
   };
 
-  const tracks = [0, 1, 2, 3, 4];
   return (
     <main>
-      <MusicPlayToggleButton />
+      <div className="absolute right-5 top-4 z-10 flex items-center gap-x-1.5">
+        <Button onClick={showController} className=" bg-zinc-950 text-base text-zinc-100">
+          Show Controller
+        </Button>
+        <MusicPlayToggleButton onClick={pauseAndResumeAll} className="relative right-0" />
+      </div>
       <Suspense fallback={<Loading />}>
         <Canvas
           camera={{
@@ -225,26 +209,15 @@ export default function MultitrackPlayer({}: Props) {
           <Suspense fallback={null}>
             <Rig>
               <StageGround />
-              {instruments.map((instrument, index) => (
-                <Instrument
-                  key={index}
-                  idx={instrument.idx}
-                  position={instrument.position}
-                  rotation={instrument.rotation}
-                  scale={instrument.scale}
-                  url={instrument.url}
-                  SpotLightTarget={instrument.spotLightTarget}
-                  SpotLightPosition={instrument.spotLightPosition}
-                  SpotLightAngle={instrument.spotLightAngle}
-                  track={TrackArray[instrument.idx]}
-                />
+              {instruments.map((instrument) => (
+                <Instrument key={instrument.type} {...instrument} />
               ))}
-              {/* {ws && (
+              {ws && (
                 <>
-                  <MusicAnalyzer audio={ws.wavesurfers[2].media} fftSize={128} centerPos={[75, -26, 10]} radius={8} />
                   <MusicAnalyzer audio={ws.wavesurfers[0].media} fftSize={128} centerPos={[0, -26, 30]} radius={8} />
-                  <MusicAnalyzer audio={ws.wavesurfers[3].media} fftSize={128} centerPos={[-75, -26, 10]} radius={4} />
                   <MusicAnalyzer audio={ws.wavesurfers[1].media} fftSize={128} centerPos={[32, -26, -10]} radius={18} />
+                  <MusicAnalyzer audio={ws.wavesurfers[2].media} fftSize={128} centerPos={[75, -26, 10]} radius={8} />
+                  <MusicAnalyzer audio={ws.wavesurfers[3].media} fftSize={128} centerPos={[-75, -26, 10]} radius={4} />
                   <MusicAnalyzer
                     audio={ws.wavesurfers[4].media}
                     fftSize={128}
@@ -252,7 +225,7 @@ export default function MultitrackPlayer({}: Props) {
                     radius={18}
                   />
                 </>
-              )} */}
+              )}
             </Rig>
           </Suspense>
           <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
@@ -260,59 +233,50 @@ export default function MultitrackPlayer({}: Props) {
         </Canvas>
       </Suspense>
       <div>
-        <Button onClick={showController} className="fixed bottom-5 right-5 z-10">
-          Show Controller
-        </Button>
         <div
           ref={overlayRef}
-          className="fixed top-[100%] z-20 h-[80%] w-full overflow-y-scroll bg-white p-5 transition-transform duration-300  ease-in-out"
+          className="fixed top-[100%] z-20 w-full overflow-y-scroll bg-zinc-900/[0.75] p-5 transition-transform duration-300 ease-in-out"
         >
           <div>
             <div className="flex gap-x-2">
-              <label className="block">
-                volume: <input type="range" min="0" max="100" onChange={setMasterVolume} />
+              <label className="flex items-center">
+                volume: <input type="range" min="0" max="100" onChange={updateMasterVolume} />
               </label>
-              <button ref={pauseResumeRef} className="rounded bg-blue-500 px-3" onClick={pauseAndResumeAll}>
-                play
-              </button>
-              <button className="rounded bg-blue-500 px-3" onClick={muteAll}>
-                mute
-              </button>
-              <button className="rounded bg-blue-500 px-3" onClick={unmuteAll}>
-                unmute
+              <MusicPlayToggleButton onClick={pauseAndResumeAll} className="relative right-0 top-0" />
+              <button className="text-zinc-100" onClick={allMuted ? unmuteAll : muteAll}>
+                {allMuted ? <VolumeXIcon /> : <Volume2Icon />}
               </button>
             </div>
           </div>
-          <section className="flex">
-            <div>
-              <ul className="flex h-full min-h-[600px] flex-col justify-evenly">
-                {tracks.map((track) => {
-                  return (
-                    <div className="flex min-h-[120px] flex-col items-center justify-center" key={track}>
-                      <label className="block">
-                        volume:{' '}
-                        <input
-                          id={'volume' + track}
-                          onChange={(e) => setTrackVolume(track, e)}
-                          type="range"
-                          min="0"
-                          max="100"
-                        />
-                      </label>
-                      <div className="flex gap-x-2">
-                        <button className="rounded bg-blue-500 px-3" onClick={(e) => muteTrack(track)}>
-                          mute
-                        </button>
-                        <button className="rounded bg-blue-500 px-3" onClick={(e) => soloTrack(track, e)}>
-                          solo
-                        </button>
-                      </div>
+          <section className="flex gap-x-4">
+            <ul className="flex h-full flex-col">
+              {instruments.map((instrument) => {
+                const { isMuted, volume } = instrumentState[instrument.type];
+                return (
+                  <li className="flex h-[102px] flex-col justify-center" key={instrument.type}>
+                    <div className="flex items-center justify-start">
+                      <button className="rounded bg-gray-500 px-1" onClick={() => soloTrack(instrument.type)}>
+                        <span className="text-sm text-zinc-100">S</span>
+                      </button>
+                      <button className="pl-2 text-zinc-200" onClick={() => muteToggle(instrument)}>
+                        {isMuted ? <VolumeXIcon /> : <Volume2Icon />}
+                      </button>
                     </div>
-                  );
-                })}
-              </ul>
-            </div>
-            <div className="w-full" ref={playerRef}></div>
+                    <label className="block">
+                      <input
+                        ref={instrumentRef}
+                        value={volume * 100}
+                        onChange={(e) => updateTrackVolume(instrument.id, e)}
+                        type="range"
+                        min="0"
+                        max="100"
+                      />
+                    </label>
+                  </li>
+                );
+              })}
+            </ul>
+            <div className="w-full pt-2.5" ref={playerRef}></div>
           </section>
         </div>
       </div>

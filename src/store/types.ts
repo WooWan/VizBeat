@@ -8,7 +8,7 @@ export type AudioData = {
 };
 
 export type MusicState = {
-  music?: Music;
+  musicInfo?: Music;
   audio?: HTMLAudioElement;
   instruments: {
     [key in InstrumentType]: {
@@ -18,14 +18,16 @@ export type MusicState = {
     };
   };
   isLoaded: boolean;
-  isPlaying: boolean;
+  isAudioPlaying: boolean;
 };
 
 export type MusicAction = {
   api: {
-    initializeAudio: (url: string) => void;
-    playMusic: () => void;
-    stopMusic: () => void;
+    initAudio: (music: Music, url: string) => void;
+    selectAudio: (music: Music) => void;
+    clear: () => void;
+    playAudio: () => void;
+    stopAudio: () => void;
     muteAudio: (instrument: InstrumentType) => void;
     unMuteAudio: (instrument: InstrumentType) => void;
     updateVolume: (instrument: InstrumentType, volume: number) => void;

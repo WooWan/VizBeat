@@ -13,16 +13,16 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { fetchMusicFromSpotify } from '@/service/musics';
 import MusicUploadForm from '../form/MusicUploadForm';
 import { XIcon } from 'lucide-react';
+import { useMusicStore } from '@/store/music';
+import { shallow } from 'zustand/shallow';
 
 type Props = {
   musics?: Music[];
-  selectedMusic: Music | null;
-  handleMusicSelect: (id: string) => void;
 };
 
-const MusicsNavbar = ({ selectedMusic, musics, handleMusicSelect }: Props) => {
+const MusicsNavbar = ({ musics }: Props) => {
   const listRefs = useRef<(HTMLLIElement | null)[]>([]);
-  const [musicKeyword, setMusicKeyword] = useState<string>('');
+  const [musicKeyword, setMusicKeyword] = useState('');
   const debouncedKeyword = useDebounce(musicKeyword, 250);
   const { data } = useQuery({
     queryKey: ['spotify-music', debouncedKeyword],
@@ -32,6 +32,13 @@ const MusicsNavbar = ({ selectedMusic, musics, handleMusicSelect }: Props) => {
   });
   const [selectedTrack, setSelectedTrack] = useState<MusicUpload>();
   const [imagePreview, setImagePreview] = useState('');
+  const { api, musicInfo } = useMusicStore(
+    (state) => ({
+      musicInfo: state.musicInfo,
+      api: state.api
+    }),
+    shallow
+  );
 
   const handleSearchMusic = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMusicKeyword(e.target.value);
@@ -40,7 +47,7 @@ const MusicsNavbar = ({ selectedMusic, musics, handleMusicSelect }: Props) => {
   return (
     <nav className={'hidden flex-col bg-white bg-opacity-90 px-6 lg:flex'}>
       <h2 className={'pt-2 text-h1'}>Music</h2>
-      <AudioPlayer musics={musics} selectedMusic={selectedMusic} handleMusicSelect={handleMusicSelect} />
+      <AudioPlayer musics={musics} />
       <ul
         className={
           'flex max-h-[160px] snap-y snap-mandatory flex-col items-center overflow-y-scroll bg-white bg-opacity-90 py-4 scrollbar-thin scrollbar-thumb-gray-900'
@@ -52,11 +59,11 @@ const MusicsNavbar = ({ selectedMusic, musics, handleMusicSelect }: Props) => {
             className={cn(
               'grid w-full cursor-pointer snap-center grid-cols-[200px_1fr] border-b-[1px] border-y-slate-700 px-4 py-2 hover:bg-slate-100',
               {
-                'bg-slate-100': selectedMusic === music
+                'bg-slate-100': musicInfo === music
               }
             )}
             ref={(el) => (listRefs.current[index] = el)}
-            onClick={() => handleMusicSelect(music.id)}
+            onClick={() => api.selectAudio(music)}
           >
             <span>{music.artist}</span>
             <span>{music.title}</span>

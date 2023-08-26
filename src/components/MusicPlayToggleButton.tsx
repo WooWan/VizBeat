@@ -4,8 +4,8 @@ import { cn } from '@/lib/utils';
 import { useMusicStore } from '@/store/music';
 
 const MusicPlayToggleButton = ({ className, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
-  const isMusicPlay = useMusicStore((state) => state.isPlaying);
-  const playMusic = useMusicStore((state) => state.api.playMusic);
+  const isMusicPlay = useMusicStore((state) => state.isAudioPlaying);
+  const playMusic = useMusicStore((state) => state.api.playAudio);
 
   const transitions = useTransition(isMusicPlay, {
     initial: {

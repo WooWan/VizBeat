@@ -7,13 +7,10 @@ import { useMediaQuery } from '@/hooks/queries/useMediaQuery';
 import { mediaQuery } from '@/utils/mediaQuery';
 
 type Props = {
-  handleMusicSelect: (id: string) => void;
   musics?: Music[];
-  selectedMusic: Music | null;
-  setSelectedMusic: React.Dispatch<React.SetStateAction<Music | null>>;
 };
 
-const MusicsCanvas = ({ handleMusicSelect, musics, setSelectedMusic, selectedMusic }: Props) => {
+const MusicsCanvas = ({ musics }: Props) => {
   const matches = useMediaQuery(mediaQuery.LG);
   return (
     <Canvas
@@ -26,12 +23,7 @@ const MusicsCanvas = ({ handleMusicSelect, musics, setSelectedMusic, selectedMus
     >
       <Environment files={'/background/dawn.hdr'} background blur={0.6} />
       <ScrollControls damping={0}>
-        <MusicList
-          handleClick={handleMusicSelect}
-          setSelectedMusic={setSelectedMusic}
-          musicList={musics}
-          selectedMusic={selectedMusic}
-        />
+        <MusicList musicList={musics} />
       </ScrollControls>
       <ambientLight />
     </Canvas>

@@ -1,3 +1,4 @@
+import { Music } from '@prisma/client';
 import { MusicAction, MusicState } from '@/store/types';
 import { InstrumentType } from '@/types/instrument';
 import { create } from 'zustand';
@@ -36,8 +37,16 @@ export const useMusicStore = create(
           }
         },
         isLoaded: false,
-        isPlaying: false,
+        isAudioPlaying: false,
         api: {
+          async initAudio(music: Music, url: string) {
+            const audio = new Audio(url);
+            set({
+              isLoaded: true,
+              audio: audio,
+              musicInfo: music
+            });
+          },
           muteAudio(key: InstrumentType) {
             set((state) => {
               state.instruments[key].isMuted = true;
@@ -53,22 +62,35 @@ export const useMusicStore = create(
               state.instruments[key].volume = volume;
             });
           },
-          initializeAudio(url: string) {
-            const audio = new Audio(url);
-            set({
-              isLoaded: true,
-              audio: audio
-            });
-          },
-          playMusic() {
+          playAudio() {
             const audio = get().audio;
             audio?.play();
-            set({ isPlaying: true });
+            set({ isAudioPlaying: true });
           },
-          stopMusic() {
+          selectAudio(updatedMusic: Music) {
+            const { musicInfo: music, api } = get();
+            if (music?.id === updatedMusic.id) {
+              api.stopAudio();
+            } else {
+              api.clear();
+              api.initAudio(updatedMusic, updatedMusic.musicUrl);
+              api.playAudio();
+            }
+          },
+          stopAudio() {
             const audio = get().audio;
             audio?.pause();
-            set({ isPlaying: false });
+            set({ isAudioPlaying: false });
+          },
+          clear() {
+            const { audio } = get();
+            audio?.pause();
+            set({
+              musicInfo: undefined,
+              audio: undefined,
+              isLoaded: false,
+              isAudioPlaying: false
+            });
           }
         }
       };
