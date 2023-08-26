@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import Bar from './Bar';
-import { useMusicPlayStore } from '@/store/music';
 import { Vector3 } from 'three';
 
 type Props = {
@@ -39,12 +38,12 @@ export default function MusicAnalyzer({ fftSize, centerPos, radius, audio }: Pro
   useEffect(() => {
     if (audioMap.sourceNode) return;
 
-    const audioCtx = new AudioContext();
+    const audioContzxt = new AudioContext();
 
-    const soureNode = audioCtx.createMediaElementSource(audio);
-    const analyzerNode = audioCtx.createAnalyser();
+    const soureNode = audioContzxt.createMediaElementSource(audio);
+    const analyzerNode = audioContzxt.createAnalyser();
     soureNode?.connect(analyzerNode);
-    soureNode?.connect(audioCtx.destination);
+    soureNode?.connect(audioContzxt.destination);
     analyzerNode.fftSize = fftSize;
 
     setAudioMap({
