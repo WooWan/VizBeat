@@ -4,7 +4,6 @@ import { useDropzone } from 'react-dropzone';
 import { MusicUpload } from '@/types/spotify';
 import * as musicMetadata from 'music-metadata-browser';
 import { v4 as uuidv4 } from 'uuid';
-import { set } from 'react-hook-form';
 
 type Props = {
   setSelectedTrack: React.Dispatch<SetStateAction<MusicUpload | undefined>>;
@@ -18,7 +17,6 @@ const Dropzone = ({ setSelectedTrack, setImagePreview }: Props) => {
         const reader = new FileReader();
         reader.onload = async () => {
           const audio = await musicMetadata.parseBlob(file);
-          console.log('select track');
           setSelectedTrack({
             id: uuidv4(),
             title: audio.common.title || '',

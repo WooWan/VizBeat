@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import AudioPlayer from '@/components/AudioPlayer';
 import { Music } from '@prisma/client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -8,13 +8,14 @@ import Dropzone from '@/components/Dropzone';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { useQuery } from '@tanstack/react-query';
-import { MusicUpload } from '@/types/spotify';
-import { useDebounce } from '@/hooks/useDebounce';
-import { fetchMusicFromSpotify } from '@/service/musics';
 import MusicUploadForm from '../form/MusicUploadForm';
 import { XIcon } from 'lucide-react';
 import { useMusicStore } from '@/store/music';
 import { shallow } from 'zustand/shallow';
+import { MusicUpload } from '@/types/spotify';
+import { useDebounce } from '@/hooks/useDebounce';
+import { fetchMusicFromSpotify } from '@/service/musics';
+
 
 type Props = {
   musics?: Music[];
