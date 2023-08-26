@@ -1,10 +1,11 @@
-import React from 'react';
 import { animated, useTransition } from '@react-spring/web';
-import { useMusicPlayStore } from '@/store/music';
 import { PauseIcon, PlayIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useMusicStore } from '@/store/music';
 
-const MusicPlayToggleButton = () => {
-  const { isMusicPlay, setIsMusicPlay } = useMusicPlayStore();
+const MusicPlayToggleButton = ({ className, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
+  const isMusicPlay = useMusicStore((state) => state.isPlaying);
+  const playMusic = useMusicStore((state) => state.api.playMusic);
 
   const transitions = useTransition(isMusicPlay, {
     initial: {
@@ -29,10 +30,9 @@ const MusicPlayToggleButton = () => {
 
   return (
     <button
-      className={
-        'group fixed right-5 top-4 z-50 mr-1 h-10 w-10 cursor-pointer rounded-full text-white hover:bg-white/[0.5]'
-      }
-      onClick={() => setIsMusicPlay(!isMusicPlay)}
+      className={cn('group z-50 h-9 w-9 cursor-pointer rounded-full text-white hover:bg-white/[0.5]', className)}
+      onClick={playMusic}
+      {...props}
     >
       {transitions((style, isPlay) => (
         <div className={'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'}>
