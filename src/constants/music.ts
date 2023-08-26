@@ -1,9 +1,11 @@
+import { InstrumentData } from '@/types/instrument';
 import { Vector3 } from 'three';
 export const RADIAN = Math.PI / 180;
 
-export const instruments = [
+export const instruments: InstrumentData[] = [
   {
-    idx: 0,
+    id: 'A73D9F21B60E',
+    type: 'vocal',
     position: [0, -15, 30],
     rotation: [0, 0, 0],
     scale: [0.3, 0.3, 0.3],
@@ -13,7 +15,8 @@ export const instruments = [
     spotLightAngle: 0.25
   },
   {
-    idx: 1,
+    id: '4B8E12C07934',
+    type: 'drum',
     position: [32, -10, -20],
     rotation: [0, RADIAN * -20, 0],
     scale: [18, 18, 18],
@@ -23,7 +26,8 @@ export const instruments = [
     spotLightAngle: 0.32
   },
   {
-    idx: 2,
+    id: 'F9C610D328A7',
+    type: 'guitar',
     position: [-75, -10, 8],
     rotation: [0, RADIAN * 30, 0],
     scale: [23, 23, 23],
@@ -33,7 +37,8 @@ export const instruments = [
     spotLightAngle: 0.22
   },
   {
-    idx: 3,
+    id: '7E2301B49D02',
+    type: 'bass',
     position: [73, -6, 12],
     rotation: [0, RADIAN * -0.75, 0],
     scale: [2.25, 2.25, 2.25],
@@ -43,7 +48,8 @@ export const instruments = [
     spotLightAngle: 0.22
   },
   {
-    idx: 4,
+    id: '836492FAE1C8',
+    type: 'piano',
     position: [-32, -10, -16],
     rotation: [0, RADIAN * 10, 0],
     scale: [0.5, 0.5, 0.5],
