@@ -66,11 +66,8 @@ const MusicAlbum = ({ music, index, groupY, musics }: Props) => {
   });
 
   useFrame(() => {
-    if (scroll.offset !== scrollRef.current) {
-      console.log('y');
-      if (selectedMusic) {
-        api.clear();
-      }
+    if (scroll.offset !== scrollRef.current && selectedMusic) {
+      api.clear();
     }
     scrollRef.current = scroll.offset;
   });
@@ -82,13 +79,12 @@ const MusicAlbum = ({ music, index, groupY, musics }: Props) => {
       ref={meshRef}
       onClick={(e) => {
         e.stopPropagation();
-        if (musics) {
-          const selectedIdx = musics.findIndex((music) => music.id === selectedMusic?.id);
-          if (selectedIdx !== index) {
-            api.selectAudio(music);
-          } else {
-            api.clear();
-          }
+        if (!musics) return;
+        const selectedIdx = musics.findIndex((music) => music.id === selectedMusic?.id);
+        if (selectedIdx !== index) {
+          api.selectAudio(music);
+        } else {
+          api.clear();
         }
       }}
     >
