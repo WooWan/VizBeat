@@ -17,7 +17,7 @@ const MusicsCanvas = ({ musics }: Props) => {
       className="scrollbar-hide"
       camera={{
         zoom: matches ? 1 : 0.5,
-        position: [10, 1, 0],
+        position: [10, 0, 0],
         fov: 100
       }}
     >
