@@ -1,12 +1,12 @@
 import { Mesh, TextureLoader } from 'three';
 import { useFrame, useLoader } from '@react-three/fiber';
-import { useScroll } from '@react-three/drei';
 import React, { useEffect, useRef, useState } from 'react';
 import { lerp } from 'three/src/math/MathUtils';
 import { MeshAxis, YAxis } from '@/types/Axis';
 import { Music } from '@prisma/client';
 import { useMusicStore } from '@/store/music';
 import { shallow } from 'zustand/shallow';
+import { useScroll } from '@react-three/drei';
 
 const radian = Math.PI / 180;
 
@@ -20,8 +20,8 @@ type Props = {
 const LERP_FACTOR = 0.05;
 
 const MusicAlbum = ({ music, index, groupY, musics }: Props) => {
-  const [originalPosition] = useState(2 - index * 1.5);
-  const [rotation, setRotation] = useState(radian * 10 * index);
+  const [originalPosition] = useState(-index * 1.5);
+  const rotationRef = useRef(radian * 5 * index);
   const meshRef = useRef<Mesh>(null!);
   const { api, music: selectedMusic } = useMusicStore(
     (state) => ({ api: state.api, isAudioPlaying: state.isAudioPlaying, music: state.musicInfo }),
@@ -43,62 +43,65 @@ const MusicAlbum = ({ music, index, groupY, musics }: Props) => {
 
   useFrame(() => {
     if (!musics) return;
-    if (!selectedMusic) return; //아무것도 선택 안 됐을 때
+    rotationRef.current = (rotationRef.current + radian * 0.4) % (Math.PI * 2);
     const selectedIdx = musics.findIndex((music) => music.id === selectedMusic?.id);
-    //내가 선택 됐을 때
-    if (selectedMusic?.id === music?.id) {
-      updateRotation({ x: radian * 90, y: 0, z: radian * -90 });
-      updatePosition({ y: -groupY });
+    if (selectedIdx === -1) {
+      meshRef.current.rotation.y = rotationRef.current;
+      updatePosition({ y: originalPosition });
     } else {
-      //남이 선택 됐을 때
-      const indexGap = index - selectedIdx;
-      if (indexGap < 0) {
-        updatePosition({ y: 10 - groupY - indexGap * 1.5 });
+      if (selectedIdx !== index) {
+        meshRef.current.rotation.y = rotationRef.current;
+        const indexGap = index - selectedIdx;
+        if (indexGap < 0) {
+          updatePosition({ y: originalPosition + 5 });
+        } else {
+          updatePosition({ y: originalPosition - 5 });
+        }
       } else {
-        updatePosition({ y: -10 - groupY - indexGap * 1.5 });
+        updatePosition({ y: originalPosition });
+        updateRotation({ x: Math.PI * 1 + radian * 90, y: Math.PI, z: Math.PI * 1 + radian * -90 });
       }
     }
   });
 
-  useFrame(() => {
-    if (selectedMusic?.id !== music.id) {
-      updatePosition({ y: originalPosition });
-      updateRotation({ x: 0, y: 0, z: 0 });
-    }
-  }, 0);
+  // useEffect(() => {
+  //   console.log('offset');
+  //   if (selectedMusic !== null) {
+  //     updatePosition({ y: originalPosition });
+  //     updateRotation({ x: 0, y: 0, z: 0 });
+  //     console.log('ihoshoisdh');
+  //     api.clear();
+  //     // setSelectedMusic(null);
+  //   }
+  // }, [scroll.offset]);
 
-  useFrame(() => {
-    setRotation((prev) => prev + 0.1 * radian);
-    if (selectedMusic?.id !== music.id) {
-      meshRef.current.rotation.y = rotation;
-      meshRef.current.rotation.y %= 360 * radian;
-    } else {
-      // const speed = 15;
-      // meshRef.current.rotation.y = Math.sin(rotation * speed) / 10;
-      // meshRef.current.rotation.x = 90 * radian + Math.sin(rotation * speed) / 15;
-      // meshRef.current.rotation.z = -90 * radian + Math.cos(rotation * speed) / 15;
+  // useEffect(() => {
+  //   window.addEventListener('scroll', () => {
+  //     console.log('scrolled');
+  //   });
 
-      meshRef.current.rotation.y %= 360 * radian;
-      meshRef.current.rotation.z %= 360 * radian;
-      meshRef.current.rotation.x %= 360 * radian;
-    }
-  });
-
-  useEffect(() => {
-    if (selectedMusic !== null) {
-      updatePosition({ y: originalPosition });
-      updateRotation({ x: 0, y: 0, z: 0 });
-      api.clear();
-      // setSelectedMusic(null);
-    }
-  }, [scroll.offset]);
+  //   if (music) {
+  //     if (selectedMusic?.id === music.id) {
+  //       console.log(selectedMusic);
+  //     }
+  //   }
+  // }, []);
 
   return (
     <mesh
+      position={[0, originalPosition, 0]}
+      rotation={[0, rotationRef.current, 0]}
       ref={meshRef}
       onClick={(e) => {
-        api.selectAudio(music);
         e.stopPropagation();
+        if (musics) {
+          const selectedIdx = musics.findIndex((music) => music.id === selectedMusic?.id);
+          if (selectedIdx !== index) {
+            api.selectAudio(music);
+          } else {
+            api.clear();
+          }
+        }
       }}
     >
       <boxGeometry args={[10, 0.7, 10]} />
