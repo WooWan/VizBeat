@@ -30,6 +30,7 @@ const MusicAlbum = ({ music, index, groupY, musics }: Props) => {
   const cover = useLoader(TextureLoader, music.albumCover);
   const texture = useLoader(TextureLoader, '/images/cdtexture.jpg');
   const scroll = useScroll();
+  const scrollRef = useRef(-1);
 
   const updateRotation = ({ x, y, z }: MeshAxis) => {
     meshRef.current.rotation.x = lerp(meshRef.current.rotation.x, x, LERP_FACTOR);
@@ -64,28 +65,15 @@ const MusicAlbum = ({ music, index, groupY, musics }: Props) => {
     }
   });
 
-  // useEffect(() => {
-  //   console.log('offset');
-  //   if (selectedMusic !== null) {
-  //     updatePosition({ y: originalPosition });
-  //     updateRotation({ x: 0, y: 0, z: 0 });
-  //     console.log('ihoshoisdh');
-  //     api.clear();
-  //     // setSelectedMusic(null);
-  //   }
-  // }, [scroll.offset]);
-
-  // useEffect(() => {
-  //   window.addEventListener('scroll', () => {
-  //     console.log('scrolled');
-  //   });
-
-  //   if (music) {
-  //     if (selectedMusic?.id === music.id) {
-  //       console.log(selectedMusic);
-  //     }
-  //   }
-  // }, []);
+  useFrame(() => {
+    if (scroll.offset !== scrollRef.current) {
+      console.log('y');
+      if (selectedMusic) {
+        api.clear();
+      }
+    }
+    scrollRef.current = scroll.offset;
+  });
 
   return (
     <mesh
