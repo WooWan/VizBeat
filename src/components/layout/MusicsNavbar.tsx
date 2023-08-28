@@ -15,13 +15,9 @@ import { shallow } from 'zustand/shallow';
 import { MusicUpload } from '@/types/spotify';
 import { useDebounce } from '@/hooks/useDebounce';
 import { fetchMusicFromSpotify } from '@/service/musics';
+import { useMusics } from '@/hooks/queries/music/useMusics';
 
-
-type Props = {
-  musics?: Music[];
-};
-
-const MusicsNavbar = ({ musics }: Props) => {
+const MusicsNavbar = () => {
   const listRefs = useRef<(HTMLLIElement | null)[]>([]);
   const [musicKeyword, setMusicKeyword] = useState('');
   const debouncedKeyword = useDebounce(musicKeyword, 250);
@@ -31,6 +27,7 @@ const MusicsNavbar = ({ musics }: Props) => {
     enabled: debouncedKeyword !== '',
     retry: 1
   });
+  const { data: musics } = useMusics();
   const [selectedTrack, setSelectedTrack] = useState<MusicUpload>();
   const [imagePreview, setImagePreview] = useState('');
   const { api, musicInfo } = useMusicStore(
