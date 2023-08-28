@@ -135,13 +135,14 @@ const MusicsNavbar = () => {
                   className="absolute -top-2 right-0 z-10 h-5 w-5 cursor-pointer text-gray-400"
                   onClick={() => setSelectedTrack(undefined)}
                 />
-                <Image
-                  src={imagePreview}
-                  width={256}
-                  height={256}
-                  className={'justify-self-center rounded-md'}
-                  alt={'cover'}
-                />
+                <div className="h-52 w-52">
+                  <Image
+                    fill
+                    className={'justify-self-center rounded-md object-contain'}
+                    src={imagePreview}
+                    alt={'cover'}
+                  />
+                </div>
               </div>
               <MusicUploadForm selectedTrack={selectedTrack} />
             </section>
