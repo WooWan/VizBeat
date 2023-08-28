@@ -1,22 +1,25 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import Bar from './Bar';
-import { useMusicPlayStore } from '@/store/music';
 import { Vector3 } from 'three';
 
 type Props = {
-  music: React.MutableRefObject<HTMLAudioElement>;
   fftSize: number;
   centerPos: number[];
   radius: number;
+  audio: HTMLAudioElement;
 };
 
-export default function MusicAnalyzer({ music, fftSize, centerPos, radius }: Props) {
-  const [analyser, setAnalyser] = useState<AnalyserNode | null>(null);
+type AudioNode = {
+  sourceNode: MediaElementAudioSourceNode;
+  analyzerNode: AnalyserNode;
+};
+
+export default function MusicAnalyzer({ fftSize, centerPos, radius, audio }: Props) {
+  const [audioMap, setAudioMap] = useState({} as AudioNode);
   const dataArrayRef = useRef<Uint8Array | null>(null);
   const meanRef = useRef(0);
-  const [sourceNode, setSourceNode] = useState<MediaElementAudioSourceNode | null>(null);
-  const isMusicPlay = useMusicPlayStore((state) => state.isMusicPlay);
+  const newData = useMemo(() => new Uint8Array(fftSize), [fftSize]);
 
   const bars = useMemo(() => {
     const bars = [];
@@ -33,46 +36,51 @@ export default function MusicAnalyzer({ music, fftSize, centerPos, radius }: Pro
   }, [fftSize, radius]);
 
   useEffect(() => {
-    if (!isMusicPlay || sourceNode) return;
-    const audioContext = new window.AudioContext();
-    const analyser = audioContext.createAnalyser();
-    const source = audioContext.createMediaElementSource(music.current);
-    setSourceNode(source);
-    source.connect(analyser);
-    source.connect(audioContext.destination);
+    if (audioMap.sourceNode) return;
 
-    analyser.fftSize = fftSize;
+    const audioContzxt = new AudioContext();
 
-    setAnalyser(analyser);
-  }, [isMusicPlay]);
+    const soureNode = audioContzxt.createMediaElementSource(audio);
+    const analyzerNode = audioContzxt.createAnalyser();
+    soureNode?.connect(analyzerNode);
+    soureNode?.connect(audioContzxt.destination);
+    analyzerNode.fftSize = fftSize;
 
-  const newData = new Uint8Array(fftSize);
+    setAudioMap({
+      sourceNode: soureNode,
+      analyzerNode: analyzerNode
+    });
+
+    return () => {
+      soureNode?.disconnect();
+      analyzerNode?.disconnect();
+    };
+  }, []);
+
   useFrame(() => {
-    if (analyser) {
-      analyser.getByteTimeDomainData(newData);
+    const analyzerNode = audioMap.analyzerNode;
+    if (!analyzerNode) return;
 
-      meanRef.current = newData.reduce((a, b) => a + b) / (128 * newData.length);
-      dataArrayRef.current = newData;
-    }
+    analyzerNode.getByteTimeDomainData(newData);
+    meanRef.current = newData.reduce((a, b) => a + b) / (128 * newData.length);
+    dataArrayRef.current = newData;
   });
-  if (isMusicPlay) {
-    return (
-      <group>
-        {bars.map((item, index) => (
-          <Bar
-            key={index}
-            index={index}
-            radius={radius}
-            centerPos={centerPos}
-            dataArrayRef={dataArrayRef}
-            meanRef={meanRef}
-            position={item.position}
-            theta={item.theta}
-            color={item.color}
-          />
-        ))}
-      </group>
-    );
-  }
-  return <></>;
+
+  return (
+    <group>
+      {bars.map((item, index) => (
+        <Bar
+          key={index}
+          index={index}
+          radius={radius}
+          centerPos={centerPos}
+          dataArrayRef={dataArrayRef}
+          meanRef={meanRef}
+          position={item.position}
+          theta={item.theta}
+          color={item.color}
+        />
+      ))}
+    </group>
+  );
 }
