@@ -26,7 +26,6 @@ export default function MultitrackPlayer() {
     shallow
   );
   const [isPlayerOpen, setIsPlayerOpen] = useState(false);
-  const instrumentRef = useRef(null);
   const allMuted = Object.values(instrumentState).every((instrument) => instrument.isMuted);
 
   useEffect(() => {
@@ -175,6 +174,7 @@ export default function MultitrackPlayer() {
       }
     });
   };
+  
   return (
     <main>
       <div className="absolute right-5 top-4 z-10 flex items-center gap-x-1.5">
@@ -280,7 +280,6 @@ export default function MultitrackPlayer() {
                   </div>
                   <label className="block">
                     <input
-                      ref={instrumentRef}
                       value={volume * 100}
                       onChange={(e) => updateTrackVolume(instrument.id, e)}
                       type="range"
@@ -292,7 +291,7 @@ export default function MultitrackPlayer() {
               );
             })}
           </ul>
-          <div className="w-full pt-2.5" ref={playerRef}></div>
+          <div className="w-full pt-2.5" ref={playerRef} />
         </section>
       </section>
     </main>
