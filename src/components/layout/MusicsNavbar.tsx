@@ -15,13 +15,9 @@ import { shallow } from 'zustand/shallow';
 import { MusicUpload } from '@/types/spotify';
 import { useDebounce } from '@/hooks/useDebounce';
 import { fetchMusicFromSpotify } from '@/service/musics';
+import { useMusics } from '@/hooks/queries/music/useMusics';
 
-
-type Props = {
-  musics?: Music[];
-};
-
-const MusicsNavbar = ({ musics }: Props) => {
+const MusicsNavbar = () => {
   const listRefs = useRef<(HTMLLIElement | null)[]>([]);
   const [musicKeyword, setMusicKeyword] = useState('');
   const debouncedKeyword = useDebounce(musicKeyword, 250);
@@ -31,6 +27,7 @@ const MusicsNavbar = ({ musics }: Props) => {
     enabled: debouncedKeyword !== '',
     retry: 1
   });
+  const { data: musics } = useMusics();
   const [selectedTrack, setSelectedTrack] = useState<MusicUpload>();
   const [imagePreview, setImagePreview] = useState('');
   const { api, musicInfo } = useMusicStore(
@@ -138,13 +135,14 @@ const MusicsNavbar = ({ musics }: Props) => {
                   className="absolute -top-2 right-0 z-10 h-5 w-5 cursor-pointer text-gray-400"
                   onClick={() => setSelectedTrack(undefined)}
                 />
-                <Image
-                  src={imagePreview}
-                  width={256}
-                  height={256}
-                  className={'justify-self-center rounded-md'}
-                  alt={'cover'}
-                />
+                <div className="h-52 w-52">
+                  <Image
+                    fill
+                    className={'justify-self-center rounded-md object-contain'}
+                    src={imagePreview}
+                    alt={'cover'}
+                  />
+                </div>
               </div>
               <MusicUploadForm selectedTrack={selectedTrack} />
             </section>
