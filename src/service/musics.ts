@@ -5,6 +5,7 @@ import axios from 'axios';
 
 export const fetchMusics = async (): Promise<Music[]> => {
   const response = await httpClient.get('/musics');
+  console.log(response.data);
   return response.data;
 };
 

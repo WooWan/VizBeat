@@ -16,7 +16,6 @@ import { MusicUpload } from '@/types/spotify';
 import { useDebounce } from '@/hooks/useDebounce';
 import { fetchMusicFromSpotify } from '@/service/musics';
 
-
 type Props = {
   musics?: Music[];
 };

@@ -16,11 +16,11 @@ type AudioNode = {
 };
 
 export default function MusicAnalyzer({ fftSize, centerPos, radius, audio }: Props) {
+  console.log('audio', audio);
   const [audioMap, setAudioMap] = useState({} as AudioNode);
   const dataArrayRef = useRef<Uint8Array | null>(null);
   const meanRef = useRef(0);
   const newData = useMemo(() => new Uint8Array(fftSize), [fftSize]);
-
   const bars = useMemo(() => {
     const bars = [];
     for (let i = 0; i < fftSize; i++) {
@@ -62,6 +62,7 @@ export default function MusicAnalyzer({ fftSize, centerPos, radius, audio }: Pro
     if (!analyzerNode) return;
 
     analyzerNode.getByteTimeDomainData(newData);
+    // console.log(newData);
     meanRef.current = newData.reduce((a, b) => a + b) / (128 * newData.length);
     dataArrayRef.current = newData;
   });

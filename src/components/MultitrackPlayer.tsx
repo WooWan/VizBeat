@@ -17,7 +17,16 @@ import { shallow } from 'zustand/shallow';
 
 const TRACK_HEIGHT = 100;
 
-export default function MultitrackPlayer() {
+type Props = {
+  vocalUrl: string | undefined;
+  drumUrl: string | undefined;
+  guitarUrl: string | undefined;
+  bassUrl: string | undefined;
+  pianoUrl: string | undefined;
+};
+
+export default function MultitrackPlayer({ vocalUrl, drumUrl, guitarUrl, pianoUrl, bassUrl }: Props) {
+  console.log(vocalUrl, drumUrl, guitarUrl, pianoUrl, bassUrl);
   const overlayRef = useRef<any>(null);
   const playerRef = useRef<any>(null);
   const [ws, setWs] = useState<any>(null);
@@ -33,7 +42,7 @@ export default function MultitrackPlayer() {
       [
         {
           id: 0,
-          url: '/music/mp3/vocal.mp3',
+          url: vocalUrl,
           volume: 0.5,
           startPosition: 0,
           //@ts-ignore
@@ -45,7 +54,7 @@ export default function MultitrackPlayer() {
         },
         {
           id: 1,
-          url: '/music/mp3/drum.mp3',
+          url: drumUrl,
           volume: 0.5,
           startPosition: 0,
           //@ts-ignore
@@ -57,7 +66,7 @@ export default function MultitrackPlayer() {
         },
         {
           id: 2,
-          url: '/music/mp3/guitar.mp3',
+          url: guitarUrl,
           volume: 0.5,
           startPosition: 0,
           //@ts-ignore
@@ -69,7 +78,7 @@ export default function MultitrackPlayer() {
         },
         {
           id: 3,
-          url: '/music/mp3/bass.mp3',
+          url: bassUrl,
           volume: 0.5,
           startPosition: 0,
           //@ts-ignore
@@ -81,7 +90,7 @@ export default function MultitrackPlayer() {
         },
         {
           id: 4,
-          url: '/music/mp3/piano.mp3',
+          url: pianoUrl,
           volume: 0.5,
           startPosition: 0,
           //@ts-ignore
@@ -106,13 +115,14 @@ export default function MultitrackPlayer() {
       }
     );
     multitrack.once('canplay', () => {
+      console.log(multitrack);
       setWs(multitrack);
     });
 
     return () => {
       multitrack.destroy();
     };
-  }, []);
+  }, [vocalUrl, bassUrl]);
 
   const updateMasterVolume = (event: ChangeEvent<HTMLInputElement>) => {
     const updatedVolume = event.target.valueAsNumber / 100;
@@ -214,14 +224,14 @@ export default function MultitrackPlayer() {
               ))}
               {ws && (
                 <>
-                  <MusicAnalyzer audio={ws.wavesurfers[0].media} fftSize={128} centerPos={[0, -26, 30]} radius={8} />
-                  <MusicAnalyzer audio={ws.wavesurfers[1].media} fftSize={128} centerPos={[32, -26, -10]} radius={18} />
-                  <MusicAnalyzer audio={ws.wavesurfers[2].media} fftSize={128} centerPos={[75, -26, 10]} radius={8} />
-                  <MusicAnalyzer audio={ws.wavesurfers[3].media} fftSize={128} centerPos={[-75, -26, 10]} radius={4} />
+                  <MusicAnalyzer audio={ws.wavesurfers[0].media} fftSize={128} centerPos={[0, -36, 30]} radius={8} />
+                  <MusicAnalyzer audio={ws.wavesurfers[1].media} fftSize={128} centerPos={[32, -36, -10]} radius={18} />
+                  <MusicAnalyzer audio={ws.wavesurfers[2].media} fftSize={128} centerPos={[75, -36, 10]} radius={8} />
+                  <MusicAnalyzer audio={ws.wavesurfers[3].media} fftSize={128} centerPos={[-75, -36, 10]} radius={4} />
                   <MusicAnalyzer
                     audio={ws.wavesurfers[4].media}
                     fftSize={128}
-                    centerPos={[-32, -26, -10]}
+                    centerPos={[-32, -36, -10]}
                     radius={18}
                   />
                 </>
