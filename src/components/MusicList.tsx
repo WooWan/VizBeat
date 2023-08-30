@@ -15,9 +15,7 @@ const MusicList = ({ musicList }: Props) => {
   const groupRef = useRef<Group>(null!);
   const three = useThree();
   const scroll = useScroll();
-  const { music: selectedMusic } = useMusicStore((state) => ({
-    music: state.musicInfo
-  }));
+  const selectedMusic = useMusicStore((state) => state.musicInfo);
 
   useFrame(() => {
     if (musicList) {
