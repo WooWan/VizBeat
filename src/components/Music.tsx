@@ -23,10 +23,7 @@ const MusicAlbum = ({ music, index, groupY, musics }: Props) => {
   const [originalPosition] = useState(-index * 1.5);
   const rotationRef = useRef(radian * 5 * index);
   const meshRef = useRef<Mesh>(null!);
-  const { api, music: selectedMusic } = useMusicStore(
-    (state) => ({ api: state.api, isAudioPlaying: state.isAudioPlaying, music: state.musicInfo }),
-    shallow
-  );
+  const { api, music: selectedMusic } = useMusicStore((state) => ({ api: state.api, music: state.musicInfo }), shallow);
   const cover = useLoader(TextureLoader, music.albumCover);
   const texture = useLoader(TextureLoader, '/images/cdtexture.jpg');
   const scroll = useScroll();
