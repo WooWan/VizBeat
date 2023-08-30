@@ -1,10 +1,10 @@
-import { httpClient, spotifyClient } from '@/service/httpClient';
+import { nextClient, spotifyClient } from '@/service/apiClient';
 import { SpotifyMusic } from '@/types/spotify';
 import { Music } from '@prisma/client';
 import axios from 'axios';
 
 export const fetchMusics = async (): Promise<Music[]> => {
-  const response = await httpClient.get('/musics');
+  const response = await nextClient.get('/musics');
   return response.data;
 };
 

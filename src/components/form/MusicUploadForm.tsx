@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { isUploadWithFile, isUploadWithSpotify } from '@/utils/typeGuards';
 import { MusicUpload } from '@/types/spotify';
 import { useSeparateMusic } from '@/hooks/queries/music/useMusics';
-import { httpClient } from '@/service/httpClient';
+import { nextClient } from '@/service/apiClient';
 import { musicUploadSchema } from '@/schema';
 import { useMutation } from '@tanstack/react-query';
 
@@ -20,7 +20,7 @@ type Props = {
 export default function MusicUploadForm({ selectedTrack }: Props) {
   const separateMusicWithFile = useSeparateMusic();
   const separateMusicWithUrl = useMutation({
-    mutationFn: (track: MusicUpload) => httpClient.post('/music', track)
+    mutationFn: (track: MusicUpload) => nextClient.post('/music', track)
   });
   const form = useForm<z.infer<typeof musicUploadSchema>>({
     resolver: zodResolver(musicUploadSchema),
