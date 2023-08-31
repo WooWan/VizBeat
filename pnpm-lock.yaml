@@ -105,8 +105,8 @@ dependencies:
     specifier: ^9.0.0
     version: 9.0.0
   wavesurfer-multitrack:
-    specifier: ^0.1.2
-    version: 0.1.2
+    specifier: ^0.2.0
+    version: 0.2.0
   zod:
     specifier: ^3.21.4
     version: 3.21.4
@@ -6435,14 +6435,14 @@ packages:
       graceful-fs: 4.2.11
     dev: false
 
-  /wavesurfer-multitrack@0.1.2:
-    resolution: {integrity: sha512-D736De2VnJvmsmdLVBl3L6KIpJfYdUTXE+i+he8xjLX6+Pao7KTAAybgZHEvQ9jtHnWSQaEfWJNEPtV/omvekQ==}
+  /wavesurfer-multitrack@0.2.0:
+    resolution: {integrity: sha512-taB64nucNHObBWAh5lIrbSEWq82c5mzFf3y884H5Xl9wUvwnGNTlWqFxNVFOA2g3uBg3LFsgM4+CCVetA7qoxQ==}
     dependencies:
-      wavesurfer.js: 7.1.5
+      wavesurfer.js: 7.2.0
     dev: false
 
-  /wavesurfer.js@7.1.5:
-    resolution: {integrity: sha512-2zb82LxQzeFn5/O5JhEs1uytdlkksUDALWt7TPN8ppP4jrajuigwcM2g4wx6b+SO4Frweg/r99L1hznr0lsBEg==}
+  /wavesurfer.js@7.2.0:
+    resolution: {integrity: sha512-wRGFuiE4kRty+LEB6kdmd5OvDOf/r//gGxcCVmJmD7g0njiSvG6xFelGbeL4lo/WTrykigltJjuPDI7RSesRug==}
     dev: false
 
   /wcwidth@1.0.1:
