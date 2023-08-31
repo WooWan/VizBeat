@@ -16,6 +16,7 @@ import { MusicUpload } from '@/types/spotify';
 import { useDebounce } from '@/hooks/useDebounce';
 import { fetchMusicFromSpotify } from '@/service/musics';
 import { useMusics } from '@/hooks/queries/music/useMusics';
+import { useRouter } from 'next/router';
 
 const MusicsNavbar = () => {
   const listRefs = useRef<(HTMLLIElement | null)[]>([]);
@@ -37,6 +38,11 @@ const MusicsNavbar = () => {
     }),
     shallow
   );
+  const router = useRouter();
+
+  const redirectToPage = () => {
+    router.push(`/stage/${musicInfo?.id}`);
+  };
 
   const handleSearchMusic = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMusicKeyword(e.target.value);
@@ -149,6 +155,13 @@ const MusicsNavbar = () => {
           )}
         </DialogContent>
       </Dialog>
+      {musicInfo && (
+        <section className="flex justify-end pt-2">
+          <Button onClick={redirectToPage} size="sm">
+            Go to stage
+          </Button>
+        </section>
+      )}
     </nav>
   );
 };

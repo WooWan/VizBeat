@@ -88,6 +88,9 @@ module.exports = {
         b3: ['1rem', { lineHeight: '1.75rem', fontWeight: 400, letterSpacing: '-0.8px' }],
         b4: ['1.125rem', { lineHeight: '1.875rem', fontWeight: 400, letterSpacing: '-1px' }]
       },
+      transitionDuration: {
+        900: '900ms'
+      },
       transitionTimingFunction: {
         'out-flex': 'cubic-bezier(0.05, 0.6, 0.4, 0.9)'
       },
