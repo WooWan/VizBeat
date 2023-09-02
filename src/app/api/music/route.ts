@@ -2,14 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createReadStream } from 'node:fs';
 import FormData from 'form-data';
 import axios from 'axios';
-import { UploadMusicUrl } from '@/types/spotify';
+import { UploadMusicUrl } from '@/types/music';
 import { downloadSpotify, removeFile } from '@/service/spotify';
 
 export async function POST(request: NextRequest) {
   const music = (await request.json()) as UploadMusicUrl;
   const formData = new FormData();
 
-  const mp3path = await downloadSpotify(music.url);
+  const mp3path = await downloadSpotify(music.albumCover);
 
   if (!mp3path) {
     return NextResponse.json({
