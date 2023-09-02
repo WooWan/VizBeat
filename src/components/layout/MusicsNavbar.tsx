@@ -1,15 +1,17 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import AudioPlayer from '@/components/AudioPlayer';
 import { cn } from '@/lib/utils';
 import { useMusicStore } from '@/store/music';
 import { shallow } from 'zustand/shallow';
 import { useMusics } from '@/hooks/queries/music/useMusics';
 import MusicUploadModal from '@/components/modal/MusicUploadModal';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/router';
 
 const MusicsNavbar = () => {
   const listRefs = useRef<(HTMLLIElement | null)[]>([]);
   const { data: musics } = useMusics();
-
+  const router = useRouter();
   const { api, musicInfo } = useMusicStore(
     (state) => ({
       musicInfo: state.musicInfo,
@@ -17,6 +19,10 @@ const MusicsNavbar = () => {
     }),
     shallow
   );
+
+  const redirectToStage = () => {
+    router.push(`/stage/${musicInfo?.id}`);
+  };
 
   return (
     <nav className={'hidden flex-col bg-white bg-opacity-90 px-6 lg:flex'}>
@@ -45,6 +51,13 @@ const MusicsNavbar = () => {
         ))}
       </ul>
       <MusicUploadModal />
+      {musicInfo && (
+        <section className="flex justify-end pt-2">
+          <Button onClick={redirectToStage} size="sm">
+            Go to Stage
+          </Button>
+        </section>
+      )}
     </nav>
   );
 };
