@@ -6,12 +6,11 @@ import { useForm } from 'react-hook-form';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { isUploadWithFile, isUploadWithSpotify } from '@/utils/typeGuards';
-import { MusicUpload } from '@/types/spotify';
+import { MusicUpload } from '@/types/music';
 import { useSeparateMusic } from '@/hooks/queries/music/useMusics';
-import { nextClient } from '@/service/apiClient';
 import { musicUploadSchema } from '@/schema';
-import { useMutation } from '@tanstack/react-query';
+import { Loader2Icon } from 'lucide-react';
+import { useToast } from '@/components/ui/use-toast';
 
 type Props = {
   selectedTrack?: MusicUpload;
@@ -19,9 +18,7 @@ type Props = {
 
 export default function MusicUploadForm({ selectedTrack }: Props) {
   const separateMusicWithFile = useSeparateMusic();
-  const separateMusicWithUrl = useMutation({
-    mutationFn: (track: MusicUpload) => nextClient.post('/music', track)
-  });
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof musicUploadSchema>>({
     resolver: zodResolver(musicUploadSchema),
     defaultValues: {
@@ -32,26 +29,32 @@ export default function MusicUploadForm({ selectedTrack }: Props) {
 
   useEffect(() => {
     if (!selectedTrack) return;
-    form.setValue('title', selectedTrack?.title, {
+    form.setValue('title', selectedTrack.title, {
       shouldDirty: true
     });
-    form.setValue('artist', selectedTrack?.artist);
-  }, [selectedTrack]);
+    form.setValue('artist', selectedTrack.artist);
+  }, [selectedTrack, form]);
 
   const onSubmit = async (data: z.infer<typeof musicUploadSchema>) => {
     if (!selectedTrack) return;
 
-    if (isUploadWithFile(selectedTrack)) {
-      const formData = new FormData();
-      formData.append('audio', selectedTrack.audioFile);
-      formData.append('albumCover', selectedTrack?.albumCover);
-      formData.append('title', data.title);
-      formData.append('artist', data.artist);
-
-      separateMusicWithFile.mutate(formData);
-    } else if (isUploadWithSpotify(selectedTrack)) {
-      separateMusicWithUrl.mutate(selectedTrack);
-    }
+    const uploadedMusic = {
+      ...selectedTrack,
+      title: data.title,
+      artist: data.artist
+    };
+    separateMusicWithFile.mutate(uploadedMusic, {
+      onSuccess: () => {
+        toast({
+          description: 'Successfully uploaded music'
+        });
+      },
+      onError: () => {
+        toast({
+          description: 'Failed to upload music'
+        });
+      }
+    });
   };
 
   return (
@@ -89,7 +92,10 @@ export default function MusicUploadForm({ selectedTrack }: Props) {
           )}
         />
         <footer className="flex justify-end pt-4">
-          <Button type="submit">Submit</Button>
+          <Button className="relative" disabled={separateMusicWithFile.isLoading} type="submit">
+            {separateMusicWithFile.isLoading && <Loader2Icon className="absolute right-1 mr-2 h-4 w-4 animate-spin" />}
+            Split Music
+          </Button>
         </footer>
       </form>
     </Form>
