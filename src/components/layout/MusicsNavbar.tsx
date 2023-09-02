@@ -20,7 +20,7 @@ const MusicsNavbar = () => {
 
   return (
     <nav className={'hidden flex-col bg-white bg-opacity-90 px-6 lg:flex'}>
-      <h2 className={'pt-2 text-h1'}>Music</h2>
+      <h2 className={'pt-2 text-lg font-semibold'}>Music</h2>
       <AudioPlayer musics={musics} />
       <ul
         className={
