@@ -3,23 +3,33 @@ import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogHeader } from 
 import { XIcon } from 'lucide-react';
 import React, { useState } from 'react';
 import Dropzone from '@/components/Dropzone';
-import { useMusicSearch } from '@/hooks/queries/music/useMusics';
-import { MusicUpload } from '@/types/spotify';
+import { MusicUpload, YoutubeMusic } from '@/types/music';
 import Image from 'next/image';
-import { useDebounce } from '@/hooks/useDebounce';
 import MusicUploadForm from '@/components/form/MusicUploadForm';
 import { Button } from '@/components/ui/button';
+import MusicSearch from '@/components/MusicSearch';
 import { Input } from '@/components/ui/input';
+import { useDebounce } from '@/hooks/useDebounce';
 
 function MusicUploadModal() {
-  const [musicKeyword, setMusicKeyword] = useState('');
-  const debouncedKeyword = useDebounce(musicKeyword, 250);
-  const { data } = useMusicSearch(debouncedKeyword);
   const [selectedTrack, setSelectedTrack] = useState<MusicUpload>();
   const [imagePreview, setImagePreview] = useState('');
 
+  const [musicKeyword, setMusicKeyword] = useState('');
+  const debouncedKeyword = useDebounce(musicKeyword, 200);
+
   const handleSearchMusic = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMusicKeyword(e.target.value);
+  };
+
+  const updateSelectedTrack = (track: YoutubeMusic) => {
+    setSelectedTrack({
+      id: track.id,
+      title: track.parsed_title,
+      artist: track.parsed_artist,
+      albumCover: track.thumbnail
+    });
+    setImagePreview(track.thumbnail);
   };
 
   return (
@@ -28,7 +38,7 @@ function MusicUploadModal() {
         <Button variant="outline">음악 추가하기</Button>
       </DialogTrigger>
       <DialogContent
-        className={cn('flex max-h-[320px] flex-col overflow-auto transition-all duration-[1500ms] sm:max-w-[425px]', {
+        className={cn('duration-[1500ms] flex max-h-[320px] flex-col overflow-auto transition-all sm:max-w-[425px]', {
           'max-h-[820px]': selectedTrack || musicKeyword
         })}
       >
@@ -50,38 +60,13 @@ function MusicUploadModal() {
             onChange={handleSearchMusic}
             className="mb-3 rounded-lg bg-gray-100 p-1.5 placeholder:text-gray-400"
           />
-          <ul className="flex max-h-[150px] flex-col overflow-auto border-b-[1px] border-zinc-300">
-            {data?.map((track) => (
-              <li
-                key={track.id}
-                onClick={() => {
-                  setSelectedTrack({
-                    id: track.id,
-                    title: track.parsed_title,
-                    artist: track.parsed_artist,
-                    url: track.thumbnail
-                  });
-                  setImagePreview(track.thumbnail);
-                }}
-                className={cn('flex gap-x-3.5 rounded-sm border-b-[1px] py-3 pl-3 hover:bg-gray-200', {
-                  'bg-gray-200': selectedTrack?.id === track.id
-                })}
-              >
-                <Image
-                  className="rounded-md object-contain"
-                  width={50}
-                  height={50}
-                  src={track.thumbnail}
-                  alt="album-cover"
-                />
-                <div>
-                  <h5 className="text-md font-semibold">{track.parsed_artist}</h5>
-                  <span>{track.parsed_title}</span>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <MusicSearch
+            updateSelectedTrack={updateSelectedTrack}
+            selectedTrack={selectedTrack}
+            keyword={debouncedKeyword}
+          />
         </section>
+
         {selectedTrack && (
           <section className="px-3">
             <div className="relative mt-4 flex items-center justify-center">
