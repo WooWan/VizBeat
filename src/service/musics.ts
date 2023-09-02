@@ -1,29 +1,46 @@
-import { httpClient, spotifyClient } from '@/service/httpClient';
-import { SpotifyMusic } from '@/types/spotify';
+import { nextClient, serverClient } from '@/service/apiClient';
+import { MusicUpload, YoutubeMusic } from '@/types/music';
+import { isUploadWithFile, isUploadWithYoutube } from '@/utils/typeGuards';
 import { Music } from '@prisma/client';
 import axios from 'axios';
 
 export const fetchMusics = async (): Promise<Music[]> => {
-  const response = await httpClient.get('/musics');
+  const response = await nextClient.get('/musics');
   return response.data;
 };
 
-export const fetchMusicFromSpotify = async (musicKeyword: string): Promise<SpotifyMusic> => {
-  const res = await spotifyClient().get('/search', {
+export const fetchMusicFromYoutube = async ({
+  keyword,
+  limit = 10
+}: {
+  keyword: string;
+  limit?: number;
+}): Promise<YoutubeMusic[]> => {
+  const response = await serverClient.get('/youtube-search', {
     params: {
-      q: musicKeyword,
-      type: 'track',
-      limit: 4
+      query: keyword,
+      limit: limit
     }
   });
-  return res.data;
+  return response.data;
 };
 
-export const separateMusic = (formData: FormData) => {
+export const separateMusic = (music: MusicUpload) => {
   const config = {
     headers: {
       'Content-Type': 'multipart/form-data'
     }
   };
+  const formData = new FormData();
+  formData.append('title', music.title);
+  formData.append('artist', music.artist);
+  formData.append('albumCover', music.albumCover);
+
+  if (isUploadWithFile(music)) {
+    formData.append('audio', music.audioFile);
+  } else if (isUploadWithYoutube(music)) {
+    formData.append('videoId', music.id);
+  }
+
   return axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/music-separation`, formData, config);
 };

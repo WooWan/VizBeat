@@ -15,6 +15,7 @@ import { InstrumentData } from '@/types/instrument';
 import Multitrack from 'wavesurfer-multitrack';
 import { shallow } from 'zustand/shallow';
 import { cn } from '@/lib/utils';
+import { calculateIsSolo } from '@/utils/music';
 
 const TRACK_HEIGHT = 100;
 
@@ -174,7 +175,7 @@ export default function MultitrackPlayer() {
       }
     });
   };
-  
+
   return (
     <main>
       <div className="absolute right-5 top-4 z-10 flex items-center gap-x-1.5">
@@ -268,11 +269,18 @@ export default function MultitrackPlayer() {
           <ul className="flex h-full flex-col">
             {instruments.map((instrument) => {
               const { isMuted, volume } = instrumentState[instrument.type];
+              const isSolo = calculateIsSolo(instrument.type, instrumentState);
               return (
                 <li className="flex h-[102px] flex-col justify-center" key={instrument.type}>
                   <div className="flex items-center justify-start">
                     <button className="rounded bg-gray-500 px-1" onClick={() => soloTrack(instrument.type)}>
-                      <span className="text-sm text-zinc-100">S</span>
+                      <span
+                        className={cn('text-sm text-zinc-100', {
+                          'text-yellow-400': isSolo
+                        })}
+                      >
+                        S
+                      </span>
                     </button>
                     <button className="pl-2 text-zinc-200" onClick={() => muteToggle(instrument)}>
                       {isMuted ? <VolumeXIcon /> : <Volume2Icon />}

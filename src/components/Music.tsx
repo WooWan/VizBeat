@@ -1,6 +1,6 @@
 import { Mesh, TextureLoader } from 'three';
 import { useFrame, useLoader } from '@react-three/fiber';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { lerp } from 'three/src/math/MathUtils';
 import { MeshAxis, YAxis } from '@/types/Axis';
 import { Music } from '@prisma/client';

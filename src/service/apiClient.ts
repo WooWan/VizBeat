@@ -1,10 +1,9 @@
 import axios from 'axios';
 
-export const httpClient = axios.create({
+export const nextClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   headers: {
     'Content-Type': `application/json;charset=UTF-8`,
-    'Access-Control-Allow-Origin': '*',
     Accept: 'application/json'
   }
 });
@@ -36,3 +35,11 @@ export const spotifyClient = () => {
 
   return instance;
 };
+
+export const serverClient = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_SERVER_URL,
+  headers: {
+    'Content-Type': `application/json;charset=UTF-8`,
+    Accept: 'application/json'
+  }
+});

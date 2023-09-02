@@ -7,16 +7,18 @@ export type AudioData = {
   gain: number;
 };
 
+export type Instruments = {
+  [key in InstrumentType]: {
+    isMuted: boolean;
+    volume: number;
+    audio: HTMLAudioElement | null;
+  };
+};
+
 export type MusicState = {
   musicInfo?: Music;
   audio?: HTMLAudioElement;
-  instruments: {
-    [key in InstrumentType]: {
-      isMuted: boolean;
-      volume: number;
-      audio: HTMLAudioElement | null;
-    };
-  };
+  instruments: Instruments;
   isLoaded: boolean;
   isAudioPlaying: boolean;
 };

@@ -1,9 +1,8 @@
 import React, { SetStateAction, useCallback, useMemo } from 'react';
 import { UploadCloudIcon } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
-import { MusicUpload } from '@/types/spotify';
+import { MusicUpload } from '@/types/music';
 import * as musicMetadata from 'music-metadata-browser';
-import { v4 as uuidv4 } from 'uuid';
 
 type Props = {
   setSelectedTrack: React.Dispatch<SetStateAction<MusicUpload | undefined>>;
@@ -18,7 +17,7 @@ const Dropzone = ({ setSelectedTrack, setImagePreview }: Props) => {
         reader.onload = async () => {
           const audio = await musicMetadata.parseBlob(file);
           setSelectedTrack({
-            id: uuidv4(),
+            id: '',
             title: audio.common.title || '',
             artist: audio.common.artist || '',
             albumCover: new Blob([audio.common.picture?.[0].data || '']),

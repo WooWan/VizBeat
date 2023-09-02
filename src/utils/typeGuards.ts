@@ -1,9 +1,9 @@
-import { MusicUpload, UploadMusicUrl, UploadMusicFile } from '@/types/spotify';
+import { MusicUpload, UploadMusicUrl, UploadMusicFile } from '@/types/music';
 
-export const isUploadWithSpotify = (upload: MusicUpload): upload is UploadMusicUrl => {
-  return 'url' in upload;
+export const isUploadWithYoutube = (upload: MusicUpload): upload is UploadMusicUrl => {
+  return upload.albumCover instanceof String;
 };
 
 export const isUploadWithFile = (upload: MusicUpload): upload is UploadMusicFile => {
-  return 'audioFile' in upload;
+  return upload.albumCover instanceof Blob;
 };

@@ -8,23 +8,23 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  image         String?
-  musics        Music[]
+  id     String  @id @default(cuid())
+  name   String?
+  image  String?
+  musics Music[]
 }
 
 model Music {
-  id         String @id @default(cuid())
+  id         String  @id @default(cuid())
   title      String
   artist     String
   albumCover String
-  musicUrl  String 
-  bassUrl  String
-  guitarUrl String
-  drumUrl String
-  pianoUrl String
-  vocalUrl String
-  userId     String @map("user_id")
-  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  musicUrl   String
+  bassUrl    String?
+  guitarUrl  String?
+  drumUrl    String?
+  pianoUrl   String?
+  vocalUrl   String?
+  userId     String  @map("user_id")
+  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

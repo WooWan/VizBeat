@@ -18,6 +18,10 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'vizbeats.s3.ap-northeast-2.amazonaws.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.ytimg.com'
       }
     ]
   }
