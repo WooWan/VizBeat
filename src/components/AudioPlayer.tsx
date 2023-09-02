@@ -84,17 +84,19 @@ const AudioPlayer = ({ musics }: Props) => {
       <div className={'relative z-10 h-full'}>
         <section
           className={cn(
-            'absolute left-[15px] right-[15px] top-0 z-10 h-24 rounded-t-xl bg-[#fff7f7] py-3 pl-60 pr-5 transition-transform duration-700',
+            'absolute left-[15px] right-[15px] top-0 z-10 h-24 rounded-t-xl bg-[#fff7f7] py-4 pl-56 pr-8 transition-transform duration-700',
             {
               '-translate-y-24': selectedMusic
             }
           )}
         >
-          <h3 className={'text-s3 text-primary-black'}>{selectedMusic?.title}</h3>
-          <span className={'text-b2 text-slate-400'}>{selectedMusic?.artist}</span>
-          <div className={'flex justify-between'}>
-            <div className={'text-b1'}>{formatTime(currentTime)}</div>
-            <div className={'text-b1'}>{formatTime(duration)}</div>
+          <div className="flex flex-col gap-y-0.5 pb-2">
+            <h2 className={'font-med text-sm text-primary-black'}>{selectedMusic?.title}</h2>
+            <span className={'text-xs text-slate-400'}>{selectedMusic?.artist}</span>
+          </div>
+          <div className={'flex justify-between pb-1 text-slate-500'}>
+            <div className={'text-xs'}>{formatTime(currentTime)}</div>
+            <div className={'text-xs'}>{formatTime(duration)}</div>
           </div>
           <div
             onClick={playFromClickedPosition}
