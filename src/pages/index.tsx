@@ -1,7 +1,7 @@
 import React from 'react';
 import { About, Explore, GetStarted, Hero, WhatsNew } from '@/components/sections';
 import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import Footer from '@/components/sections';
 import StarsCanvas from '@/canvas/StarsCanvas';
 
 export default function Home() {

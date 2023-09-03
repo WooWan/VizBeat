@@ -2,7 +2,7 @@
 import { motion } from 'framer-motion';
 import { ExploreCardId, exploreWorlds } from '@/constants';
 import { staggerContainer } from '@/utils/motion';
-import { TitleText, TypingText } from '@/components/CustomTexts';
+import { TitleText, TypingText } from '@/components/ui/CustomTexts';
 import ExploreCard from '@/components/ExploreCard';
 import { useState } from 'react';
 

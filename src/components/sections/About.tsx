@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { fadeIn, staggerContainer } from '@/utils/motion';
-import { TypingText } from '@/components/CustomTexts';
+import { TypingText } from '@/components/ui/CustomTexts';
 
 const About = () => (
   <section className={`paddings relative z-10`}>
