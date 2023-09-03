@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { startingFeatures } from '@/constants';
 import { fadeIn, planetVariants, staggerContainer } from '@/utils/motion';
-import { TitleText, TypingText } from '@/components/CustomTexts';
+import { TitleText, TypingText } from '@/components/ui/CustomTexts';
 import StartSteps from '@/components/StartSteps';
 import Image from 'next/image';
 
