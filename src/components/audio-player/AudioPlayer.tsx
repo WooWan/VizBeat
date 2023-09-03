@@ -50,9 +50,8 @@ const AudioPlayer = ({ musics }: Props) => {
 
   const skipToNextMusic = () => {
     if (!musics) return;
-    const index = musics.findIndex((music) => music.id === music?.id);
+    const index = musics.findIndex((music) => music.id === selectedMusic?.id);
     const nextIndex = index === musics.length - 1 ? 0 : index + 1;
-    console.log('next ', musics[nextIndex]);
     api.selectAudio(musics[nextIndex]);
   };
 
@@ -129,6 +128,7 @@ const AudioPlayer = ({ musics }: Props) => {
           </div>
           <div className={'flex items-center gap-x-8 justify-self-end px-10'}>
             <button
+              aria-label="Skip Back"
               className={'group flex h-8 w-8 items-center justify-center rounded-md hover:bg-gray-300'}
               onClick={skipToPrevMusic}
               disabled={selectedMusic === null}
@@ -140,28 +140,37 @@ const AudioPlayer = ({ musics }: Props) => {
                 })}
               />
             </button>
-            <button
-              className={'group flex h-8 w-8 items-center justify-center rounded-md hover:bg-gray-300'}
-              onClick={toggleMusic}
-              disabled={selectedMusic === null}
-            >
-              {isAudioPlaying ? (
+            {isAudioPlaying ? (
+              <button
+                aria-label="Pause"
+                className={'group flex h-8 w-8 items-center justify-center rounded-md hover:bg-gray-300'}
+                onClick={toggleMusic}
+                disabled={selectedMusic === null}
+              >
                 <Pause
                   size={24}
                   className={cn('fill-current text-gray-300 group-hover:text-white', {
                     'text-black': selectedMusic !== null
                   })}
                 />
-              ) : (
+              </button>
+            ) : (
+              <button
+                aria-label="Play"
+                className={'group flex h-8 w-8 items-center justify-center rounded-md hover:bg-gray-300'}
+                onClick={toggleMusic}
+                disabled={selectedMusic === null}
+              >
                 <Play
                   size={24}
                   className={cn('fill-current text-gray-300  group-hover:text-white', {
                     'text-black': selectedMusic !== null
                   })}
                 />
-              )}
-            </button>
+              </button>
+            )}
             <button
+              aria-label="Skip Forward"
               className={'group flex h-8 w-8 items-center justify-center rounded-md hover:bg-gray-300'}
               onClick={skipToNextMusic}
               disabled={selectedMusic === null}
