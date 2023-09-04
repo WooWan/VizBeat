@@ -13,13 +13,12 @@ const radian = Math.PI / 180;
 type Props = {
   music: Music;
   index: number;
-  groupY: number;
   musics?: Music[];
 };
 
 const LERP_FACTOR = 0.05;
 
-const MusicAlbum = ({ music, index, groupY, musics }: Props) => {
+const MusicAlbum = ({ music, index, musics }: Props) => {
   const [originalPosition] = useState(-index * 1.5);
   const rotationRef = useRef(radian * 5 * index);
   const meshRef = useRef<Mesh>(null!);
