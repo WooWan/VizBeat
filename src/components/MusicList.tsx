@@ -31,13 +31,7 @@ const MusicList = ({ musicList }: Props) => {
   return (
     <group ref={groupRef}>
       {musicList?.map((music, index) => (
-        <MusicAlbum
-          key={music.id}
-          music={music}
-          index={index}
-          musics={musicList}
-          groupY={scroll.offset * three.viewport.height * 0.25}
-        />
+        <MusicAlbum key={music.id} music={music} index={index} musics={musicList} />
       ))}
     </group>
   );

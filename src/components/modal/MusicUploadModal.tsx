@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils';
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogHeader } from '@/components/ui/dialog';
 import { XIcon } from 'lucide-react';
 import React, { useState } from 'react';
-import Dropzone from '@/components/Dropzone';
+import Dropzone from '@/components/dropzone/Dropzone';
 import { MusicUpload, YoutubeMusic } from '@/types/music';
 import Image from 'next/image';
 import MusicUploadForm from '@/components/form/MusicUploadForm';
@@ -79,7 +79,7 @@ function MusicUploadModal() {
                 height={100}
                 className={'justify-self-center rounded-md object-contain'}
                 src={imagePreview}
-                alt={'vidoe-thumbnail'}
+                alt={'video-thumbnail'}
               />
             </div>
             <MusicUploadForm selectedTrack={selectedTrack} />
