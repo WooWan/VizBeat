@@ -78,10 +78,9 @@ const MusicAlbum = ({ music, index, groupY, musics }: Props) => {
         e.stopPropagation();
         if (!musics) return;
         const selectedIdx = musics.findIndex((music) => music.id === selectedMusic?.id);
+        api.clear();
         if (selectedIdx !== index) {
           api.selectAudio(music);
-        } else {
-          api.clear();
         }
       }}
     >
