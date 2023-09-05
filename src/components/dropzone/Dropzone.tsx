@@ -53,7 +53,7 @@ const Dropzone = ({ setSelectedTrack, setImagePreview }: Props) => {
 
   return (
     <div {...getRootProps({ style })}>
-      <input {...getInputProps()} />
+      <input aria-label="dropzone" {...getInputProps()} />
       <UploadCloudIcon className="mb-2 h-10 w-10" />
       <p>{`Drag and drop an audio file`}</p>
     </div>

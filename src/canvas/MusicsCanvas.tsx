@@ -60,7 +60,7 @@ function StageRedirectButton({ music }: { music: Music }) {
   return (
     <div
       className={cn(
-        'absolute left-1/2 top-1/2 z-50 flex h-12 w-12 translate-x-16 translate-y-12 items-center justify-center rounded-full bg-zinc-950/[0.85] p-2 opacity-100 transition-opacity duration-900 duration-900 lg:h-36 lg:w-36',
+        'duration-[900ms] absolute left-1/2 top-1/2 z-50 flex h-12 w-12 translate-x-16 translate-y-12 items-center justify-center rounded-full bg-zinc-950/[0.85] p-2 opacity-100 transition-opacity duration-900 lg:h-36 lg:w-36',
         {
           'opacity-0 duration-0': music.id !== musicInfo[len - 1]
         }
