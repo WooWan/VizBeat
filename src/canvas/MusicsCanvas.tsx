@@ -4,11 +4,12 @@ import { Environment, ScrollControls } from '@react-three/drei';
 import MusicList from '@/components/MusicList';
 import { useMediaQuery } from '@/hooks/queries/useMediaQuery';
 import { mediaQuery } from '@/utils/mediaQuery';
-import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { useMusicStore } from '@/store/music';
 import { useMusics } from '@/hooks/queries/music/useMusics';
 import { Music } from '@prisma/client';
+import { useRouter } from 'next/router';
+import shallow from 'zustand/shallow';
 
 export default function MusicsCanvas() {
   const { data: musics } = useMusics();
@@ -38,6 +39,13 @@ export default function MusicsCanvas() {
 
 function StageRedirectButton({ music }: { music: Music }) {
   const [musicInfo, setMusicInfo] = useState<string[]>([]);
+  const { api } = useMusicStore(
+    (state) => ({
+      api: state.api
+    }),
+    shallow
+  );
+  const router = useRouter();
   const len = musicInfo.length;
 
   useEffect(() => {
@@ -50,16 +58,20 @@ function StageRedirectButton({ music }: { music: Music }) {
   }, [music]);
 
   return (
-    <Link
-      href="/stage"
+    <div
       className={cn(
-        'duration-900 absolute left-1/2 top-1/2 z-50 flex h-12 w-12 translate-x-16 translate-y-12 items-center justify-center rounded-full bg-zinc-950/[0.85] p-2 opacity-100 transition-opacity duration-900 lg:h-36 lg:w-36',
+        'absolute left-1/2 top-1/2 z-50 flex h-12 w-12 translate-x-16 translate-y-12 items-center justify-center rounded-full bg-zinc-950/[0.85] p-2 opacity-100 transition-opacity duration-900 duration-900 lg:h-36 lg:w-36',
         {
           'opacity-0 duration-0': music.id !== musicInfo[len - 1]
         }
       )}
+      onClick={() => {
+        api.stopAudio();
+        router.push(`/stage/${music.id}`);
+        api.clear();
+      }}
     >
       <span className="text-md text-cente font-bold text-white">Go to Stage</span>
-    </Link>
+    </div>
   );
 }
