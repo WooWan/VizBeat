@@ -10,7 +10,7 @@ import { table } from 'console';
 const dbName = 'db';
 const tableName = 'musics';
 
-export default function index() {
+export default function Index() {
   const [tracks, setTracks] = useState<HTMLAudioElement[]>([]);
   const router = useRouter();
   const { slug: musicId } = router.query;
@@ -47,7 +47,8 @@ export default function index() {
     setTracks([vocalAudio, drumAudio, guitarAudio, bassAudio, pianoAudio]);
   }
 
-  async function createBlobFromURL(musicUrl: string) {
+  async function createBlobFromURL(musicUrl: string | null) {
+    if (!musicUrl) return;
     try {
       const response = await fetch(musicUrl);
       const musicData = await response.arrayBuffer();
