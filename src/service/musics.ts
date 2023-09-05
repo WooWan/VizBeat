@@ -9,6 +9,11 @@ export const fetchMusics = async (): Promise<Music[]> => {
   return response.data;
 };
 
+export const fetchMusic = async (id: string): Promise<Music> => {
+  const response = await nextClient.get(`/stageMusic?id=${id}`);
+  return response.data;
+};
+
 export const fetchMusicFromYoutube = async ({
   keyword,
   limit = 10
