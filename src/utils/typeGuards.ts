@@ -1,7 +1,7 @@
 import { MusicUpload, UploadMusicUrl, UploadMusicFile } from '@/types/music';
 
 export const isUploadWithYoutube = (upload: MusicUpload): upload is UploadMusicUrl => {
-  return upload.albumCover instanceof String;
+  return typeof upload.albumCover === 'string';
 };
 
 export const isUploadWithFile = (upload: MusicUpload): upload is UploadMusicFile => {
