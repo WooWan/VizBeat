@@ -1,9 +1,8 @@
 import { useMusicStore } from '@/store/music';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
-import shallow from 'zustand/shallow';
+import { shallow } from 'zustand/shallow';
 import MusicPlayToggleButton from './MusicPlayToggleButton';
 import { Button } from './ui/button';
-//@ts-ignore
 import Multitrack from 'wavesurfer-multitrack';
 import { instruments } from '@/constants/music';
 import { InstrumentData } from '@/types/instrument';
