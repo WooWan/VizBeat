@@ -1,25 +1,22 @@
-import React, { ChangeEvent, useEffect, useRef, useState, Suspense } from 'react';
-import { Button } from './ui/button';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
-import StageGround from '@/components/StageGround';
-import Rig from '@/components/Rig';
-import MusicAnalyzer from '@/components/MusicAnalyzer';
-import Loading from '@/components/Loading';
-import { instruments } from '@/constants/music';
-import MusicPlayToggleButton from './MusicPlayToggleButton';
 import { useMusicStore } from '@/store/music';
-import Instrument from './Instrument';
-import { Volume2Icon, VolumeXIcon } from 'lucide-react';
-import { InstrumentData } from '@/types/instrument';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import shallow from 'zustand/shallow';
+import MusicPlayToggleButton from './MusicPlayToggleButton';
+import { Button } from './ui/button';
+//@ts-ignore
 import Multitrack from 'wavesurfer-multitrack';
-import { shallow } from 'zustand/shallow';
-import { cn } from '@/lib/utils';
+import { instruments } from '@/constants/music';
+import { InstrumentData } from '@/types/instrument';
+import { Volume2Icon, VolumeXIcon } from 'lucide-react';
 import { calculateIsSolo } from '@/utils/music';
+import { cn } from '@/lib/utils';
 
+type Props = {
+  tracks: HTMLAudioElement[];
+};
 const TRACK_HEIGHT = 100;
 
-export default function MultitrackPlayer() {
+export default function MultitrackController({ tracks }: Props) {
   const playerRef = useRef<HTMLDivElement>(null!);
   const [wavesurfer, setWavesurfer] = useState<any>(null);
   const { instrumentState, api } = useMusicStore(
@@ -34,11 +31,10 @@ export default function MultitrackPlayer() {
       [
         {
           id: 0,
-          url: '/music/mp3/vocal.mp3',
           volume: 0.5,
           startPosition: 0,
-          //@ts-ignore
           options: {
+            media: tracks[0],
             height: TRACK_HEIGHT,
             waveColor: 'hsl(46, 87%, 49%)',
             progressColor: 'hsl(46, 87%, 20%)'
@@ -46,11 +42,10 @@ export default function MultitrackPlayer() {
         },
         {
           id: 1,
-          url: '/music/mp3/drum.mp3',
           volume: 0.5,
           startPosition: 0,
-          //@ts-ignore
           options: {
+            media: tracks[1],
             height: TRACK_HEIGHT,
             waveColor: 'hsl(46, 87%, 49%)',
             progressColor: 'hsl(46, 87%, 20%)'
@@ -58,11 +53,10 @@ export default function MultitrackPlayer() {
         },
         {
           id: 2,
-          url: '/music/mp3/guitar.mp3',
           volume: 0.5,
           startPosition: 0,
-          //@ts-ignore
           options: {
+            media: tracks[2],
             height: TRACK_HEIGHT,
             waveColor: 'hsl(46, 87%, 49%)',
             progressColor: 'hsl(46, 87%, 20%)'
@@ -70,11 +64,10 @@ export default function MultitrackPlayer() {
         },
         {
           id: 3,
-          url: '/music/mp3/bass.mp3',
           volume: 0.5,
           startPosition: 0,
-          //@ts-ignore
           options: {
+            media: tracks[3],
             height: TRACK_HEIGHT,
             waveColor: 'hsl(46, 87%, 49%)',
             progressColor: 'hsl(46, 87%, 20%)'
@@ -82,11 +75,10 @@ export default function MultitrackPlayer() {
         },
         {
           id: 4,
-          url: '/music/mp3/piano.mp3',
           volume: 0.5,
           startPosition: 0,
-          //@ts-ignore
           options: {
+            media: tracks[4],
             height: 120,
             waveColor: 'hsl(46, 87%, 49%)',
             progressColor: 'hsl(46, 87%, 20%)'
@@ -115,6 +107,17 @@ export default function MultitrackPlayer() {
       multitrack.destroy();
     };
   }, []);
+
+  useEffect(() => {
+    if (!wavesurfer) return;
+    for (const instrument of instruments) muteToggle(instrument);
+  }, [
+    instrumentState.guitar.isMuted,
+    instrumentState.bass.isMuted,
+    instrumentState.drum.isMuted,
+    instrumentState.piano.isMuted,
+    instrumentState.vocal.isMuted
+  ]);
 
   const updateMasterVolume = (event: ChangeEvent<HTMLInputElement>) => {
     const updatedVolume = event.target.valueAsNumber / 100;
@@ -157,11 +160,12 @@ export default function MultitrackPlayer() {
   };
 
   const muteToggle = (track: InstrumentData) => {
+    console.log('mute');
     const isMuted = instrumentState[track.type].isMuted;
     const instrumentIndex = instruments.findIndex((instrument) => instrument.id === track.id);
     const instrument = instrumentState[track.type];
-    wavesurfer.audios[instrumentIndex].volume = isMuted ? instrument.volume : 0;
-    isMuted ? api.unMuteAudio(track.type) : api.muteAudio(track.type);
+    wavesurfer.audios[instrumentIndex].volume = isMuted ? 0 : instrument.volume;
+    // isMuted ? api.unMuteAudio(track.type) : api.muteAudio(track.type);
   };
 
   const soloTrack = (type: string) => {
@@ -184,64 +188,6 @@ export default function MultitrackPlayer() {
         </Button>
         <MusicPlayToggleButton onClick={pauseAndResumeAll} className="relative right-0" />
       </div>
-      <Suspense fallback={<Loading />}>
-        <Canvas
-          camera={{
-            position: [0, 20, 0],
-            fov: 80,
-            near: 0.1,
-            far: 300,
-            zoom: 1
-          }}
-          style={{ width: '100vw', height: '100vh' }}
-        >
-          <color attach="background" args={['white']} />
-          <Suspense fallback={null}>
-            <Rig>
-              <StageGround />
-              {instruments.map((instrument) => (
-                <Instrument key={instrument.type} {...instrument} />
-              ))}
-              {wavesurfer && (
-                <>
-                  <MusicAnalyzer
-                    audio={wavesurfer?.wavesurfers[0].media}
-                    fftSize={128}
-                    centerPos={[0, -26, 30]}
-                    radius={8}
-                  />
-                  <MusicAnalyzer
-                    audio={wavesurfer.wavesurfers[1].media}
-                    fftSize={128}
-                    centerPos={[32, -26, -10]}
-                    radius={18}
-                  />
-                  <MusicAnalyzer
-                    audio={wavesurfer.wavesurfers[2].media}
-                    fftSize={128}
-                    centerPos={[75, -26, 10]}
-                    radius={8}
-                  />
-                  <MusicAnalyzer
-                    audio={wavesurfer.wavesurfers[3].media}
-                    fftSize={128}
-                    centerPos={[-75, -26, 10]}
-                    radius={4}
-                  />
-                  <MusicAnalyzer
-                    audio={wavesurfer.wavesurfers[4].media}
-                    fftSize={128}
-                    centerPos={[-32, -26, -10]}
-                    radius={18}
-                  />
-                </>
-              )}
-            </Rig>
-          </Suspense>
-          <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
-          <ambientLight intensity={0.4} />
-        </Canvas>
-      </Suspense>
       <div
         className={cn('fixed inset-0 bg-background/50 opacity-30 backdrop-blur-sm', {
           hidden: !isPlayerOpen
@@ -282,7 +228,10 @@ export default function MultitrackPlayer() {
                         S
                       </span>
                     </button>
-                    <button className="pl-2 text-zinc-200" onClick={() => muteToggle(instrument)}>
+                    <button
+                      className="pl-2 text-zinc-200"
+                      onClick={() => (isMuted ? api.unMuteAudio(instrument.type) : api.muteAudio(instrument.type))}
+                    >
                       {isMuted ? <VolumeXIcon /> : <Volume2Icon />}
                     </button>
                   </div>

@@ -21,7 +21,9 @@ const MusicsNavbar = () => {
   );
 
   const redirectToStage = () => {
+    api.stopAudio();
     router.push(`/stage/${musicInfo?.id}`);
+    api.clear();
   };
 
   return (

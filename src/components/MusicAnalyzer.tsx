@@ -62,7 +62,7 @@ export default function MusicAnalyzer({ fftSize, centerPos, radius, audio }: Pro
     if (!analyzerNode) return;
 
     analyzerNode.getByteTimeDomainData(newData);
-    meanRef.current = newData.reduce((a, b) => a + b) / (128 * newData.length);
+    meanRef.current = newData.reduce((a, b) => a + b / newData.length);
     dataArrayRef.current = newData;
   });
 
