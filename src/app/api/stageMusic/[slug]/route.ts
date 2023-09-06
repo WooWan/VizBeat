@@ -1,12 +1,11 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { NextApiRequest } from 'next';
 
-export async function GET(req: Request) {
-  const { url } = req;
-  const id = url.split('id=')[1];
+export async function GET(req: NextApiRequest, { params }: { params: { slug: string } }) {
   const res = await prisma.music.findUnique({
     where: {
-      id: id
+      id: params.slug
     }
   });
   return NextResponse.json(res);
