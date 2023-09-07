@@ -12,7 +12,8 @@ export const useMusics = () => {
 export const useMusic = (id: string) => {
   return useQuery({
     queryKey: musicKey.detail(id),
-    queryFn: () => fetchMusic(id)
+    queryFn: () => fetchMusic(id),
+    enabled: !!id
   });
 };
 
