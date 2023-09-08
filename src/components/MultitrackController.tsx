@@ -27,6 +27,8 @@ export default function MultitrackController({ tracks }: Props) {
   const allMuted = Object.values(instrumentState).every((instrument) => instrument.isMuted);
 
   useEffect(() => {
+    console.log('multitrack tracks', tracks);
+    tracks[0].play();
     const multitrack = Multitrack.create(
       [
         {
@@ -129,15 +131,14 @@ export default function MultitrackController({ tracks }: Props) {
   };
 
   const pauseAndResumeAll = () => {
-    tracks[0].play();
-
+    // tracks[0].play();
     console.log('wavesurfer isplaying', wavesurfer.isPlaying());
     if (wavesurfer?.isPlaying()) {
       api.stopAudio();
-      // wavesurfer.pause();
+      wavesurfer.pause();
     } else {
       api.playAudio();
-      // wavesurfer?.play();
+      wavesurfer?.play();
     }
     console.log('wavesurfer isplaying after', wavesurfer.isPlaying());
   };
