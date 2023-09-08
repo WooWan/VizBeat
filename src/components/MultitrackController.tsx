@@ -3,7 +3,6 @@ import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { shallow } from 'zustand/shallow';
 import MusicPlayToggleButton from './MusicPlayToggleButton';
 import { Button } from './ui/button';
-//@ts-ignore
 import Multitrack from 'wavesurfer-multitrack';
 import { instruments } from '@/constants/music';
 import { InstrumentData } from '@/types/instrument';
@@ -27,7 +26,6 @@ export default function MultitrackController({ tracks }: Props) {
   const allMuted = Object.values(instrumentState).every((instrument) => instrument.isMuted);
 
   useEffect(() => {
-    console.log('multitrack tracks', tracks);
     const multitrack = Multitrack.create(
       [
         {
@@ -101,12 +99,10 @@ export default function MultitrackController({ tracks }: Props) {
     );
 
     multitrack.once('canplay', () => {
-      console.log('multitrack', multitrack);
       setWavesurfer(multitrack);
     });
 
     return () => {
-      console.log('destroy');
       multitrack.destroy();
     };
   }, []);
@@ -140,18 +136,13 @@ export default function MultitrackController({ tracks }: Props) {
   };
 
   const pauseAndResumeAll = () => {
-    console.log('wavesurfer isplaying', wavesurfer.isPlaying());
     if (wavesurfer?.isPlaying()) {
-      console.log('pause');
-      console.log(wavesurfer);
       api.stopAudio();
       wavesurfer.pause();
     } else {
-      console.log('play');
       api.playAudio();
       wavesurfer?.play();
     }
-    console.log('wavesurfer isplaying after', wavesurfer.isPlaying());
   };
 
   const muteAll = () => {
@@ -177,12 +168,10 @@ export default function MultitrackController({ tracks }: Props) {
   };
 
   const muteToggle = (track: InstrumentData) => {
-    console.log('mute');
     const isMuted = instrumentState[track.type].isMuted;
     const instrumentIndex = instruments.findIndex((instrument) => instrument.id === track.id);
     const instrument = instrumentState[track.type];
     wavesurfer.audios[instrumentIndex].volume = isMuted ? 0 : instrument.volume;
-    // isMuted ? api.unMuteAudio(track.type) : api.muteAudio(track.type);
   };
 
   const soloTrack = (type: string) => {
