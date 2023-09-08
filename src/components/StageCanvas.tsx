@@ -5,6 +5,7 @@ import React, { Suspense } from 'react';
 import Instrument from './Instrument';
 import Loading from './Loading';
 import MusicAnalyzer from './MusicAnalyzer';
+import MusicPlayToggleButton from './MusicPlayToggleButton';
 import Rig from './Rig';
 import StageGround from './StageGround';
 
@@ -15,6 +16,14 @@ type Props = {
 export default function StageCanvas({ tracks }: Props) {
   return (
     <Suspense fallback={<Loading />}>
+      <div className="absolute right-5 top-4 z-10 flex items-center gap-x-1.5">
+        <MusicPlayToggleButton
+          onClick={() => {
+            tracks[0].play();
+          }}
+          className="relative right-0 top-0"
+        />
+      </div>
       <Canvas
         camera={{
           position: [0, 30, 30],
