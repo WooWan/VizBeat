@@ -225,6 +225,7 @@ export default function MultitrackController({ tracks }: Props) {
               return (
                 <li className="flex h-[102px] flex-col justify-center" key={instrument.type}>
                   <div className="flex items-center justify-start">
+                    <span className="pr-2 text-base text-zinc-100">{instrument.type}</span>
                     <button className="rounded bg-gray-500 px-1" onClick={() => soloTrack(instrument.type)}>
                       <span
                         className={cn('text-sm text-zinc-100', {
