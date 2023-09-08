@@ -16,17 +16,17 @@ type Props = {
 export default function StageCanvas({ tracks }: Props) {
   return (
     <Suspense fallback={<Loading />}>
-      <div className="absolute right-5 top-4 z-10 flex items-center gap-x-1.5">
+      {/* <div className="absolute right-5 top-4 z-10 flex items-center gap-x-1.5">
         <MusicPlayToggleButton
           onClick={() => {
             tracks[0].play();
           }}
           className="relative right-0 top-0"
         />
-      </div>
+      </div> */}
       <Canvas
         camera={{
-          position: [0, 30, 30],
+          position: [0, 20, 70],
           fov: 80,
           near: 0.1,
           far: 300,
