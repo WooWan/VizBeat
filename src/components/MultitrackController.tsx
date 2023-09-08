@@ -28,8 +28,6 @@ export default function MultitrackController({ tracks }: Props) {
 
   useEffect(() => {
     console.log('multitrack tracks', tracks);
-    (document.getElementById('tmp') as HTMLAudioElement).src = tracks[0].src;
-    // tracks[0].play();
     const multitrack = Multitrack.create(
       [
         {
@@ -114,6 +112,15 @@ export default function MultitrackController({ tracks }: Props) {
   }, []);
 
   useEffect(() => {
+    if (wavesurfer) {
+      setTimeout(() => {
+        wavesurfer.play();
+        api.playAudio();
+      }, 2500);
+    }
+  }, [wavesurfer]);
+
+  useEffect(() => {
     if (!wavesurfer) return;
     for (const instrument of instruments) muteToggle(instrument);
   }, [
@@ -133,12 +140,14 @@ export default function MultitrackController({ tracks }: Props) {
   };
 
   const pauseAndResumeAll = () => {
-    // tracks[0].play();
     console.log('wavesurfer isplaying', wavesurfer.isPlaying());
     if (wavesurfer?.isPlaying()) {
+      console.log('pause');
+      console.log(wavesurfer);
       api.stopAudio();
       wavesurfer.pause();
     } else {
+      console.log('play');
       api.playAudio();
       wavesurfer?.play();
     }
@@ -210,8 +219,6 @@ export default function MultitrackController({ tracks }: Props) {
           }
         )}
       >
-        <audio id="tmp" src="" controls></audio>
-
         <div className="flex gap-x-2">
           <label className="flex items-center">
             <input type="range" min="0" max="100" onChange={updateMasterVolume} />
