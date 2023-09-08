@@ -1,6 +1,6 @@
 import { useMusicStore } from '@/store/music';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
-import shallow from 'zustand/shallow';
+import { shallow } from 'zustand/shallow';
 import MusicPlayToggleButton from './MusicPlayToggleButton';
 import { Button } from './ui/button';
 //@ts-ignore
@@ -19,8 +19,8 @@ const TRACK_HEIGHT = 100;
 export default function MultitrackController({ tracks }: Props) {
   const playerRef = useRef<HTMLDivElement>(null!);
   const [wavesurfer, setWavesurfer] = useState<any>(null);
-  const { instrumentState, api } = useMusicStore(
-    (state) => ({ instrumentState: state.instruments, api: state.api }),
+  const { instrumentState, api, isPlaying } = useMusicStore(
+    (state) => ({ instrumentState: state.instruments, api: state.api, isPlaying: state.isAudioPlaying }),
     shallow
   );
   const [isPlayerOpen, setIsPlayerOpen] = useState(false);
@@ -100,6 +100,7 @@ export default function MultitrackController({ tracks }: Props) {
     );
 
     multitrack.once('canplay', () => {
+      console.log('multitrack', multitrack);
       setWavesurfer(multitrack);
     });
 
@@ -128,6 +129,7 @@ export default function MultitrackController({ tracks }: Props) {
   };
 
   const pauseAndResumeAll = () => {
+    console.log('api isplaying', isPlaying);
     if (wavesurfer?.isPlaying()) {
       api.stopAudio();
       wavesurfer.pause();
