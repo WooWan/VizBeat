@@ -28,7 +28,8 @@ export default function MultitrackController({ tracks }: Props) {
 
   useEffect(() => {
     console.log('multitrack tracks', tracks);
-    tracks[0].play();
+    (document.getElementById('tmp') as HTMLAudioElement).src = tracks[0].src;
+    // tracks[0].play();
     const multitrack = Multitrack.create(
       [
         {
@@ -107,6 +108,7 @@ export default function MultitrackController({ tracks }: Props) {
     });
 
     return () => {
+      console.log('destroy');
       multitrack.destroy();
     };
   }, []);
@@ -208,6 +210,8 @@ export default function MultitrackController({ tracks }: Props) {
           }
         )}
       >
+        <audio id="tmp" src="" controls></audio>
+
         <div className="flex gap-x-2">
           <label className="flex items-center">
             <input type="range" min="0" max="100" onChange={updateMasterVolume} />
