@@ -19,8 +19,8 @@ const TRACK_HEIGHT = 100;
 export default function MultitrackController({ tracks }: Props) {
   const playerRef = useRef<HTMLDivElement>(null!);
   const [wavesurfer, setWavesurfer] = useState<any>(null);
-  const { instrumentState, api, isPlaying } = useMusicStore(
-    (state) => ({ instrumentState: state.instruments, api: state.api, isPlaying: state.isAudioPlaying }),
+  const { instrumentState, api } = useMusicStore(
+    (state) => ({ instrumentState: state.instruments, api: state.api }),
     shallow
   );
   const [isPlayerOpen, setIsPlayerOpen] = useState(false);
@@ -129,7 +129,7 @@ export default function MultitrackController({ tracks }: Props) {
   };
 
   const pauseAndResumeAll = () => {
-    console.log('api isplaying', isPlaying);
+    console.log('wavesurfer isplaying', wavesurfer.isPlaying());
     if (wavesurfer?.isPlaying()) {
       api.stopAudio();
       wavesurfer.pause();
@@ -137,6 +137,7 @@ export default function MultitrackController({ tracks }: Props) {
       api.playAudio();
       wavesurfer?.play();
     }
+    console.log('wavesurfer isplaying after', wavesurfer.isPlaying());
   };
 
   const muteAll = () => {
