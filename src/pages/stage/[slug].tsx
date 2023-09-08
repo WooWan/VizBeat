@@ -24,7 +24,7 @@ export default function Index() {
   return (
     <>
       {tracks.length && <StageCanvas tracks={tracks} />}
-      {/* {tracks.length && <MultitrackController tracks={tracks} />} */}
+      {tracks.length && <MultitrackController tracks={tracks} />}
     </>
   );
 }

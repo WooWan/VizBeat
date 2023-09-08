@@ -116,7 +116,7 @@ export default function MultitrackController({ tracks }: Props) {
       setTimeout(() => {
         wavesurfer.play();
         api.playAudio();
-      }, 2500);
+      }, 1000);
     }
   }, [wavesurfer]);
 
