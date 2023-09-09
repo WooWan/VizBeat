@@ -9,7 +9,7 @@ import { useMusicStore } from '@/store/music';
 import { useMusics } from '@/hooks/queries/music/useMusics';
 import { Music } from '@prisma/client';
 import { useRouter } from 'next/router';
-import shallow from 'zustand/shallow';
+import { shallow } from 'zustand/shallow';
 
 export default function MusicsCanvas() {
   const { data: musics } = useMusics();
@@ -67,8 +67,8 @@ function StageRedirectButton({ music }: { music: Music }) {
       )}
       onClick={() => {
         api.stopAudio();
-        router.push(`/stage/${music.id}`);
         api.clear();
+        router.push(`/stage/${music.id}`);
       }}
     >
       <span className="text-md text-cente font-bold text-white">Go to Stage</span>

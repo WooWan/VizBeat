@@ -38,12 +38,12 @@ export default function MusicAnalyzer({ fftSize, centerPos, radius, audio }: Pro
   useEffect(() => {
     if (audioMap.sourceNode) return;
 
-    const audioContzxt = new AudioContext();
+    const audioContext = new AudioContext();
+    const soureNode = audioContext.createMediaElementSource(audio);
+    const analyzerNode = audioContext.createAnalyser();
 
-    const soureNode = audioContzxt.createMediaElementSource(audio);
-    const analyzerNode = audioContzxt.createAnalyser();
     soureNode?.connect(analyzerNode);
-    soureNode?.connect(audioContzxt.destination);
+    soureNode?.connect(audioContext.destination);
     analyzerNode.fftSize = fftSize;
 
     setAudioMap({
@@ -52,6 +52,7 @@ export default function MusicAnalyzer({ fftSize, centerPos, radius, audio }: Pro
     });
 
     return () => {
+      audioContext.close();
       soureNode?.disconnect();
       analyzerNode?.disconnect();
     };
