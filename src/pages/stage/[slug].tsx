@@ -13,7 +13,6 @@ export default function Index() {
 
   useEffect(() => {
     if (music) {
-      console.log(music);
       fetchMusicsStage(music).then((tracksArr) => setTracks(tracksArr));
     }
   }, [music]);
