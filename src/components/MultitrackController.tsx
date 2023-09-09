@@ -3,126 +3,47 @@ import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { shallow } from 'zustand/shallow';
 import MusicPlayToggleButton from './MusicPlayToggleButton';
 import { Button } from './ui/button';
-import Multitrack from 'wavesurfer-multitrack';
 import { instruments } from '@/constants/music';
 import { InstrumentData } from '@/types/instrument';
 import { Volume2Icon, VolumeXIcon } from 'lucide-react';
 import { calculateIsSolo } from '@/utils/music';
 import { cn } from '@/lib/utils';
+import useWavesurfer from '@/hooks/useWavesurfer';
 
 type Props = {
   tracks: HTMLAudioElement[];
 };
-const TRACK_HEIGHT = 100;
 
 export default function MultitrackController({ tracks }: Props) {
   const playerRef = useRef<HTMLDivElement>(null!);
-  const [wavesurfer, setWavesurfer] = useState<any>(null);
   const { instrumentState, api } = useMusicStore(
     (state) => ({ instrumentState: state.instruments, api: state.api }),
     shallow
   );
+  const wavesurfer = useWavesurfer({
+    containerRef: playerRef,
+    tracks
+  });
   const [isPlayerOpen, setIsPlayerOpen] = useState(false);
   const allMuted = Object.values(instrumentState).every((instrument) => instrument.isMuted);
-
-  useEffect(() => {
-    const multitrack = Multitrack.create(
-      [
-        {
-          id: 0,
-          volume: 0.5,
-          startPosition: 0,
-          options: {
-            media: tracks[0],
-            height: TRACK_HEIGHT,
-            waveColor: 'hsl(46, 87%, 49%)',
-            progressColor: 'hsl(46, 87%, 20%)'
-          }
-        },
-        {
-          id: 1,
-          volume: 0.5,
-          startPosition: 0,
-          options: {
-            media: tracks[1],
-            height: TRACK_HEIGHT,
-            waveColor: 'hsl(46, 87%, 49%)',
-            progressColor: 'hsl(46, 87%, 20%)'
-          }
-        },
-        {
-          id: 2,
-          volume: 0.5,
-          startPosition: 0,
-          options: {
-            media: tracks[2],
-            height: TRACK_HEIGHT,
-            waveColor: 'hsl(46, 87%, 49%)',
-            progressColor: 'hsl(46, 87%, 20%)'
-          }
-        },
-        {
-          id: 3,
-          volume: 0.5,
-          startPosition: 0,
-          options: {
-            media: tracks[3],
-            height: TRACK_HEIGHT,
-            waveColor: 'hsl(46, 87%, 49%)',
-            progressColor: 'hsl(46, 87%, 20%)'
-          }
-        },
-        {
-          id: 4,
-          volume: 0.5,
-          startPosition: 0,
-          options: {
-            media: tracks[4],
-            height: 120,
-            waveColor: 'hsl(46, 87%, 49%)',
-            progressColor: 'hsl(46, 87%, 20%)'
-          }
-        }
-      ],
-      {
-        container: playerRef.current, // required!
-        minPxPerSec: 5, // zoom level
-        rightButtonDrag: true, // drag tracks with the right mouse button
-        cursorWidth: 2,
-        cursorColor: '#D72F21', // 진행 바 색상
-        trackBorderColor: 'black',
-        envelopeOptions: {
-          lineWidth: '0',
-          dragPointSize: 0
-        }
-      }
-    );
-
-    multitrack.once('canplay', () => {
-      setWavesurfer(multitrack);
-    });
-
-    return () => {
-      multitrack.destroy();
-    };
-  }, []);
 
   useEffect(() => {
     if (!wavesurfer) return;
     for (const instrument of instruments) muteToggle(instrument);
   }, [
-    instrumentState.guitar.isMuted,
-    instrumentState.bass.isMuted,
-    instrumentState.drum.isMuted,
-    instrumentState.piano.isMuted,
-    instrumentState.vocal.isMuted
+    instrumentState
+    // instrumentState.guitar.isMuted,
+    // instrumentState.bass.isMuted,
+    // instrumentState.drum.isMuted,
+    // instrumentState.piano.isMuted,
+    // instrumentState.vocal.isMuted
   ]);
 
   const updateMasterVolume = (event: ChangeEvent<HTMLInputElement>) => {
     const updatedVolume = event.target.valueAsNumber / 100;
     Object.values(instruments).forEach((instrument, index) => {
       api.updateVolume(instrument.type, updatedVolume);
-      wavesurfer.audios[index].volume = updatedVolume;
+      wavesurfer.setTrackVolume(index, updatedVolume);
     });
   };
 
@@ -139,14 +60,14 @@ export default function MultitrackController({ tracks }: Props) {
   const muteAll = () => {
     Object.values(instruments).forEach((instrument, index) => {
       api.muteAudio(instrument.type);
-      wavesurfer.audios[index].volume = 0;
+      wavesurfer.setTrackVolume(index, 0);
     });
   };
 
   const unmuteAll = () => {
     Object.values(instruments).forEach((instrument, index) => {
       api.unMuteAudio(instrument.type);
-      wavesurfer.audios[index].volume = instrumentState[instrument.type].volume;
+      wavesurfer.setTrackVolume(index, instrumentState[instrument.type].volume);
     });
   };
 
@@ -155,26 +76,24 @@ export default function MultitrackController({ tracks }: Props) {
     const audioIndex = instruments.findIndex((instrument) => instrument.id === id);
     const instrument = instruments[audioIndex];
     api.updateVolume(instrument.type, updatedVolume);
-    wavesurfer.audios[audioIndex].volume = updatedVolume;
+    wavesurfer.setTrackVolume(audioIndex, updatedVolume);
   };
 
   const muteToggle = (track: InstrumentData) => {
-    console.log('mute');
     const isMuted = instrumentState[track.type].isMuted;
     const instrumentIndex = instruments.findIndex((instrument) => instrument.id === track.id);
     const instrument = instrumentState[track.type];
-    wavesurfer.audios[instrumentIndex].volume = isMuted ? 0 : instrument.volume;
-    // isMuted ? api.unMuteAudio(track.type) : api.muteAudio(track.type);
+    wavesurfer.setTrackVolume(instrumentIndex, isMuted ? 0 : instrument.volume);
   };
 
   const soloTrack = (type: string) => {
     Object.values(instruments).forEach((instrument, index) => {
       if (instrument.type === type) {
         api.unMuteAudio(instrument.type);
-        wavesurfer.audios[index].volume = instrumentState[instrument.type].volume;
+        wavesurfer.setTrackVolume(index, instrumentState[instrument.type].volume);
       } else {
         api.muteAudio(instrument.type);
-        wavesurfer.audios[index].volume = 0;
+        wavesurfer.setTrackVolume(index, 0);
       }
     });
   };
