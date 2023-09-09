@@ -1,13 +1,13 @@
 import { useFrame } from '@react-three/fiber';
 import React, { useRef } from 'react';
-import { Vector3 } from 'three';
+import { Vector3, Group } from 'three';
 
 type Props = {
   children: React.ReactNode;
 };
 
 export default function Rig({ children }: Props) {
-  const groupRef = useRef<any>(null);
+  const groupRef = useRef<Group>(null!);
   const vector = new Vector3();
 
   useFrame((state) => {
