@@ -30,14 +30,7 @@ export default function MultitrackController({ tracks }: Props) {
   useEffect(() => {
     if (!wavesurfer) return;
     for (const instrument of instruments) muteToggle(instrument);
-  }, [
-    instrumentState
-    // instrumentState.guitar.isMuted,
-    // instrumentState.bass.isMuted,
-    // instrumentState.drum.isMuted,
-    // instrumentState.piano.isMuted,
-    // instrumentState.vocal.isMuted
-  ]);
+  }, [instrumentState]);
 
   const updateMasterVolume = (event: ChangeEvent<HTMLInputElement>) => {
     const updatedVolume = event.target.valueAsNumber / 100;
