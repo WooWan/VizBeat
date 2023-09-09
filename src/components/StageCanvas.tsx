@@ -17,7 +17,7 @@ export default function StageCanvas({ tracks }: Props) {
     <Suspense fallback={<Loading />}>
       <Canvas
         camera={{
-          position: [0, 30, 30],
+          position: [0, 20, 70],
           fov: 80,
           near: 0.1,
           far: 300,
