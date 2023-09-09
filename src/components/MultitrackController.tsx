@@ -48,13 +48,18 @@ export default function MultitrackController({ tracks }: Props) {
   };
 
   const pauseAndResumeAll = () => {
+    console.log('wavesurfer isplaying', wavesurfer.isPlaying());
     if (wavesurfer?.isPlaying()) {
+      console.log('pause');
+      console.log(wavesurfer);
       api.stopAudio();
       wavesurfer.pause();
     } else {
+      console.log('play');
       api.playAudio();
       wavesurfer?.play();
     }
+    console.log('wavesurfer isplaying after', wavesurfer.isPlaying());
   };
 
   const muteAll = () => {
