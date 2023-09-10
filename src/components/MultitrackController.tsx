@@ -56,18 +56,13 @@ export default function MultitrackController({ tracks, music }: Props) {
   };
 
   const pauseAndResumeAll = () => {
-    console.log('wavesurfer isplaying', wavesurfer.isPlaying());
     if (wavesurfer?.isPlaying()) {
-      console.log('pause');
-      console.log(wavesurfer);
       api.stopAudio();
       wavesurfer.pause();
     } else {
-      console.log('play');
       api.playAudio();
       wavesurfer?.play();
     }
-    console.log('wavesurfer isplaying after', wavesurfer.isPlaying());
   };
 
   const muteAll = () => {
@@ -120,7 +115,6 @@ export default function MultitrackController({ tracks, music }: Props) {
     if (!url) return;
 
     const blob = await fetchAndStoreMusic(url, url);
-    console.log(url, type, blob);
     saveAs(blob, `${music.title}-${type}.mp3`);
   };
 
