@@ -3,8 +3,8 @@ import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { shallow } from 'zustand/shallow';
 import MusicPlayToggleButton from './MusicPlayToggleButton';
 import { Button } from './ui/button';
-import { audioTracks, instruments } from '@/constants/music';
-import { DownloadType, InstrumentData } from '@/types/instrument';
+import { audioTracks } from '@/constants/music';
+import { AudioTrack, DownloadType } from '@/types/instrument';
 import { DownloadIcon, Volume2Icon, VolumeXIcon } from 'lucide-react';
 import { calculateIsSolo } from '@/utils/music';
 import { cn } from '@/lib/utils';
@@ -44,13 +44,13 @@ export default function MultitrackController({ tracks, music }: Props) {
 
   useEffect(() => {
     if (!wavesurfer) return;
-    for (const instrument of instruments) muteToggle(instrument);
+    for (const instrument of audioTracks) muteToggle(instrument);
   }, [instrumentState]);
 
   const updateMasterVolume = (event: ChangeEvent<HTMLInputElement>) => {
     const updatedVolume = event.target.valueAsNumber / 100;
-    Object.values(instruments).forEach((instrument, index) => {
-      api.updateVolume(instrument.type, updatedVolume);
+    Object.values(audioTracks).forEach((audio, index) => {
+      api.updateVolume(audio.type, updatedVolume);
       wavesurfer.setTrackVolume(index, updatedVolume);
     });
   };
@@ -66,16 +66,16 @@ export default function MultitrackController({ tracks, music }: Props) {
   };
 
   const muteAll = () => {
-    Object.values(instruments).forEach((instrument, index) => {
-      api.muteAudio(instrument.type);
+    Object.values(audioTracks).forEach((audio, index) => {
+      api.muteAudio(audio.type);
       wavesurfer.setTrackVolume(index, 0);
     });
   };
 
   const unmuteAll = () => {
-    Object.values(instruments).forEach((instrument, index) => {
-      api.unMuteAudio(instrument.type);
-      wavesurfer.setTrackVolume(index, instrumentState[instrument.type].volume);
+    Object.values(audioTracks).forEach((audio, index) => {
+      api.unMuteAudio(audio.type);
+      wavesurfer.setTrackVolume(index, instrumentState[audio.type].volume);
     });
   };
 
@@ -120,26 +120,26 @@ export default function MultitrackController({ tracks, music }: Props) {
 
   const updateTrackVolume = (id: string, event: ChangeEvent<HTMLInputElement>) => {
     const updatedVolume = event.target.valueAsNumber / 100;
-    const audioIndex = instruments.findIndex((instrument) => instrument.id === id);
-    const instrument = instruments[audioIndex];
+    const audioIndex = audioTracks.findIndex((audio) => audio.id === id);
+    const instrument = audioTracks[audioIndex];
     api.updateVolume(instrument.type, updatedVolume);
     wavesurfer.setTrackVolume(audioIndex, updatedVolume);
   };
 
-  const muteToggle = (track: InstrumentData) => {
+  const muteToggle = (track: AudioTrack) => {
     const isMuted = instrumentState[track.type].isMuted;
-    const instrumentIndex = instruments.findIndex((instrument) => instrument.id === track.id);
+    const instrumentIndex = audioTracks.findIndex((audio) => audio.id === track.id);
     const instrument = instrumentState[track.type];
     wavesurfer.setTrackVolume(instrumentIndex, isMuted ? 0 : instrument.volume);
   };
 
   const soloTrack = (type: string) => {
-    Object.values(instruments).forEach((instrument, index) => {
-      if (instrument.type === type) {
-        api.unMuteAudio(instrument.type);
-        wavesurfer.setTrackVolume(index, instrumentState[instrument.type].volume);
+    Object.values(audioTracks).forEach((audio, index) => {
+      if (audio.type === type) {
+        api.unMuteAudio(audio.type);
+        wavesurfer.setTrackVolume(index, instrumentState[audio.type].volume);
       } else {
-        api.muteAudio(instrument.type);
+        api.muteAudio(audio.type);
         wavesurfer.setTrackVolume(index, 0);
       }
     });
@@ -168,81 +168,88 @@ export default function MultitrackController({ tracks, music }: Props) {
         )}
       >
         <div className="flex gap-x-1.5">
-          <label className="flex items-center pr-2">
-            <input type="range" min="0" max="100" onChange={updateMasterVolume} />
-          </label>
-          <button className="text-zinc-100" onClick={allMuted ? unmuteAll : muteAll}>
-            {allMuted ? <VolumeXIcon /> : <Volume2Icon className={'h-5 w-5'} />}
-          </button>
-          <p ref={messageRef}></p>
-          <MusicPlayToggleButton onClick={pauseAndResumeAll} className="relative right-0 top-0" />
-          <DropdownMenu open={menuOpen}>
-            <DropdownMenuTrigger onClick={() => setMenuOpen(true)}>
-              <DownloadIcon className="h-5 w-5 text-zinc-100" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => downloadSingleTrack('original')} className="flex justify-between">
-                <span>Original</span>
-                <DownloadIcon className="h-3.5 w-3.5" />
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={downloadMixedTrack} className="flex justify-between">
-                <span>Mixed</span>
-                {isMusicDownloading ? (
-                  <div className="flex items-center gap-x-1.5">
-                    <p ref={messageRef} className="text-xs text-gray-400">
-                      0%
-                    </p>
-                    <span className="animate-bounce">🎸</span>
-                  </div>
-                ) : (
+          <div className="flex flex-col gap-y-1 pb-2">
+            <h4 className="text-base text-zinc-100">Master</h4>
+            <label className="flex items-center pr-2">
+              <input type="range" min="0" max="100" onChange={updateMasterVolume} />
+            </label>
+          </div>
+          <section className="flex items-end gap-x-3 pb-2 pl-2">
+            <button className="text-zinc-100" onClick={allMuted ? unmuteAll : muteAll}>
+              {allMuted ? <VolumeXIcon className="h-6 w-6" /> : <Volume2Icon className="h-6 w-6" />}
+            </button>
+            <MusicPlayToggleButton onClick={pauseAndResumeAll} className="relative h-6 w-6" />
+            <DropdownMenu open={menuOpen}>
+              <DropdownMenuTrigger onClick={() => setMenuOpen(true)}>
+                <DownloadIcon className="h-6 w-6 text-zinc-100" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => downloadSingleTrack('original')} className="flex justify-between">
+                  <span>Original</span>
                   <DownloadIcon className="h-3.5 w-3.5" />
-                )}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              {audioTracks.map((instrument) => {
-                const title = instrument.type;
-                return (
-                  <DropdownMenuItem
-                    onClick={() => downloadSingleTrack(instrument.type)}
-                    className="flex justify-between"
-                    key={instrument.type}
-                  >
-                    <span>{title.charAt(0).toUpperCase() + title.slice(1)}</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={downloadMixedTrack} className="flex justify-between">
+                  <span>Mixed</span>
+                  {isMusicDownloading ? (
+                    <div className="flex items-center gap-x-1.5">
+                      <p ref={messageRef} className="text-xs text-gray-400">
+                        0%
+                      </p>
+                      <span className="animate-bounce">🎸</span>
+                    </div>
+                  ) : (
                     <DownloadIcon className="h-3.5 w-3.5" />
-                  </DropdownMenuItem>
-                );
-              })}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                  )}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                {audioTracks.map((audio) => {
+                  const title = audio.type;
+                  return (
+                    <DropdownMenuItem
+                      onClick={() => downloadSingleTrack(audio.type)}
+                      className="flex justify-between"
+                      key={audio.type}
+                    >
+                      <span>{title.charAt(0).toUpperCase() + title.slice(1)}</span>
+                      <DownloadIcon className="h-3.5 w-3.5" />
+                    </DropdownMenuItem>
+                  );
+                })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </section>
         </div>
         <section className="flex gap-x-4">
           <ul className="flex h-full flex-col">
-            {instruments.map((instrument) => {
-              const { isMuted, volume } = instrumentState[instrument.type];
-              const isSolo = calculateIsSolo(instrument.type, instrumentState);
+            {audioTracks.map((audio) => {
+              const { isMuted, volume } = instrumentState[audio.type];
+              const isSolo = calculateIsSolo(audio.type, instrumentState);
               return (
-                <li className="flex h-[102px] flex-col justify-center" key={instrument.type}>
-                  <div className="flex items-center justify-start">
-                    <button className="rounded bg-gray-500 px-1" onClick={() => soloTrack(instrument.type)}>
-                      <span
-                        className={cn('text-sm text-zinc-100', {
-                          'text-yellow-400': isSolo
-                        })}
+                <li className="flex h-[82px] flex-col justify-center" key={audio.type}>
+                  <div className="flex items-center justify-between gap-x-1.5 pb-1">
+                    <p className="text-sm text-zinc-100">{audio.type.charAt(0).toUpperCase() + audio.type.slice(1)}</p>
+                    <div className="flex items-center gap-x-2">
+                      <button className="rounded bg-gray-500 px-1" onClick={() => soloTrack(audio.type)}>
+                        <span
+                          className={cn('text-sm text-zinc-100', {
+                            'text-yellow-400': isSolo
+                          })}
+                        >
+                          S
+                        </span>
+                      </button>
+                      <button
+                        className="text-zinc-200"
+                        onClick={() => (isMuted ? api.unMuteAudio(audio.type) : api.muteAudio(audio.type))}
                       >
-                        S
-                      </span>
-                    </button>
-                    <button
-                      className="pl-2 text-zinc-200"
-                      onClick={() => (isMuted ? api.unMuteAudio(instrument.type) : api.muteAudio(instrument.type))}
-                    >
-                      {isMuted ? <VolumeXIcon /> : <Volume2Icon />}
-                    </button>
+                        {isMuted ? <VolumeXIcon className="h-5 w-5" /> : <Volume2Icon className="h-5 w-5" />}
+                      </button>
+                    </div>
                   </div>
                   <label className="block">
                     <input
                       value={volume * 100}
-                      onChange={(e) => updateTrackVolume(instrument.id, e)}
+                      onChange={(e) => updateTrackVolume(audio.id, e)}
                       type="range"
                       min="0"
                       max="100"

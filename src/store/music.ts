@@ -1,6 +1,6 @@
 import { Music } from '@prisma/client';
 import { MusicAction, MusicState } from '@/store/types';
-import { InstrumentType } from '@/types/instrument';
+import { AudioType } from '@/types/instrument';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { devtools } from 'zustand/middleware';
@@ -46,17 +46,17 @@ export const useMusicStore = create(
               musicInfo: music
             });
           },
-          muteAudio(key: InstrumentType) {
+          muteAudio(key: AudioType) {
             set((state) => {
               state.instruments[key].isMuted = true;
             });
           },
-          unMuteAudio(key: InstrumentType) {
+          unMuteAudio(key: AudioType) {
             set((state) => {
               state.instruments[key].isMuted = false;
             });
           },
-          updateVolume(key: InstrumentType, volume: number) {
+          updateVolume(key: AudioType, volume: number) {
             set((state) => {
               state.instruments[key].volume = volume;
             });
