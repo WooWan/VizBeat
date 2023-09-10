@@ -37,7 +37,20 @@ async function createBlobFromURL(musicUrl: string | null) {
     const musicBlob = new Blob([musicData]);
     return musicBlob;
   } catch (error) {
-    console.error('Error fetching audio:', error);
     return null;
   }
+}
+
+export async function fetchAndStoreMusic(id: string, url: string) {
+  const idb = new IndexedDB(dbName);
+  await idb.init();
+  await idb.createTable(tableName);
+
+  const keys = (await idb.getAllKey(tableName)) as string[];
+  if (!keys.includes(id)) {
+    const blob = await createBlobFromURL(url);
+    await idb.putValue(tableName, blob, id);
+  }
+
+  return await idb.getValue(tableName, id);
 }
