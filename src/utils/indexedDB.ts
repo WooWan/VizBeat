@@ -52,7 +52,7 @@ export class IndexedDB {
     return keys;
   }
 
-  public async putValue(tableName: string, value: any, key: string | number | string[] | number[]) {
+  public async putValue(tableName: string, value: any, key: string | number) {
     const tx = this.db.transaction(tableName, 'readwrite');
     const store = tx.objectStore(tableName);
     const result = await store.put(value, key);
