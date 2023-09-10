@@ -1,4 +1,4 @@
-import { InstrumentType } from '@/types/instrument';
+import { AudioType, InstrumentType } from '@/types/instrument';
 import { Music } from '@prisma/client';
 
 export type AudioData = {
@@ -8,10 +8,9 @@ export type AudioData = {
 };
 
 export type Instruments = {
-  [key in InstrumentType]: {
+  [key in AudioType]: {
     isMuted: boolean;
     volume: number;
-    audio: HTMLAudioElement | null;
   };
 };
 

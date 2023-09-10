@@ -12,27 +12,26 @@ export const useMusicStore = create(
         instruments: {
           bass: {
             isMuted: false,
-            audio: null,
             volume: 0.5
           },
           guitar: {
             isMuted: false,
-            audio: null,
             volume: 0.5
           },
           piano: {
             isMuted: false,
-            audio: null,
             volume: 0.5
           },
           drum: {
             isMuted: false,
-            audio: null,
             volume: 0.5
           },
           vocal: {
             isMuted: false,
-            audio: null,
+            volume: 0.5
+          },
+          other: {
+            isMuted: false,
             volume: 0.5
           }
         },

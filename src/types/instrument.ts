@@ -13,3 +13,12 @@ export type InstrumentData = {
   spotLightPosition: Vector3;
   spotLightAngle: number;
 };
+
+export type AudioType = InstrumentType | 'other';
+
+export type DownloadType = AudioType | 'original';
+
+export type AudioTrack = {
+  id: string;
+  type: AudioType;
+};
