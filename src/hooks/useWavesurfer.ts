@@ -6,7 +6,7 @@ type Props = {
   containerRef: React.MutableRefObject<HTMLDivElement>;
 };
 
-const TRACK_HEIGHT = 100;
+const TRACK_HEIGHT = 80;
 
 function useWavesurfer({ tracks, containerRef }: Props) {
   const [wavesurfer, setWavesurfer] = useState<Multitrack>(null!);
@@ -64,7 +64,18 @@ function useWavesurfer({ tracks, containerRef }: Props) {
           startPosition: 0,
           options: {
             media: tracks[4],
-            height: 120,
+            height: TRACK_HEIGHT,
+            waveColor: 'hsl(46, 87%, 49%)',
+            progressColor: 'hsl(46, 87%, 20%)'
+          }
+        },
+        {
+          id: 5,
+          volume: 0.5,
+          startPosition: 0,
+          options: {
+            media: tracks[5],
+            height: TRACK_HEIGHT,
             waveColor: 'hsl(46, 87%, 49%)',
             progressColor: 'hsl(46, 87%, 20%)'
           }
