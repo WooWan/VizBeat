@@ -22,6 +22,7 @@ import { mergeAudios } from '@/utils/ffmpeg';
 import { useMusic } from '@/hooks/queries/music/useMusics';
 import { useRouter } from 'next/router';
 import { useClickAway } from '@/hooks/useOutsideClick';
+import AudioMergeTooltip from '@/components/AudioMergeTooltip';
 
 type Props = {
   audios: HTMLAudioElement[];
@@ -193,12 +194,15 @@ export default function MultitrackController({ audios }: Props) {
                 <DownloadIcon className="h-6 w-6 text-zinc-100" />
               </DropdownMenuTrigger>
               <DropdownMenuContent ref={ref}>
-                <DropdownMenuItem onClick={() => downloadSingleTrack('original')} className="flex justify-between">
+                <DropdownMenuItem className="flex justify-between">
                   <span>Original</span>
-                  <DownloadIcon className="h-3.5 w-3.5" />
+                  <DownloadIcon className="h-3.5 w-3.5" onClick={() => downloadSingleTrack('original')} />
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={downloadMixedTrack} className="flex justify-between">
-                  <span>Mixed</span>
+                <DropdownMenuItem className="flex justify-between">
+                  <div className="flex items-center gap-x-1">
+                    <p>Mixed</p>
+                    <AudioMergeTooltip />
+                  </div>
                   {isMusicDownloading ? (
                     <div className="flex items-center gap-x-1.5">
                       <p ref={messageRef} className="text-xs text-gray-400">
@@ -207,20 +211,16 @@ export default function MultitrackController({ audios }: Props) {
                       <span className="animate-bounce">🎸</span>
                     </div>
                   ) : (
-                    <DownloadIcon className="h-3.5 w-3.5" />
+                    <DownloadIcon onClick={downloadMixedTrack} className="h-3.5 w-3.5" />
                   )}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 {audioTracks.map((audio) => {
                   const title = audio.type;
                   return (
-                    <DropdownMenuItem
-                      onClick={() => downloadSingleTrack(audio.type)}
-                      className="flex justify-between"
-                      key={audio.type}
-                    >
+                    <DropdownMenuItem className="flex justify-between" key={title}>
                       <span>{title.charAt(0).toUpperCase() + title.slice(1)}</span>
-                      <DownloadIcon className="h-3.5 w-3.5" />
+                      <DownloadIcon onClick={() => downloadSingleTrack(title)} className="h-3.5 w-3.5" />
                     </DropdownMenuItem>
                   );
                 })}
