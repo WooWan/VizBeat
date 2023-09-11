@@ -41,16 +41,16 @@ async function createBlobFromURL(musicUrl: string | null) {
   }
 }
 
-export async function fetchAndStoreMusic(id: string, url: string) {
+export async function fetchAndStoreMusic(url: string) {
   const idb = new IndexedDB(dbName);
   await idb.init();
   await idb.createTable(tableName);
 
   const keys = (await idb.getAllKey(tableName)) as string[];
-  if (!keys.includes(id)) {
+  if (!keys.includes(url)) {
     const blob = await createBlobFromURL(url);
-    await idb.putValue(tableName, blob, id);
+    await idb.putValue(tableName, blob, url);
   }
 
-  return await idb.getValue(tableName, id);
+  return await idb.getValue(tableName, url);
 }

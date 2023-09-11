@@ -96,7 +96,7 @@ export default function MultitrackController({ tracks, music }: Props) {
     const result = [];
     for await (const [key, value] of Object.entries(musicMap)) {
       if (!value) continue;
-      const blob = await fetchAndStoreMusic(value, value);
+      const blob = await fetchAndStoreMusic(value);
       result.push(blob);
     }
 
@@ -111,7 +111,7 @@ export default function MultitrackController({ tracks, music }: Props) {
     const url = musicMap[type];
     if (!url) return;
 
-    const blob = await fetchAndStoreMusic(url, url);
+    const blob = await fetchAndStoreMusic(url);
     saveAs(blob, `${music.title}-${type}.mp3`);
   };
 
