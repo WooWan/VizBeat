@@ -41,18 +41,13 @@ export default function MultitrackController({ tracks }: Props) {
   };
 
   const pauseAndResumeAll = () => {
-    console.log('wavesurfer isplaying', wavesurfer.isPlaying());
     if (wavesurfer?.isPlaying()) {
-      console.log('pause');
-      console.log(wavesurfer);
       api.stopAudio();
       wavesurfer.pause();
     } else {
-      console.log('play');
       api.playAudio();
       wavesurfer?.play();
     }
-    console.log('wavesurfer isplaying after', wavesurfer.isPlaying());
   };
 
   const muteAll = () => {
@@ -112,9 +107,9 @@ export default function MultitrackController({ tracks }: Props) {
       />
       <section
         className={cn(
-          'fixed inset-x-0 bottom-0 z-50 flex w-full flex-col overflow-y-scroll bg-zinc-900/[0.75] pl-5 pt-5 transition-transform duration-200 ease-in',
+          'scroll-y fixed inset-x-0 top-20 z-50 flex w-full flex-col bg-zinc-900/[0.75] pl-5 pt-5 transition-transform duration-200 ease-in',
           {
-            'translate-y-[620px]': !isPlayerOpen
+            'translate-y-[100%]': !isPlayerOpen
           }
         )}
       >
@@ -135,6 +130,7 @@ export default function MultitrackController({ tracks }: Props) {
               return (
                 <li className="flex h-[102px] flex-col justify-center" key={instrument.type}>
                   <div className="flex items-center justify-start">
+                    <span className="pr-2 text-base text-zinc-100">{instrument.type}</span>
                     <button className="rounded bg-gray-500 px-1" onClick={() => soloTrack(instrument.type)}>
                       <span
                         className={cn('text-sm text-zinc-100', {
