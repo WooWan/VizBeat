@@ -3,6 +3,7 @@ import { MusicUpload, YoutubeMusic } from '@/types/music';
 import { isUploadWithFile, isUploadWithYoutube } from '@/utils/typeGuards';
 import { Music } from '@prisma/client';
 import axios from 'axios';
+import { Redis } from '@upstash/redis';
 
 export const fetchMusics = async (): Promise<Music[]> => {
   const response = await nextClient.get('/musics');
@@ -21,13 +22,25 @@ export const fetchMusicFromYoutube = async ({
   keyword: string;
   limit?: number;
 }): Promise<YoutubeMusic[]> => {
-  const response = await serverClient.get('/youtube-search', {
-    params: {
-      query: keyword,
-      limit: limit
-    }
+  const redis = new Redis({
+    url: process.env.NEXT_PUBLIC_REDIS_URL as string,
+    token: process.env.NEXT_PUBLIC_REDIS_TOKEN as string
   });
-  return response.data;
+  const params = {
+    query: keyword,
+    limit: limit
+  };
+  const cachedData = await redis.get(JSON.stringify(params));
+  if (cachedData) {
+    return cachedData as YoutubeMusic[];
+  } else {
+    const response = await serverClient.get('/youtube-search', {
+      params: params
+    });
+    const cache = await redis.set(JSON.stringify(params), response.data, { ex: 60 * 60 * 24 });
+    if (cache !== 200) console.log('caching failed!!');
+    return response.data;
+  }
 };
 
 export const separateMusic = (music: MusicUpload) => {
