@@ -35,7 +35,7 @@ async function mergeToSingleMp3(ffmpeg: any) {
     '-i',
     'test5.mp3',
     '-filter_complex',
-    '[0:a][1:a][2:a][3:a][4:a][5:a]amerge=inputs=6[aout]',
+    '[0:a][1:a][2:a][3:a][4:a][5:a]amix=inputs=6[aout]',
     '-ac',
     '2',
     '-ar',
@@ -49,7 +49,9 @@ async function mergeToSingleMp3(ffmpeg: any) {
 }
 
 async function encodeToMp3(blobs: Blob[], ffmpeg: any) {
-  for await (const [index, blob] of blobs.entries()) {
-    await ffmpeg.writeFile(`test${index}.mp3`, await fetchFile(URL.createObjectURL(blob)));
-  }
+  const promises = blobs.map((blob, index) =>
+    fetchFile(URL.createObjectURL(blob)).then((file) => ffmpeg.writeFile(`test${index}.mp3`, file))
+  );
+
+  await Promise.all(promises);
 }
