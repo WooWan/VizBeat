@@ -110,9 +110,9 @@ export default function MultitrackController({ audios }: Props) {
       />
       <section
         className={cn(
-          'fixed inset-x-0 bottom-0 z-50 flex w-full flex-col overflow-y-scroll bg-zinc-900/[0.75] pl-5 pt-5 transition-transform duration-200 ease-in',
+          'scroll-y fixed inset-x-0 top-20 z-50 flex w-full flex-col bg-zinc-900/[0.75] pl-5 pt-5 transition-transform duration-200 ease-in',
           {
-            'translate-y-[620px]': !isPlayerOpen
+            'translate-y-[100%]': !isPlayerOpen
           }
         )}
       >
