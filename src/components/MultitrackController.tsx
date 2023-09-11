@@ -4,25 +4,14 @@ import { shallow } from 'zustand/shallow';
 import MusicPlayToggleButton from './MusicPlayToggleButton';
 import { Button } from './ui/button';
 import { audioTracks } from '@/constants/music';
-import { AudioTrack, DownloadType } from '@/types/instrument';
-import { DownloadIcon, Volume2Icon, VolumeXIcon } from 'lucide-react';
+import { AudioTrack } from '@/types/instrument';
+import { Volume2Icon, VolumeXIcon } from 'lucide-react';
 import { calculateIsSolo } from '@/utils/music';
 import { cn } from '@/lib/utils';
 import useWavesurfer from '@/hooks/useWavesurfer';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
-import { fetchAndStoreMusic } from '@/utils/fetchMusicIdb';
-import { saveAs } from 'file-saver';
-import { mergeAudios } from '@/utils/ffmpeg';
 import { useMusic } from '@/hooks/queries/music/useMusics';
 import { useRouter } from 'next/router';
-import { useClickAway } from '@/hooks/useOutsideClick';
-import AudioMergeTooltip from '@/components/AudioMergeTooltip';
+import AudioDropdown from '@/components/AudioDropdown';
 
 type Props = {
   audios: HTMLAudioElement[];
@@ -40,12 +29,6 @@ export default function MultitrackController({ audios }: Props) {
   });
   const [isPlayerOpen, setIsPlayerOpen] = useState(false);
   const allMuted = Object.values(audioStates).every((audio) => audio.isMuted);
-  const messageRef = useRef<HTMLParagraphElement>(null!);
-  const [isMusicDownloading, setIsMusicDownloading] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const ref = useClickAway<HTMLDivElement>(() => {
-    setMenuOpen(false);
-  });
 
   useEffect(() => {
     if (!wavesurfer) return;
@@ -82,50 +65,6 @@ export default function MultitrackController({ audios }: Props) {
       api.unMuteAudio(audio.type);
       wavesurfer.setTrackVolume(index, audioStates[audio.type].volume);
     });
-  };
-
-  const onProgress = (progress: number) => {
-    messageRef.current.innerText = `${progress.toFixed(0)}%`;
-  };
-
-  const musicMap = {
-    original: music?.musicUrl,
-    bass: music?.bassUrl,
-    drum: music?.drumUrl,
-    piano: music?.pianoUrl,
-    vocal: music?.vocalUrl,
-    guitar: music?.guitarUrl,
-    other: music?.otherUrl
-  };
-
-  const downloadMixedTrack = async () => {
-    if (!music) return;
-    setIsMusicDownloading(true);
-
-    const audioPromises = Object.values(musicMap).map((url) => fetchAndStoreMusic(url));
-    const setteledReesult = await Promise.allSettled(audioPromises);
-    const results: Array<Blob> = [];
-
-    setteledReesult.forEach((result) => {
-      if (result.status === 'rejected') {
-        console.error(result.reason);
-        return;
-      }
-      results.push(result.value);
-    });
-
-    const buffer = await mergeAudios(results, onProgress);
-    saveAs(new Blob([buffer], { type: 'audio/mp3' }), `${music?.title}.mp3`);
-
-    setIsMusicDownloading(false);
-  };
-
-  const downloadSingleTrack = async (type: DownloadType) => {
-    const url = musicMap[type];
-    if (!url) return;
-
-    const blob = await fetchAndStoreMusic(url);
-    saveAs(blob, `${music?.title}-${type}.mp3`);
   };
 
   const updateTrackVolume = (id: string, event: ChangeEvent<HTMLInputElement>) => {
@@ -189,43 +128,7 @@ export default function MultitrackController({ audios }: Props) {
               {allMuted ? <VolumeXIcon className="h-6 w-6" /> : <Volume2Icon className="h-6 w-6" />}
             </button>
             <MusicPlayToggleButton onClick={pauseAndResumeAll} className="relative h-6 w-6" />
-            <DropdownMenu open={menuOpen}>
-              <DropdownMenuTrigger onClick={() => setMenuOpen(true)}>
-                <DownloadIcon className="h-6 w-6 text-zinc-100" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent ref={ref}>
-                <DropdownMenuItem className="flex justify-between">
-                  <span>Original</span>
-                  <DownloadIcon className="h-3.5 w-3.5" onClick={() => downloadSingleTrack('original')} />
-                </DropdownMenuItem>
-                <DropdownMenuItem className="flex justify-between">
-                  <div className="flex items-center gap-x-1">
-                    <p>Mixed</p>
-                    <AudioMergeTooltip />
-                  </div>
-                  {isMusicDownloading ? (
-                    <div className="flex items-center gap-x-1.5">
-                      <p ref={messageRef} className="text-xs text-gray-400">
-                        0%
-                      </p>
-                      <span className="animate-bounce">🎸</span>
-                    </div>
-                  ) : (
-                    <DownloadIcon onClick={downloadMixedTrack} className="h-3.5 w-3.5" />
-                  )}
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                {audioTracks.map((audio) => {
-                  const title = audio.type;
-                  return (
-                    <DropdownMenuItem className="flex justify-between" key={title}>
-                      <span>{title.charAt(0).toUpperCase() + title.slice(1)}</span>
-                      <DownloadIcon onClick={() => downloadSingleTrack(title)} className="h-3.5 w-3.5" />
-                    </DropdownMenuItem>
-                  );
-                })}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {music && <AudioDropdown music={music} />}
           </section>
         </div>
         <section className="flex gap-x-4">
