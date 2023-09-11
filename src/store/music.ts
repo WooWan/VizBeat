@@ -9,7 +9,7 @@ export const useMusicStore = create(
   devtools(
     immer<MusicState & MusicAction>((set, get) => {
       return {
-        instruments: {
+        audioTracks: {
           bass: {
             isMuted: false,
             volume: 0.5
@@ -48,17 +48,17 @@ export const useMusicStore = create(
           },
           muteAudio(key: AudioType) {
             set((state) => {
-              state.instruments[key].isMuted = true;
+              state.audioTracks[key].isMuted = true;
             });
           },
           unMuteAudio(key: AudioType) {
             set((state) => {
-              state.instruments[key].isMuted = false;
+              state.audioTracks[key].isMuted = false;
             });
           },
           updateVolume(key: AudioType, volume: number) {
             set((state) => {
-              state.instruments[key].volume = volume;
+              state.audioTracks[key].volume = volume;
             });
           },
           playAudio() {

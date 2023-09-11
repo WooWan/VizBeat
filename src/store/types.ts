@@ -7,7 +7,7 @@ export type AudioData = {
   gain: number;
 };
 
-export type AudioMap = {
+export type AudioTracks = {
   [key in AudioType]: {
     isMuted: boolean;
     volume: number;
@@ -17,7 +17,7 @@ export type AudioMap = {
 export type MusicState = {
   musicInfo?: Music;
   audio?: HTMLAudioElement;
-  instruments: AudioMap;
+  audioTracks: AudioTracks;
   isLoaded: boolean;
   isAudioPlaying: boolean;
 };

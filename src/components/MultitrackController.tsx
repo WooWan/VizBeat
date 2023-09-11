@@ -28,16 +28,13 @@ type Props = {
 
 export default function MultitrackController({ tracks, music }: Props) {
   const playerRef = useRef<HTMLDivElement>(null!);
-  const { instrumentState, api } = useMusicStore(
-    (state) => ({ instrumentState: state.instruments, api: state.api }),
-    shallow
-  );
+  const { audioStates, api } = useMusicStore((state) => ({ audioStates: state.audioTracks, api: state.api }), shallow);
   const wavesurfer = useWavesurfer({
     containerRef: playerRef,
     tracks
   });
   const [isPlayerOpen, setIsPlayerOpen] = useState(false);
-  const allMuted = Object.values(instrumentState).every((instrument) => instrument.isMuted);
+  const allMuted = Object.values(audioStates).every((audio) => audio.isMuted);
   const messageRef = useRef<HTMLParagraphElement>(null!);
   const [isMusicDownloading, setIsMusicDownloading] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -45,7 +42,7 @@ export default function MultitrackController({ tracks, music }: Props) {
   useEffect(() => {
     if (!wavesurfer) return;
     for (const instrument of audioTracks) muteToggle(instrument);
-  }, [instrumentState]);
+  }, [audioStates]);
 
   const updateMasterVolume = (event: ChangeEvent<HTMLInputElement>) => {
     const updatedVolume = event.target.valueAsNumber / 100;
@@ -75,7 +72,7 @@ export default function MultitrackController({ tracks, music }: Props) {
   const unmuteAll = () => {
     Object.values(audioTracks).forEach((audio, index) => {
       api.unMuteAudio(audio.type);
-      wavesurfer.setTrackVolume(index, instrumentState[audio.type].volume);
+      wavesurfer.setTrackVolume(index, audioStates[audio.type].volume);
     });
   };
 
@@ -127,9 +124,9 @@ export default function MultitrackController({ tracks, music }: Props) {
   };
 
   const muteToggle = (track: AudioTrack) => {
-    const isMuted = instrumentState[track.type].isMuted;
+    const isMuted = audioStates[track.type].isMuted;
     const instrumentIndex = audioTracks.findIndex((audio) => audio.id === track.id);
-    const instrument = instrumentState[track.type];
+    const instrument = audioStates[track.type];
     wavesurfer.setTrackVolume(instrumentIndex, isMuted ? 0 : instrument.volume);
   };
 
@@ -137,7 +134,7 @@ export default function MultitrackController({ tracks, music }: Props) {
     Object.values(audioTracks).forEach((audio, index) => {
       if (audio.type === type) {
         api.unMuteAudio(audio.type);
-        wavesurfer.setTrackVolume(index, instrumentState[audio.type].volume);
+        wavesurfer.setTrackVolume(index, audioStates[audio.type].volume);
       } else {
         api.muteAudio(audio.type);
         wavesurfer.setTrackVolume(index, 0);
@@ -222,8 +219,8 @@ export default function MultitrackController({ tracks, music }: Props) {
         <section className="flex gap-x-4">
           <ul className="flex h-full flex-col">
             {audioTracks.map((audio) => {
-              const { isMuted, volume } = instrumentState[audio.type];
-              const isSolo = calculateIsSolo(audio.type, instrumentState);
+              const { isMuted, volume } = audioStates[audio.type];
+              const isSolo = calculateIsSolo(audio.type, audioStates);
               return (
                 <li className="flex h-[82px] flex-col justify-center" key={audio.type}>
                   <div className="flex items-center justify-between gap-x-1.5 pb-1">
