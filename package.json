@@ -29,6 +29,7 @@
     "@supabase/supabase-js": "^2.21.0",
     "@tanstack/react-query": "^4.29.7",
     "@tanstack/react-query-devtools": "^4.29.7",
+    "@upstash/redis": "^1.22.0",
     "axios": "^1.4.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
