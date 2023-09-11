@@ -25,6 +25,7 @@ model Music {
   drumUrl    String?
   pianoUrl   String?
   vocalUrl   String?
+  otherUrl   String?
   userId     String  @map("user_id")
   user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

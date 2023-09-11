@@ -37,7 +37,7 @@ const MusicPlayToggleButton = ({ className, ...props }: React.ButtonHTMLAttribut
       {transitions((style, isPlay) => (
         <div className={'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'}>
           <animated.div style={style} className={'block text-white/[0.9] group-hover:text-black'}>
-            {isPlay ? <PauseIcon /> : <PlayIcon />}
+            {isPlay ? <PauseIcon className={'h-5 w-5'} /> : <PlayIcon className={'h-5 w-5'} />}
           </animated.div>
         </div>
       ))}

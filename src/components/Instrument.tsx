@@ -19,7 +19,7 @@ export default function Instrument({
   const modelRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
   const spring = useSpring({ scale: isHovered ? 1.05 : 1 });
-  const isMuted = useMusicStore((stage) => stage.instruments[type].isMuted);
+  const isMuted = useMusicStore((stage) => stage.audioTracks[type].isMuted);
   const { muteAudio, unMuteAudio } = useMusicStore((state) => state.api);
 
   return (
