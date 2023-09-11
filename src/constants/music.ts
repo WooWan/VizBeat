@@ -1,4 +1,4 @@
-import { InstrumentData } from '@/types/instrument';
+import { AudioTrack, InstrumentData } from '@/types/instrument';
 import { Vector3 } from 'three';
 export const RADIAN = Math.PI / 180;
 
@@ -57,5 +57,32 @@ export const instruments: InstrumentData[] = [
     spotLightTarget: new Vector3(-320, 0, -100),
     spotLightPosition: new Vector3(-32, 60, 10),
     spotLightAngle: 0.32
+  }
+];
+
+export const audioTracks: AudioTrack[] = [
+  {
+    id: 'A73D9F21B60E',
+    type: 'vocal'
+  },
+  {
+    id: '4B8E12C07934',
+    type: 'drum'
+  },
+  {
+    id: 'F9C610D328A7',
+    type: 'guitar'
+  },
+  {
+    id: '7E2301B49D02',
+    type: 'bass'
+  },
+  {
+    id: '836492FAE1C8',
+    type: 'piano'
+  },
+  {
+    id: 'A73D9F21B60E',
+    type: 'other'
   }
 ];

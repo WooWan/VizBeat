@@ -11,7 +11,6 @@ import StageGround from './StageGround';
 type Props = {
   tracks: HTMLAudioElement[];
 };
-
 export default function StageCanvas({ tracks }: Props) {
   return (
     <Suspense fallback={<Loading />}>
