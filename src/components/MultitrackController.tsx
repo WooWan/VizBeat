@@ -16,28 +16,35 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { Music } from '@prisma/client';
 import { fetchAndStoreMusic } from '@/utils/fetchMusicIdb';
 import { saveAs } from 'file-saver';
 import { mergeAudios } from '@/utils/ffmpeg';
+import { useMusic } from '@/hooks/queries/music/useMusics';
+import { useRouter } from 'next/router';
+import { useClickAway } from '@/hooks/useOutsideClick';
 
 type Props = {
-  tracks: HTMLAudioElement[];
-  music: Music;
+  audios: HTMLAudioElement[];
 };
 
-export default function MultitrackController({ tracks, music }: Props) {
+export default function MultitrackController({ audios }: Props) {
+  const router = useRouter();
+  const musicId = router.query.slug;
+  const { data: music } = useMusic(musicId ? String(musicId) : '');
   const playerRef = useRef<HTMLDivElement>(null!);
   const { audioStates, api } = useMusicStore((state) => ({ audioStates: state.audioTracks, api: state.api }), shallow);
   const wavesurfer = useWavesurfer({
     containerRef: playerRef,
-    tracks
+    audios
   });
   const [isPlayerOpen, setIsPlayerOpen] = useState(false);
   const allMuted = Object.values(audioStates).every((audio) => audio.isMuted);
   const messageRef = useRef<HTMLParagraphElement>(null!);
   const [isMusicDownloading, setIsMusicDownloading] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const ref = useClickAway<HTMLDivElement>(() => {
+    setMenuOpen(false);
+  });
 
   useEffect(() => {
     if (!wavesurfer) return;
@@ -76,35 +83,40 @@ export default function MultitrackController({ tracks, music }: Props) {
     });
   };
 
-  const musicMap: Record<DownloadType, string | null> = {
-    vocal: music.vocalUrl,
-    bass: music.bassUrl,
-    drum: music.drumUrl,
-    guitar: music.guitarUrl,
-    piano: music.pianoUrl,
-    other: music.otherUrl,
-    original: music.musicUrl
-  };
-
   const onProgress = (progress: number) => {
     messageRef.current.innerText = `${progress.toFixed(0)}%`;
   };
 
+  const musicMap = {
+    original: music?.musicUrl,
+    bass: music?.bassUrl,
+    drum: music?.drumUrl,
+    piano: music?.pianoUrl,
+    vocal: music?.vocalUrl,
+    guitar: music?.guitarUrl,
+    other: music?.otherUrl
+  };
+
   const downloadMixedTrack = async () => {
+    if (!music) return;
     setIsMusicDownloading(true);
 
-    const result = [];
-    for await (const [key, value] of Object.entries(musicMap)) {
-      if (!value) continue;
-      const blob = await fetchAndStoreMusic(value);
-      result.push(blob);
-    }
+    const audioPromises = Object.values(musicMap).map((url) => fetchAndStoreMusic(url));
+    const setteledReesult = await Promise.allSettled(audioPromises);
+    const results: Array<Blob> = [];
 
-    const buffer = await mergeAudios(result, onProgress);
-    saveAs(new Blob([buffer], { type: 'audio/mp3' }), `${music.title}.mp3`);
+    setteledReesult.forEach((result) => {
+      if (result.status === 'rejected') {
+        console.error(result.reason);
+        return;
+      }
+      results.push(result.value);
+    });
+
+    const buffer = await mergeAudios(results, onProgress);
+    saveAs(new Blob([buffer], { type: 'audio/mp3' }), `${music?.title}.mp3`);
 
     setIsMusicDownloading(false);
-    setMenuOpen(false);
   };
 
   const downloadSingleTrack = async (type: DownloadType) => {
@@ -112,7 +124,7 @@ export default function MultitrackController({ tracks, music }: Props) {
     if (!url) return;
 
     const blob = await fetchAndStoreMusic(url);
-    saveAs(blob, `${music.title}-${type}.mp3`);
+    saveAs(blob, `${music?.title}-${type}.mp3`);
   };
 
   const updateTrackVolume = (id: string, event: ChangeEvent<HTMLInputElement>) => {
@@ -180,7 +192,7 @@ export default function MultitrackController({ tracks, music }: Props) {
               <DropdownMenuTrigger onClick={() => setMenuOpen(true)}>
                 <DownloadIcon className="h-6 w-6 text-zinc-100" />
               </DropdownMenuTrigger>
-              <DropdownMenuContent>
+              <DropdownMenuContent ref={ref}>
                 <DropdownMenuItem onClick={() => downloadSingleTrack('original')} className="flex justify-between">
                   <span>Original</span>
                   <DownloadIcon className="h-3.5 w-3.5" />
