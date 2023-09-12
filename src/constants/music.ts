@@ -28,23 +28,23 @@ export const instruments: InstrumentData[] = [
   {
     id: '7E2301B49D02',
     type: 'bass',
-    position: [73, -6, 12],
-    rotation: [0, RADIAN * -0.75, 0],
+    position: [-75, -10, 8],
+    rotation: [0, RADIAN * 30, 0],
     scale: [2.25, 2.25, 2.25],
     url: '/gltf/bass/scene.gltf',
-    spotLightTarget: new Vector3(750, 0, 100),
-    spotLightPosition: new Vector3(75, 60, 10),
+    spotLightTarget: new Vector3(-750, 0, 100),
+    spotLightPosition: new Vector3(-75, 60, 10),
     spotLightAngle: 0.22
   },
   {
     id: 'F9C610D328A7',
     type: 'guitar',
-    position: [-75, -10, 8],
-    rotation: [0, RADIAN * 30, 0],
+    position: [73, -6, 12],
+    rotation: [0, RADIAN * -30, 0],
     scale: [23, 23, 23],
     url: '/gltf/guitar/scene.gltf',
-    spotLightTarget: new Vector3(-750, 0, 100),
-    spotLightPosition: new Vector3(-75, 60, 10),
+    spotLightTarget: new Vector3(750, 0, 100),
+    spotLightPosition: new Vector3(75, 60, 10),
     spotLightAngle: 0.22
   },
   {
