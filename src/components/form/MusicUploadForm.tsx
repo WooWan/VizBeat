@@ -93,8 +93,8 @@ export default function MusicUploadForm({ selectedTrack }: Props) {
         />
         <footer className="flex justify-end pt-4">
           <Button className="relative" disabled={separateMusicWithFile.isLoading} type="submit">
-            {separateMusicWithFile.isLoading && <Loader2Icon className="absolute right-1 mr-2 h-4 w-4 animate-spin" />}
-            Split Music
+            <p>Split Music</p>
+            {separateMusicWithFile.isLoading && <Loader2Icon className="ml-1.5 h-4 w-4 animate-spin" />}
           </Button>
         </footer>
       </form>
