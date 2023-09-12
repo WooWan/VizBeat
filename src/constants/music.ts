@@ -1,4 +1,4 @@
-import { AudioTrack, InstrumentData } from '@/types/instrument';
+import { AudioTrack, AudioType, InstrumentData } from '@/types/instrument';
 import { Vector3 } from 'three';
 export const RADIAN = Math.PI / 180;
 
@@ -60,29 +60,14 @@ export const instruments: InstrumentData[] = [
   }
 ];
 
-export const audioTracks: AudioTrack[] = [
-  {
-    id: 'A73D9F21B60E',
-    type: 'vocal'
-  },
-  {
-    id: '4B8E12C07934',
-    type: 'drum'
-  },
-  {
-    id: 'F9C610D328A7',
-    type: 'guitar'
-  },
-  {
-    id: '7E2301B49D02',
-    type: 'bass'
-  },
-  {
-    id: '836492FAE1C8',
-    type: 'piano'
-  },
-  {
-    id: 'A73D9F21B60E',
-    type: 'other'
-  }
-];
+export const audioTracks: AudioTrack[] = instruments
+  .map((instrument) => ({
+    id: instrument.id,
+    type: instrument.type as AudioType
+  }))
+  .concat([
+    {
+      id: '92FD9F21B60E',
+      type: 'other'
+    }
+  ]);
