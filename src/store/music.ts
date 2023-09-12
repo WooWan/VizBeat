@@ -1,6 +1,6 @@
 import { Music } from '@prisma/client';
 import { MusicAction, MusicState } from '@/store/types';
-import { InstrumentType } from '@/types/instrument';
+import { AudioType } from '@/types/instrument';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { devtools } from 'zustand/middleware';
@@ -9,30 +9,29 @@ export const useMusicStore = create(
   devtools(
     immer<MusicState & MusicAction>((set, get) => {
       return {
-        instruments: {
+        audioTracks: {
           bass: {
             isMuted: false,
-            audio: null,
             volume: 0.5
           },
           guitar: {
             isMuted: false,
-            audio: null,
             volume: 0.5
           },
           piano: {
             isMuted: false,
-            audio: null,
             volume: 0.5
           },
           drum: {
             isMuted: false,
-            audio: null,
             volume: 0.5
           },
           vocal: {
             isMuted: false,
-            audio: null,
+            volume: 0.5
+          },
+          other: {
+            isMuted: false,
             volume: 0.5
           }
         },
@@ -47,19 +46,19 @@ export const useMusicStore = create(
               musicInfo: music
             });
           },
-          muteAudio(key: InstrumentType) {
+          muteAudio(key: AudioType) {
             set((state) => {
-              state.instruments[key].isMuted = true;
+              state.audioTracks[key].isMuted = true;
             });
           },
-          unMuteAudio(key: InstrumentType) {
+          unMuteAudio(key: AudioType) {
             set((state) => {
-              state.instruments[key].isMuted = false;
+              state.audioTracks[key].isMuted = false;
             });
           },
-          updateVolume(key: InstrumentType, volume: number) {
+          updateVolume(key: AudioType, volume: number) {
             set((state) => {
-              state.instruments[key].volume = volume;
+              state.audioTracks[key].volume = volume;
             });
           },
           playAudio() {

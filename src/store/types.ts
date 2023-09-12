@@ -1,4 +1,4 @@
-import { InstrumentType } from '@/types/instrument';
+import { AudioType } from '@/types/instrument';
 import { Music } from '@prisma/client';
 
 export type AudioData = {
@@ -7,18 +7,17 @@ export type AudioData = {
   gain: number;
 };
 
-export type Instruments = {
-  [key in InstrumentType]: {
+export type AudioTracks = {
+  [key in AudioType]: {
     isMuted: boolean;
     volume: number;
-    audio: HTMLAudioElement | null;
   };
 };
 
 export type MusicState = {
   musicInfo?: Music;
   audio?: HTMLAudioElement;
-  instruments: Instruments;
+  audioTracks: AudioTracks;
   isLoaded: boolean;
   isAudioPlaying: boolean;
 };
@@ -30,9 +29,9 @@ export type MusicAction = {
     clear: () => void;
     playAudio: () => void;
     stopAudio: () => void;
-    muteAudio: (instrument: InstrumentType) => void;
-    unMuteAudio: (instrument: InstrumentType) => void;
-    updateVolume: (instrument: InstrumentType, volume: number) => void;
+    muteAudio: (instrument: AudioType) => void;
+    unMuteAudio: (instrument: AudioType) => void;
+    updateVolume: (instrument: AudioType, volume: number) => void;
   };
 };
 

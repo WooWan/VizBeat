@@ -1,5 +1,5 @@
-import { AudioData, Instruments } from '@/store/types';
-import { InstrumentData, InstrumentType } from '@/types/instrument';
+import { AudioData, AudioTracks } from '@/store/types';
+import { AudioType } from '@/types/instrument';
 
 export const mockData = (): AudioData => ({ gain: 1, data: new Uint8Array(), source: {} as AudioBufferSourceNode });
 
@@ -30,8 +30,8 @@ export const createAudio = async (url: string): Promise<AudioData> => {
   };
 };
 
-export const calculateIsSolo = (currentType: InstrumentType, instrumentState: Instruments) => {
-  if (instrumentState[currentType].isMuted) return false;
+export const calculateIsSolo = (audioType: AudioType, audioMap: AudioTracks) => {
+  if (audioMap[audioType].isMuted) return false;
 
-  return Object.entries(instrumentState).every(([type, state]) => type === currentType || state.isMuted);
+  return Object.entries(audioMap).every(([type, state]) => audioType === type || state.isMuted);
 };

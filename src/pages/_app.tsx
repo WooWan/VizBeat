@@ -1,6 +1,7 @@
 import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
 import TanstackQueryProvider from '@/components/providers/TanstackQueryProvider';
+import { Analytics } from '@vercel/analytics/react';
 import { Toaster } from '@/components/ui/toaster';
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -9,6 +10,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <div className="h-screen">
         <Component {...pageProps} />
         <Toaster />
+        <Analytics />
       </div>
     </TanstackQueryProvider>
   );
