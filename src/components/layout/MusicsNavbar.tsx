@@ -7,6 +7,7 @@ import { useMusics } from '@/hooks/queries/music/useMusics';
 import MusicUploadModal from '@/components/modal/MusicUploadModal';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/router';
+import { Loader2Icon } from 'lucide-react';
 
 const MusicsNavbar = () => {
   const listRefs = useRef<(HTMLLIElement | null)[]>([]);
@@ -39,7 +40,7 @@ const MusicsNavbar = () => {
           <li
             key={index}
             className={cn(
-              'grid w-full cursor-pointer snap-center grid-cols-[200px_1fr] border-b-[1px] border-y-slate-700 px-4 py-2 hover:bg-slate-100',
+              'flex w-full cursor-pointer snap-center items-center justify-between border-b-[1px] border-y-slate-700 px-4 py-2 hover:bg-slate-100',
               {
                 'bg-slate-100': musicInfo === music
               }
@@ -48,7 +49,8 @@ const MusicsNavbar = () => {
             onClick={() => api.selectAudio(music)}
           >
             <span>{music.artist}</span>
-            <span>{music.title}</span>
+            <span className="text-sm">{music.title}</span>
+            {!music.vocalUrl && <Loader2Icon className="ml-1.5 h-4 w-4 animate-spin" />}
           </li>
         ))}
       </ul>
