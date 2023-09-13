@@ -65,9 +65,10 @@ function StageRedirectButton({ music }: { music: Music }) {
           'opacity-0 duration-0': music.id !== musicInfo[len - 1]
         }
       )}
-      onClick={() => {
+      onClick={(e) => {
         router.push(`/stage/${music.id}`);
         api.stopAudio();
+        e.stopPropagation();
       }}
     >
       <span className="text-md text-center font-bold text-white">Go to Stage</span>
