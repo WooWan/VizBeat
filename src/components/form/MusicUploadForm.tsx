@@ -10,15 +10,14 @@ import { MusicUpload } from '@/types/music';
 import { useSeparateMusic } from '@/hooks/queries/music/useMusics';
 import { musicUploadSchema } from '@/schema';
 import { Loader2Icon } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
 
 type Props = {
   selectedTrack?: MusicUpload;
+  closeModal: () => void;
 };
 
-export default function MusicUploadForm({ selectedTrack }: Props) {
+export default function MusicUploadForm({ selectedTrack, closeModal }: Props) {
   const separateMusicWithFile = useSeparateMusic();
-  const { toast } = useToast();
   const form = useForm<z.infer<typeof musicUploadSchema>>({
     resolver: zodResolver(musicUploadSchema),
     defaultValues: {
@@ -44,16 +43,7 @@ export default function MusicUploadForm({ selectedTrack }: Props) {
       artist: data.artist
     };
     separateMusicWithFile.mutate(uploadedMusic, {
-      onSuccess: () => {
-        toast({
-          description: 'Successfully uploaded music'
-        });
-      },
-      onError: () => {
-        toast({
-          description: 'Failed to upload music'
-        });
-      }
+      onSettled: closeModal
     });
   };
 

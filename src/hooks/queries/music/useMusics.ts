@@ -1,7 +1,8 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { musicKey } from '@/hooks/queries/music/queryKeys';
 import { fetchMusicFromYoutube, fetchMusics, separateMusic, fetchMusic } from '@/service/musics';
 import { fetchAndStoreMusic } from '@/utils/fetchMusicIdb';
+import { useToast } from '@/components/ui/use-toast';
 
 export const useMusics = () => {
   return useQuery({
@@ -19,8 +20,24 @@ export const useMusic = (id: string) => {
 };
 
 export const useSeparateMusic = () => {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
   return useMutation({
-    mutationFn: separateMusic
+    mutationFn: separateMusic,
+    onSuccess: () => {
+      toast({
+        variant: 'success',
+        description: 'Your music is now live 🎸'
+      });
+      queryClient.invalidateQueries(musicKey.all);
+    },
+    onError: () => {
+      toast({
+        variant: 'destructive',
+        description: 'Failed to upload music'
+      });
+    }
   });
 };
 
@@ -29,6 +46,7 @@ export const useMusicSearch = (keyword: string) => {
     queryKey: ['spotify-music', keyword],
     queryFn: () => fetchMusicFromYoutube({ keyword }),
     enabled: !!keyword,
+    suspense: true,
     retry: 0
   });
 };

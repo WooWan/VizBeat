@@ -8,19 +8,11 @@ import Image from 'next/image';
 import MusicUploadForm from '@/components/form/MusicUploadForm';
 import { Button } from '@/components/ui/button';
 import MusicSearch from '@/components/MusicSearch';
-import { Input } from '@/components/ui/input';
-import { useDebounce } from '@/hooks/useDebounce';
 
 function MusicUploadModal() {
   const [selectedTrack, setSelectedTrack] = useState<MusicUpload>();
   const [imagePreview, setImagePreview] = useState('');
-
-  const [musicKeyword, setMusicKeyword] = useState('');
-  const debouncedKeyword = useDebounce(musicKeyword, 200);
-
-  const handleSearchMusic = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMusicKeyword(e.target.value);
-  };
+  const [open, setOpen] = useState(false);
 
   const updateSelectedTrack = (track: YoutubeMusic) => {
     setSelectedTrack({
@@ -32,15 +24,15 @@ function MusicUploadModal() {
     setImagePreview(track.thumbnail);
   };
 
+  const closeModal = () => setOpen(false);
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">음악 추가하기</Button>
       </DialogTrigger>
       <DialogContent
-        className={cn('duration-[1500ms] flex max-h-[320px] flex-col overflow-auto transition-all sm:max-w-[425px]', {
-          'max-h-[820px]': selectedTrack || musicKeyword
-        })}
+        className={cn('duration-[2500ms] flex max-h-[820px] flex-col overflow-auto transition-all sm:max-w-[425px]')}
       >
         <DialogHeader className="pb-3">
           <DialogTitle>Upload your music 🎸</DialogTitle>
@@ -53,20 +45,7 @@ function MusicUploadModal() {
             </div>
           </>
         )}
-        <section>
-          <Input
-            type="text"
-            placeholder="Search Music"
-            onChange={handleSearchMusic}
-            className="mb-3 rounded-lg bg-gray-100 p-1.5 placeholder:text-gray-400"
-          />
-          <MusicSearch
-            updateSelectedTrack={updateSelectedTrack}
-            selectedTrack={selectedTrack}
-            keyword={debouncedKeyword}
-          />
-        </section>
-
+        <MusicSearch updateSelectedTrack={updateSelectedTrack} selectedTrack={selectedTrack} />
         {selectedTrack && (
           <section className="px-3">
             <div className="relative mt-4 flex items-center justify-center">
@@ -82,7 +61,7 @@ function MusicUploadModal() {
                 alt={'video-thumbnail'}
               />
             </div>
-            <MusicUploadForm selectedTrack={selectedTrack} />
+            <MusicUploadForm selectedTrack={selectedTrack} closeModal={closeModal} />
           </section>
         )}
       </DialogContent>
