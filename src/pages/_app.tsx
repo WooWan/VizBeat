@@ -3,15 +3,20 @@ import type { AppProps } from 'next/app';
 import TanstackQueryProvider from '@/components/providers/TanstackQueryProvider';
 import { Analytics } from '@vercel/analytics/react';
 import { Toaster } from '@/components/ui/toaster';
+import Head from 'next/head';
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <TanstackQueryProvider>
-      <div className="h-screen">
+    <>
+      <Head>
+        <title>Vizbeat</title>
+        <link rel="favicon" href="/favicon.ico" />
+      </Head>
+      <TanstackQueryProvider>
         <Component {...pageProps} />
         <Toaster />
         <Analytics />
-      </div>
-    </TanstackQueryProvider>
+      </TanstackQueryProvider>
+    </>
   );
 }
