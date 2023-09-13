@@ -27,7 +27,7 @@ export const instruments: InstrumentData[] = [
   },
   {
     id: '7E2301B49D02',
-    type: 'bass',
+    type: 'guitar',
     position: [-75, -10, 8],
     rotation: [0, RADIAN * 30, 0],
     scale: [2.25, 2.25, 2.25],
@@ -38,7 +38,7 @@ export const instruments: InstrumentData[] = [
   },
   {
     id: 'F9C610D328A7',
-    type: 'guitar',
+    type: 'bass',
     position: [73, -6, 12],
     rotation: [0, RADIAN * -30, 0],
     scale: [23, 23, 23],

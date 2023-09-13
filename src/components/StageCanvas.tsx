@@ -33,8 +33,8 @@ export default function StageCanvas({ tracks }: Props) {
             ))}
             <MusicAnalyzer audio={tracks[0]} fftSize={128} centerPos={[0, -36, 30]} radius={8} />
             <MusicAnalyzer audio={tracks[1]} fftSize={128} centerPos={[32, -36, -10]} radius={18} />
-            <MusicAnalyzer audio={tracks[2]} fftSize={128} centerPos={[75, -36, 10]} radius={8} />
-            <MusicAnalyzer audio={tracks[3]} fftSize={128} centerPos={[-75, -36, 10]} radius={4} />
+            <MusicAnalyzer audio={tracks[2]} fftSize={128} centerPos={[-75, -36, 10]} radius={8} />
+            <MusicAnalyzer audio={tracks[3]} fftSize={128} centerPos={[75, -36, 10]} radius={4} />
             <MusicAnalyzer audio={tracks[4]} fftSize={128} centerPos={[-32, -36, -10]} radius={18} />
           </Rig>
         </Suspense>
