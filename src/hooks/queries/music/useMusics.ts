@@ -47,6 +47,7 @@ export const useMusicSearch = (keyword: string) => {
     queryFn: () => fetchMusicFromYoutube({ keyword }),
     enabled: !!keyword,
     suspense: true,
+    useErrorBoundary: true,
     retry: 0
   });
 };
