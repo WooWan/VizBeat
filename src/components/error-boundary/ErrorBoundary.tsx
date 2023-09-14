@@ -1,3 +1,4 @@
+import { compareShallowArray } from '@/utils/equality';
 import { Component, ReactNode } from 'react';
 
 type State = {
@@ -33,7 +34,8 @@ class ErrorBoundary extends Component<Props, State> {
     if (this.state.error === null) {
       return;
     }
-    if (JSON.stringify(prevProps.resetKeys) !== JSON.stringify(this.props.resetKeys)) {
+
+    if (compareShallowArray(prevProps.resetKeys, this.props.resetKeys)) {
       this.resetErrorBoundary();
     }
   }
