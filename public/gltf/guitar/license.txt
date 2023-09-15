@@ -1,11 +1,11 @@
 Model Information:
-* title:	Guitar Fender v2.0
-* source:	https://sketchfab.com/3d-models/guitar-fender-v20-2ee4f9a752a14f53998dac89ba02ed3b
-* author:	stefann22 (https://sketchfab.com/stefann22)
+* title:	Fender Stratocaster Guitar
+* source:	https://sketchfab.com/3d-models/fender-stratocaster-guitar-15a37147641b4c1b963bb494b234593f
+* author:	Ryan_Nein (https://sketchfab.com/Ryan_Nein)
 
 Model License:
 * license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
 * requirements:	Author must be credited. Commercial use is allowed.
 
 If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
-This work is based on "Guitar Fender v2.0" (https://sketchfab.com/3d-models/guitar-fender-v20-2ee4f9a752a14f53998dac89ba02ed3b) by stefann22 (https://sketchfab.com/stefann22) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+This work is based on "Fender Stratocaster Guitar" (https://sketchfab.com/3d-models/fender-stratocaster-guitar-15a37147641b4c1b963bb494b234593f) by Ryan_Nein (https://sketchfab.com/Ryan_Nein) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

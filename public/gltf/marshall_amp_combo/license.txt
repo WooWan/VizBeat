@@ -1,0 +1,11 @@
+Model Information:
+* title:	Marshall Amp Combo
+* source:	https://sketchfab.com/3d-models/marshall-amp-combo-55af790ab812445e9184bade7c1d4cef
+* author:	Ryan_Nein (https://sketchfab.com/Ryan_Nein)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Marshall Amp Combo" (https://sketchfab.com/3d-models/marshall-amp-combo-55af790ab812445e9184bade7c1d4cef) by Ryan_Nein (https://sketchfab.com/Ryan_Nein) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

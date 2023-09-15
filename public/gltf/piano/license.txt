@@ -1,11 +1,11 @@
 Model Information:
-* title:	Piano
-* source:	https://sketchfab.com/3d-models/piano-1b6a4e6db7c64b6fa932b189aa694874
-* author:	filthycent (https://sketchfab.com/filthycent)
+* title:	Yamaha DGX 660 Piano
+* source:	https://sketchfab.com/3d-models/yamaha-dgx-660-piano-17c6c270995e4f838ab66eeecddfc07c
+* author:	Steve.Lapp (https://sketchfab.com/Steve.Lapp)
 
 Model License:
 * license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
 * requirements:	Author must be credited. Commercial use is allowed.
 
 If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
-This work is based on "Piano" (https://sketchfab.com/3d-models/piano-1b6a4e6db7c64b6fa932b189aa694874) by filthycent (https://sketchfab.com/filthycent) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+This work is based on "Yamaha DGX 660 Piano" (https://sketchfab.com/3d-models/yamaha-dgx-660-piano-17c6c270995e4f838ab66eeecddfc07c) by Steve.Lapp (https://sketchfab.com/Steve.Lapp) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

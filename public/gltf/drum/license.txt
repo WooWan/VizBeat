@@ -1,11 +1,11 @@
 Model Information:
-* title:	6 Piece Drum Set
-* source:	https://sketchfab.com/3d-models/6-piece-drum-set-a666c304959c4015a895010d64aa690a
-* author:	SINNIK (https://sketchfab.com/sinnik)
+* title:	Drum Kit
+* source:	https://sketchfab.com/3d-models/drum-kit-99218427e7a2424ea8afc9b8c668a5c7
+* author:	Serg.Morgun (https://sketchfab.com/Serg.Morgun)
 
 Model License:
 * license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
 * requirements:	Author must be credited. Commercial use is allowed.
 
 If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
-This work is based on "6 Piece Drum Set" (https://sketchfab.com/3d-models/6-piece-drum-set-a666c304959c4015a895010d64aa690a) by SINNIK (https://sketchfab.com/sinnik) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+This work is based on "Drum Kit" (https://sketchfab.com/3d-models/drum-kit-99218427e7a2424ea8afc9b8c668a5c7) by Serg.Morgun (https://sketchfab.com/Serg.Morgun) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
