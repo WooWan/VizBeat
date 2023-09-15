@@ -19,23 +19,23 @@ export default function StageCanvas({ tracks }: Props) {
           position: [0, 20, 70],
           fov: 80,
           near: 0.1,
-          far: 300,
+          far: 1000,
           zoom: 1
         }}
         style={{ width: '100vw', height: '100vh' }}
       >
-        <color attach="background" args={['white']} />
+        <color attach="background" args={['black']} />
         <Suspense fallback={null}>
           <Rig>
             <StageGround />
             {instruments.map((instrument) => (
               <Instrument key={instrument.type} {...instrument} />
             ))}
-            <MusicAnalyzer audio={tracks[0]} fftSize={128} centerPos={[0, -36, 30]} radius={8} />
-            <MusicAnalyzer audio={tracks[1]} fftSize={128} centerPos={[32, -36, -10]} radius={18} />
-            <MusicAnalyzer audio={tracks[2]} fftSize={128} centerPos={[-75, -36, 10]} radius={8} />
-            <MusicAnalyzer audio={tracks[3]} fftSize={128} centerPos={[75, -36, 10]} radius={4} />
-            <MusicAnalyzer audio={tracks[4]} fftSize={128} centerPos={[-32, -36, -10]} radius={18} />
+            <MusicAnalyzer audio={tracks[0]} fftSize={128} centerPos={[0, -37, 30]} radius={8} />
+            <MusicAnalyzer audio={tracks[1]} fftSize={128} centerPos={[32.5, -37, -16.5]} radius={18} />
+            <MusicAnalyzer audio={tracks[2]} fftSize={128} centerPos={[75, -37, 10]} radius={8} />
+            <MusicAnalyzer audio={tracks[3]} fftSize={128} centerPos={[-75, -37, 10]} radius={0} />
+            <MusicAnalyzer audio={tracks[4]} fftSize={128} centerPos={[-32.5, -37, -16.5]} radius={18} />
           </Rig>
         </Suspense>
         <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
