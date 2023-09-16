@@ -1,0 +1,185 @@
+{
+  "asset": {
+    "generator": "glTF-Transform v3.6.0",
+    "version": "2.0",
+    "extras": {
+      "author": "ulucuvute (https://sketchfab.com/ulucuvute)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/fender-jazz-bass-relic-efdb694b4914431b979d344dbd41545e",
+      "title": "Fender Jazz Bass Relic"
+    }
+  },
+  "accessors": [
+    {
+      "type": "SCALAR",
+      "componentType": 5125,
+      "count": 174573
+    },
+    {
+      "type": "VEC3",
+      "componentType": 5126,
+      "count": 46823
+    },
+    {
+      "type": "VEC3",
+      "componentType": 5126,
+      "count": 46823,
+      "max": [
+        0.03802153840661049,
+        0.17966119945049286,
+        1.1879358291625977
+      ],
+      "min": [
+        -0.022162823006510735,
+        -0.1731250137090683,
+        -0.0024126768112182617
+      ]
+    },
+    {
+      "type": "VEC4",
+      "componentType": 5126,
+      "count": 46823
+    },
+    {
+      "type": "VEC2",
+      "componentType": 5126,
+      "count": 46823
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 989368
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987,
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "extensions": {
+        "EXT_texture_webp": {
+          "source": 0
+        }
+      }
+    },
+    {
+      "sampler": 0,
+      "extensions": {
+        "EXT_texture_webp": {
+          "source": 2
+        }
+      }
+    },
+    {
+      "sampler": 0,
+      "extensions": {
+        "EXT_texture_webp": {
+          "source": 1
+        }
+      }
+    }
+  ],
+  "images": [
+    {
+      "mimeType": "image/webp",
+      "uri": "textures/JazzBass_baseColor.webp"
+    },
+    {
+      "mimeType": "image/webp",
+      "uri": "textures/JazzBass_metallicRoughness.webp"
+    },
+    {
+      "mimeType": "image/webp",
+      "uri": "textures/JazzBass_normal.webp"
+    }
+  ],
+  "buffers": [
+    {
+      "uri": "scene.bin",
+      "byteLength": 989368
+    }
+  ],
+  "materials": [
+    {
+      "name": "JazzBass",
+      "doubleSided": true,
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicRoughnessTexture": {
+          "index": 2
+        }
+      },
+      "normalTexture": {
+        "index": 1
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Body.005_JazzBass_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 2,
+            "TANGENT": 3,
+            "TEXCOORD_0": 4
+          },
+          "mode": 4,
+          "material": 0,
+          "indices": 0,
+          "extensions": {
+            "KHR_draco_mesh_compression": {
+              "bufferView": 0,
+              "attributes": {
+                "NORMAL": 0,
+                "POSITION": 1,
+                "TANGENT": 2,
+                "TEXCOORD_0": 3
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "name": "Body.005_JazzBass_0",
+      "rotation": [
+        0.9999999999999978,
+        -5.401638121087644e-24,
+        8.040613114788627e-17,
+        6.717943043095698e-8
+      ],
+      "mesh": 0
+    }
+  ],
+  "scenes": [
+    {
+      "name": "Sketchfab_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "scene": 0,
+  "extensionsUsed": [
+    "EXT_texture_webp",
+    "KHR_draco_mesh_compression"
+  ],
+  "extensionsRequired": [
+    "EXT_texture_webp",
+    "KHR_draco_mesh_compression"
+  ]
+}
