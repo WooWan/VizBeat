@@ -8,6 +8,7 @@ import MusicUploadModal from '@/components/modal/MusicUploadModal';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/router';
 import { Loader2Icon } from 'lucide-react';
+import Link from 'next/link';
 
 const MusicsNavbar = () => {
   const listRefs = useRef<(HTMLLIElement | null)[]>([]);
@@ -29,7 +30,9 @@ const MusicsNavbar = () => {
 
   return (
     <nav className={'hidden flex-col bg-white bg-opacity-90 px-6 lg:flex'}>
-      <h2 className={'pt-2 text-lg font-semibold'}>Music</h2>
+      <Link href="/">
+        <h2 className={'pt-3 text-xl font-semibold'}>Vizbeat</h2>
+      </Link>
       <AudioPlayer musics={musics} />
       <ul
         className={
