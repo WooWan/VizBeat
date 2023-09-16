@@ -1,5 +1,5 @@
 import MusicsNavbar from '@/components/layout/MusicsNavbar';
-import MusicsCanvas from '@/canvas/MusicsCanvas';
+import MusicsCanvas from '@/components/canvas/MusicsCanvas';
 
 const MusicsPage = () => {
   return (

@@ -1,6 +1,6 @@
 import { useAudioTracks } from '@/hooks/queries/music/useMusics';
 import { useRouter } from 'next/router';
-import StageCanvas from '@/components/StageCanvas';
+import StageCanvas from '@/components/canvas/StageCanvas';
 import MultitrackController from '@/components/MultitrackController';
 import { useEffect } from 'react';
 import { useMusicStore } from '@/store/music';

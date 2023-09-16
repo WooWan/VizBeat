@@ -2,11 +2,11 @@ import { instruments } from '@/constants/music';
 import { OrbitControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import React, { Suspense } from 'react';
-import Instrument from './Instrument';
-import Loading from './Loading';
-import MusicAnalyzer from './MusicAnalyzer';
-import Rig from './Rig';
-import StageGround from './StageGround';
+import Instrument from '../3d/Instrument';
+import Loading from '../Loading';
+import MusicAnalyzer from '../MusicAnalyzer';
+import Rig from '../3d/Rig';
+import StageGround from '../3d/StageGround';
 
 type Props = {
   tracks: HTMLAudioElement[];
