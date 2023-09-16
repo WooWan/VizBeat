@@ -1,5 +1,5 @@
 import { Mesh, TextureLoader } from 'three';
-import { useFrame, useLoader } from '@react-three/fiber';
+import { ThreeEvent, useFrame, useLoader } from '@react-three/fiber';
 import React, { useRef, useState } from 'react';
 import { lerp } from 'three/src/math/MathUtils';
 import { MeshAxis, YAxis } from '@/types/Axis';
@@ -7,6 +7,7 @@ import { Music } from '@prisma/client';
 import { useMusicStore } from '@/store/music';
 import { shallow } from 'zustand/shallow';
 import { useScroll } from '@react-three/drei';
+import { useRouter } from 'next/router';
 
 const radian = Math.PI / 180;
 
@@ -19,10 +20,11 @@ type Props = {
 const LERP_FACTOR = 0.05;
 
 const MusicAlbum = ({ music, index, musics }: Props) => {
+  const router = useRouter();
   const [originalPosition] = useState(-index * 1.5);
   const rotationRef = useRef(radian * 5 * index);
   const meshRef = useRef<Mesh>(null!);
-  const { api, music: selectedMusic } = useMusicStore((state) => ({ api: state.api, music: state.musicInfo }), shallow);
+  const { api, musicInfo } = useMusicStore((state) => ({ api: state.api, musicInfo: state.musicInfo }), shallow);
   const cover = useLoader(TextureLoader, music.albumCover);
   const texture = useLoader(TextureLoader, '/images/cdtexture.jpg');
   const scroll = useScroll();
@@ -41,7 +43,7 @@ const MusicAlbum = ({ music, index, musics }: Props) => {
   useFrame(() => {
     if (!musics) return;
     rotationRef.current = (rotationRef.current + radian * 0.4) % (Math.PI * 2);
-    const selectedIdx = musics.findIndex((music) => music.id === selectedMusic?.id);
+    const selectedIdx = musics.findIndex((music) => music.id === musicInfo?.id);
     if (selectedIdx === -1) {
       meshRef.current.rotation.y = rotationRef.current;
       updatePosition({ y: originalPosition });
@@ -62,26 +64,29 @@ const MusicAlbum = ({ music, index, musics }: Props) => {
   });
 
   useFrame(() => {
-    if (scroll.offset !== scrollRef.current && selectedMusic) {
+    if (scroll.offset !== scrollRef.current && musicInfo) {
       api.clear();
     }
     scrollRef.current = scroll.offset;
   });
+
+  const selectAlbum = (e: ThreeEvent<MouseEvent>) => {
+    if (!musics) return;
+    const selectedIdx = musics.findIndex((music) => music.id === musicInfo?.id);
+    api.clear();
+    if (selectedIdx !== index) {
+      api.selectAudio(music);
+      router.prefetch(`/stage/${music.id}`);
+    }
+    e.stopPropagation();
+  };
 
   return (
     <mesh
       position={[0, originalPosition, 0]}
       rotation={[0, rotationRef.current, 0]}
       ref={meshRef}
-      onClick={(e) => {
-        e.stopPropagation();
-        if (!musics) return;
-        const selectedIdx = musics.findIndex((music) => music.id === selectedMusic?.id);
-        api.clear();
-        if (selectedIdx !== index) {
-          api.selectAudio(music);
-        }
-      }}
+      onClick={selectAlbum}
     >
       <boxGeometry args={[10, 0.7, 10]} />
       <meshBasicMaterial attach="material-0" map={texture} />

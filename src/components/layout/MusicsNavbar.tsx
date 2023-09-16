@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/router';
 import { Loader2Icon } from 'lucide-react';
 import Link from 'next/link';
+import { Music } from '@prisma/client';
 
 const MusicsNavbar = () => {
   const listRefs = useRef<(HTMLLIElement | null)[]>([]);
@@ -21,11 +22,17 @@ const MusicsNavbar = () => {
     }),
     shallow
   );
+  const selectedMusic = musics?.find((music) => music.id === musicInfo?.id);
 
   const redirectToStage = () => {
     api.stopAudio();
     router.push(`/stage/${musicInfo?.id}`);
     api.clear();
+  };
+
+  const selectAlbum = (music: Music) => {
+    api.selectAudio(music);
+    router.prefetch(`/stage/${music.id}`);
   };
 
   return (
@@ -49,7 +56,7 @@ const MusicsNavbar = () => {
               }
             )}
             ref={(el) => (listRefs.current[index] = el)}
-            onClick={() => api.selectAudio(music)}
+            onClick={() => selectAlbum(music)}
           >
             <span>{music.artist}</span>
             <span className="text-sm">{music.title}</span>
@@ -58,7 +65,7 @@ const MusicsNavbar = () => {
         ))}
       </ul>
       <MusicUploadModal />
-      {musicInfo && (
+      {selectedMusic?.vocalUrl && (
         <section className="flex justify-end pt-2">
           <Button onClick={redirectToStage} size="sm">
             Go to Stage
