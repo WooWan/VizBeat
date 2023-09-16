@@ -17,10 +17,10 @@ export default function StageCanvas({ tracks }: Props) {
       <Canvas
         camera={{
           position: [0, 20, 70],
-          fov: 80,
+          fov: 90,
           near: 0.1,
-          far: 1000,
-          zoom: 1
+          far: 1050,
+          zoom: 0.95
         }}
         style={{ width: '100vw', height: '100vh' }}
       >

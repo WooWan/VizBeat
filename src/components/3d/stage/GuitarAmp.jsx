@@ -1,7 +1,7 @@
 import { useGLTF } from '@react-three/drei';
 
 export default function GuitarAmp(props) {
-  const { nodes, materials } = useGLTF('/gltf/marshall_amp_combo/output.glb');
+  const { nodes, materials } = useGLTF('/gltf/marshall_amp_combo/model.glb');
   return (
     <group {...props} dispose={null}>
       <mesh
@@ -14,4 +14,4 @@ export default function GuitarAmp(props) {
   );
 }
 
-useGLTF.preload('/gltf/marshall_amp_combo/output.glb');
+useGLTF.preload('/gltf/marshall_amp_combo/model.glb');

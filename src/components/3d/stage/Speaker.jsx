@@ -1,7 +1,8 @@
 import { useGLTF } from '@react-three/drei';
 
-export default function Model(props) {
-  const { nodes, materials } = useGLTF('/gltf/speaker/output.glb');
+export default function Speker(props) {
+  const { nodes, materials } = useGLTF('/gltf/speaker/model.glb');
+
   return (
     <group {...props} dispose={null}>
       <mesh geometry={nodes.defaultMaterial.geometry} material={materials.small_speaker_1_1001} />
@@ -9,4 +10,4 @@ export default function Model(props) {
   );
 }
 
-useGLTF.preload('/gltf/speaker/output.glb');
+useGLTF.preload('/gltf/speaker/model.glb');
