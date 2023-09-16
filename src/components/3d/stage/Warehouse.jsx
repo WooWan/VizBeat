@@ -1,7 +1,7 @@
 import { useGLTF } from '@react-three/drei';
 
 export default function Warehouse(props) {
-  const { nodes, materials } = useGLTF('/gltf/warehouse/scene-transformed.glb');
+  const { nodes, materials } = useGLTF('/gltf/warehouse/output.glb');
   return (
     <group {...props} dispose={null}>
       <mesh
@@ -14,4 +14,4 @@ export default function Warehouse(props) {
   );
 }
 
-useGLTF.preload('/gltf/warehouse/scene-transformed.glb');
+useGLTF.preload('/gltf/warehouse/output.glb');

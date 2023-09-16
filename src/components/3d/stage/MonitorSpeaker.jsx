@@ -1,7 +1,7 @@
 import { useGLTF } from '@react-three/drei';
 
 export default function MonitorSpeaker(props) {
-  const { nodes, materials } = useGLTF('/gltf/monitor_speaker/scene-transformed.glb');
+  const { nodes, materials } = useGLTF('/gltf/monitor_speaker/output.glb');
   return (
     <group {...props} dispose={null}>
       <mesh geometry={nodes.defaultMaterial.geometry} material={materials.floor_speaker_1001} />
@@ -9,4 +9,4 @@ export default function MonitorSpeaker(props) {
   );
 }
 
-useGLTF.preload('/gltf/monitor_speaker/scene-transformed.glb');
+useGLTF.preload('/gltf/monitor_speaker/output.glb');
