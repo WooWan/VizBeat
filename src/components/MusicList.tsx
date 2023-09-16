@@ -13,7 +13,6 @@ type Props = {
 
 const MusicList = ({ musicList }: Props) => {
   const groupRef = useRef<Group>(null!);
-  const three = useThree();
   const scroll = useScroll();
   const selectedMusic = useMusicStore((state) => state.musicInfo);
 
