@@ -1,17 +1,10 @@
 import { useGLTF } from '@react-three/drei';
 
-export default function Warehouse(props) {
-  const { nodes, materials } = useGLTF('/gltf/warehouse/output.glb');
-  return (
-    <group {...props} dispose={null}>
-      <mesh
-        geometry={nodes.Object_2.geometry}
-        material={materials.Destroyed_warehouse_in_Kaarina_finland}
-        rotation={[-Math.PI / 2, 0, 0]}
-      />
-      <mesh geometry={nodes.Object_12.geometry} material={materials.Base} rotation={[-Math.PI / 2, 0, 0]} />
-    </group>
-  );
+function Warehouse(props) {
+  const model = useGLTF('/gltf/warehouse/model.glb');
+  return <primitive object={model.scene} {...props} />;
 }
 
-useGLTF.preload('/gltf/warehouse/output.glb');
+export default Warehouse;
+
+useGLTF.preload('/gltf/warehouse/model.glb');

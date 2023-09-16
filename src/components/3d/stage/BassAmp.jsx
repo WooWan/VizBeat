@@ -1,7 +1,7 @@
 import { useGLTF } from '@react-three/drei';
 
 export default function BassAmp(props) {
-  const { nodes, materials } = useGLTF('/gltf/fender_bass_amp/output.glb');
+  const { nodes, materials } = useGLTF('/gltf/fender_bass_amp/model.glb');
   return (
     <group {...props} dispose={null}>
       <mesh
@@ -21,4 +21,4 @@ export default function BassAmp(props) {
   );
 }
 
-useGLTF.preload('/gltf/fender_bass_amp/output.glb');
+useGLTF.preload('/gltf/fender_bass_amp/model.glb');
