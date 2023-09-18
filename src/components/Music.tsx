@@ -82,20 +82,25 @@ const MusicAlbum = ({ music, index, musics }: Props) => {
   };
 
   return (
-    <mesh
-      position={[0, originalPosition, 0]}
-      rotation={[0, rotationRef.current, 0]}
-      ref={meshRef}
-      onClick={selectAlbum}
+    <group
+      onPointerOver={() => (document.body.style.cursor = 'pointer')}
+      onPointerOut={() => (document.body.style.cursor = 'auto')}
     >
-      <boxGeometry args={[10, 0.7, 10]} />
-      <meshBasicMaterial attach="material-0" map={texture} />
-      <meshBasicMaterial attach="material-1" map={texture} />
-      <meshBasicMaterial attach="material-2" map={cover} />
-      <meshBasicMaterial attach="material-3" map={cover} />
-      <meshBasicMaterial attach="material-4" map={texture} />
-      <meshBasicMaterial attach="material-5" map={texture} />
-    </mesh>
+      <mesh
+        position={[0, originalPosition, 0]}
+        rotation={[0, rotationRef.current, 0]}
+        ref={meshRef}
+        onClick={selectAlbum}
+      >
+        <boxGeometry args={[10, 0.7, 10]} />
+        <meshBasicMaterial attach="material-0" map={texture} />
+        <meshBasicMaterial attach="material-1" map={texture} />
+        <meshBasicMaterial attach="material-2" map={cover} />
+        <meshBasicMaterial attach="material-3" map={cover} />
+        <meshBasicMaterial attach="material-4" map={texture} />
+        <meshBasicMaterial attach="material-5" map={texture} />
+      </mesh>
+    </group>
   );
 };
 export default MusicAlbum;
