@@ -101,7 +101,7 @@ function AudioDropdown({ music }: Props) {
           return (
             <DropdownMenuItem className="flex justify-between" key={title}>
               <span>{title.charAt(0).toUpperCase() + title.slice(1)}</span>
-              <DownloadIcon onClick={() => downloadSingleTrack(title)} className="h-3.5 w-3.5" />
+              <DownloadIcon onClick={() => downloadSingleTrack(title)} className="h-3.5 w-3.5 cursor-pointer" />
             </DropdownMenuItem>
           );
         })}

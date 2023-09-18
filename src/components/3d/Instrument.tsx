@@ -1,9 +1,10 @@
-import { startTransition, useRef, useState } from 'react';
+import { useRef } from 'react';
 import { animated, useSpring } from '@react-spring/three';
 import { useGLTF } from '@react-three/drei';
 import StageSpotLight from './StageSpotLight';
 import { InstrumentData } from '@/types/instrument';
 import { useMusicStore } from '@/store/music';
+import { useHoverCursor } from '@/hooks/useHoverCursor';
 
 export default function Instrument({
   position,
@@ -17,8 +18,8 @@ export default function Instrument({
 }: InstrumentData) {
   const result = useGLTF(url);
   const modelRef = useRef(null);
-  const [isHovered, setIsHovered] = useState(false);
-  const spring = useSpring({ scale: isHovered ? 1.05 : 1 });
+  const [isHovered, setIsHovered] = useHoverCursor();
+  const spring = useSpring({ scale: isHovered ? 1.1 : 1 });
   const isMuted = useMusicStore((stage) => stage.audioTracks[type].isMuted);
   const { muteAudio, unMuteAudio } = useMusicStore((state) => state.api);
 
@@ -27,16 +28,8 @@ export default function Instrument({
       <animated.mesh
         scale={spring.scale}
         ref={modelRef}
-        onPointerOver={() => {
-          startTransition(() => {
-            setIsHovered(true);
-          });
-        }}
-        onPointerOut={() =>
-          startTransition(() => {
-            setIsHovered(false);
-          })
-        }
+        onPointerOver={() => setIsHovered(true)}
+        onPointerOut={() => setIsHovered(false)}
         onClick={() => {
           isMuted ? unMuteAudio(type) : muteAudio(type);
         }}
