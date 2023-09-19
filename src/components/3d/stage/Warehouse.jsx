@@ -1,7 +1,7 @@
 import { useGLTF } from '@react-three/drei';
 
 function Warehouse(props) {
-  const model = useGLTF('/gltf/warehouse/model.glb');
+  const model = useGLTF('/gltf/warehouse/scene.gltf');
   return <primitive object={model.scene} {...props} />;
 }
 

@@ -11,7 +11,7 @@ export default function Rig({ children }: Props) {
   const vector = new Vector3();
 
   useFrame((state) => {
-    state.camera.position.lerp(vector.set(-state.mouse.x * 10, 20 + -state.mouse.y * 5, 70), 0.05);
+    state.camera.position.lerp(vector.set(-state.mouse.x * 10, 15 + -state.mouse.y * 5, 65), 0.05);
   });
 
   return <group ref={groupRef}>{children}</group>;
