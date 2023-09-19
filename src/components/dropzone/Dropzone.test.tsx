@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import MusicUploadForm from '@/components/form/MusicUploadForm';
 import prepareReactQueryWrapper from '@/__test__/prepareReactQueryWrapper';
 import React from 'react';
+import { generateMockTrack } from '@/__test__/mock';
 
 jest.mock('music-metadata-browser', () => ({
   parseBlob: jest.fn().mockResolvedValue({
@@ -28,10 +29,12 @@ describe('Dropzone', () => {
 
   const setUp = () => {
     const Wrapper = prepareReactQueryWrapper();
+    const closeModal = jest.fn();
+    const mockTrack = generateMockTrack();
     render(<Dropzone setSelectedTrack={setSelectedTrack} setImagePreview={setImagePreview} />);
     render(
       <Wrapper>
-        <MusicUploadForm />
+        <MusicUploadForm closeModal={closeModal} selectedTrack={mockTrack} />
       </Wrapper>
     );
   };

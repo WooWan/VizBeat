@@ -1,5 +1,6 @@
 import { Music } from '@prisma/client';
 import { faker } from '@faker-js/faker';
+import { MusicUpload } from '@/types/music';
 
 export function generateMockMusic(props: Partial<Music> = {}) {
   return {
@@ -16,5 +17,15 @@ export function generateMockMusic(props: Partial<Music> = {}) {
     otherUrl: faker.internet.url(),
     userId: faker.string.uuid(),
     ...props
+  };
+}
+
+export function generateMockTrack(): MusicUpload {
+  return {
+    albumCover: faker.image.url(),
+    artist: faker.person.firstName(),
+    audioFile: new Blob(),
+    id: faker.string.uuid(),
+    title: faker.music.songName()
   };
 }
