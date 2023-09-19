@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import AudioPlayer from '@/components/audio-player/AudioPlayer';
 import { cn } from '@/lib/utils';
 import { useMusicStore } from '@/store/music';
