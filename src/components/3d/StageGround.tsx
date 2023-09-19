@@ -10,14 +10,16 @@ import { SpotLight } from '@react-three/drei';
 export default function StageGround() {
   const rightRef = useRef<SpotLightType>(null!);
   const leftRef = useRef<SpotLightType>(null!);
+  const centerRef = useRef<SpotLightType>(null!);
 
   useEffect(() => {
-    rightRef.current.target.position.lerp(new Vector3(45, -1, 0), 1);
+    leftRef.current.target.position.lerp(new Vector3(45, -1, 0), 1);
     rightRef.current.target.position.lerp(new Vector3(-45, -1, 0), 1);
+    centerRef.current.target.position.lerp(new Vector3(0, -1, 0), 1);
   }, []);
   return (
     <group>
-      <Warehouse scale={[25, 25, 25]} position={[-20, -70, 40]} />
+      <Warehouse scale={[200, 200, 200]} position={[0, -11, 90]} rotation={[0, Math.PI / 2, 0]} />
       <GuitarAmp scale={[40, 40, 40]} position={[80, -10, -20]} rotation={[0, -Math.PI / 6, 0]} />
       <BassAmp scale={[35, 35, 35]} position={[-80, 1, -20]} rotation={[0, Math.PI / 6, 0]} />
       <MonitorSpeaker scale={[0.15, 0.15, 0.15]} position={[40, -7, 40]} rotation={[0, -Math.PI / 2, 0]} />
@@ -34,7 +36,17 @@ export default function StageGround() {
         distance={0}
         intensity={0.5}
         position={new Vector3(20, 100, 45)}
-        color={0xffffff}
+        color={0xf8e9d2}
+      />
+      <SpotLight
+        ref={centerRef}
+        penumbra={0.5}
+        decay={1}
+        angle={0.8}
+        distance={0}
+        intensity={0.5}
+        position={new Vector3(0, 100, 45)}
+        color={0xd8e0ed}
       />
       <SpotLight
         ref={leftRef}
@@ -44,7 +56,7 @@ export default function StageGround() {
         distance={0}
         intensity={0.5}
         position={new Vector3(-20, 100, 45)}
-        color={0xffffff}
+        color={0xfcecfd}
       />
     </group>
   );
