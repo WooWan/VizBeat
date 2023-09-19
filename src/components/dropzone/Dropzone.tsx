@@ -18,14 +18,14 @@ const Dropzone = ({ setSelectedTrack, setImagePreview }: Props) => {
           const audio = await musicMetadata.parseBlob(file);
           setSelectedTrack({
             id: '',
-            title: audio.common.title || '',
-            artist: audio.common.artist || '',
-            albumCover: new Blob([audio.common.picture?.[0].data || '']),
+            title: audio.common.title ?? '',
+            artist: audio.common.artist ?? '',
+            albumCover: new Blob([audio.common.picture?.[0].data ?? '']),
             audioFile: file
           });
           setImagePreview(
             URL.createObjectURL(
-              new Blob([audio.common.picture?.[0].data || ''], {
+              new Blob([audio.common.picture?.[0].data ?? ''], {
                 type: audio.common.picture?.[0].format
               })
             )
