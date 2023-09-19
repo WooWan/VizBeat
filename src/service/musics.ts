@@ -1,9 +1,8 @@
-import { nextClient, serverClient } from '@/service/apiClient';
+import { nextClient, redisClient, serverClient } from '@/service/apiClient';
 import { MusicUpload, YoutubeMusic } from '@/types/music';
 import { isUploadWithFile, isUploadWithYoutube } from '@/utils/typeGuards';
 import { Music } from '@prisma/client';
 import axios from 'axios';
-import { Redis } from '@upstash/redis';
 
 export const fetchMusics = async (): Promise<Music[]> => {
   const response = await nextClient.get('/musics');
@@ -22,10 +21,7 @@ export const fetchMusicFromYoutube = async ({
   keyword: string;
   limit?: number;
 }): Promise<YoutubeMusic[]> => {
-  const redis = new Redis({
-    url: process.env.NEXT_PUBLIC_REDIS_URL as string,
-    token: process.env.NEXT_PUBLIC_REDIS_TOKEN as string
-  });
+  const redis = redisClient;
   const params = {
     query: keyword,
     limit: limit
