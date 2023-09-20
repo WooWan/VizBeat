@@ -24,7 +24,7 @@ export default function StageCanvas({ tracks }: Props) {
         }}
         style={{ width: '100vw', height: '100vh' }}
       >
-        <color attach="background" args={['white']} />
+        <color attach="background" args={['black']} />
         <Suspense fallback={null}>
           <Rig>
             <StageGround />
