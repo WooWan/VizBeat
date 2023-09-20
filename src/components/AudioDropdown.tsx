@@ -8,6 +8,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { audioTracks } from '@/constants/music';
 import { useClickAway } from '@/hooks/useOutsideClick';
+import { useMusicStore } from '@/store/music';
+import { AudioTracks } from '@/store/types';
 import { DownloadType } from '@/types/instrument';
 import { fetchAndStoreMusic } from '@/utils/fetchMusicIdb';
 import { mergeAudios } from '@/utils/ffmpeg';
@@ -24,6 +26,7 @@ function AudioDropdown({ music }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
   const ref = useClickAway<HTMLDivElement>(() => setMenuOpen(false));
   const messageRef = useRef<HTMLParagraphElement>(null!);
+  const { audioStates } = useMusicStore((state) => ({ audioStates: state.audioTracks }));
 
   const musicMap = {
     original: music.musicUrl,
@@ -37,9 +40,20 @@ function AudioDropdown({ music }: Props) {
 
   const downloadMixedTrack = async () => {
     if (!music) return;
+    const unmutedMusicMap = [];
+    for (let i = 1; i < Object.values(musicMap).length; i++) {
+      const track = Object.keys(musicMap)[i];
+      if (!audioStates[track as keyof AudioTracks].isMuted) {
+        unmutedMusicMap.push(Object.values(musicMap)[i]);
+      }
+    }
+    if (!unmutedMusicMap.length) {
+      console.log('all track muted');
+      return;
+    }
     setIsMusicDownloading(true);
 
-    const audioPromises = Object.values(musicMap).map((url) => fetchAndStoreMusic(url));
+    const audioPromises = unmutedMusicMap.map((url) => fetchAndStoreMusic(url));
     const setteledReesult = await Promise.allSettled(audioPromises);
     const results: Array<Blob> = [];
 

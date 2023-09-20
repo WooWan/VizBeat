@@ -7,3 +7,5 @@ export const generateUserId = (ip: string = process.env.IP_ADDRESS_DEFAULT!) => 
     .update(ip + salt, 'utf-8')
     .digest('hex');
 };
+
+export const defaultUserId = generateUserId();
