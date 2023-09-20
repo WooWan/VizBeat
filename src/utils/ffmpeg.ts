@@ -15,27 +15,25 @@ export async function mergeAudios(blobs: Blob[], onProgress: (progress: number) 
   });
 
   await encodeToMp3(blobs, ffmpeg);
-  await mergeToSingleMp3(ffmpeg);
+  const inputFiles = [];
+  const dir = await ffmpeg.listDir('/');
+  for (const file of dir) {
+    if (!file.isDir) {
+      inputFiles.push(file.name);
+    }
+  }
 
+  await mergeToSingleMp3(ffmpeg, inputFiles);
   return await ffmpeg.readFile('output.mp3');
 }
 
-async function mergeToSingleMp3(ffmpeg: any) {
+async function mergeToSingleMp3(ffmpeg: any, inputFiles: string[]) {
+  const inputArgs = inputFiles.map((file) => ['-i', file]);
+  const filterComplex = inputArgs.map((_, index) => `[${index}:a]`).join('') + `amix=inputs=${inputFiles.length}[aout]`;
   await ffmpeg.exec([
-    '-i',
-    'test0.mp3',
-    '-i',
-    'test1.mp3',
-    '-i',
-    'test2.mp3',
-    '-i',
-    'test3.mp3',
-    '-i',
-    'test4.mp3',
-    '-i',
-    'test5.mp3',
+    ...inputArgs.flat(),
     '-filter_complex',
-    '[0:a][1:a][2:a][3:a][4:a][5:a]amix=inputs=6[aout]',
+    filterComplex,
     '-ac',
     '2',
     '-ar',
