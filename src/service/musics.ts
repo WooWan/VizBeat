@@ -16,7 +16,7 @@ export const fetchMusic = async (id: string): Promise<Music> => {
 
 export const fetchMusicFromYoutube = async ({
   keyword,
-  limit = 10
+  limit = 20
 }: {
   keyword: string;
   limit?: number;
