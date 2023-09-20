@@ -75,9 +75,11 @@ const MusicsNavbar = () => {
       <MusicUploadModal />
       {selectedMusic?.vocalUrl && (
         <section className="flex justify-center gap-x-2 pt-2">
-          <Button className="w-full" onClick={() => deleteMusic(selectedMusic)}>
-            Delete
-          </Button>
+          {selectedMusic?.userId === (process.env.NEXT_PUBLIC_DEFAULT_USERID as string) && (
+            <Button className="w-full" onClick={() => deleteMusic(selectedMusic)}>
+              Delete
+            </Button>
+          )}
           <Button className="w-full" onClick={redirectToStage}>
             Go to Stage
           </Button>
