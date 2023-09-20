@@ -8,4 +8,4 @@ export const generateUserId = (ip: string = process.env.IP_ADDRESS_DEFAULT!) => 
     .digest('hex');
 };
 
-export const defaultUserId = generateUserId();
+export const defaultUserId = generateUserId(process.env.IP_ADDRESS_DEFAULT);

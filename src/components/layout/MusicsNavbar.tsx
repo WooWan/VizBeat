@@ -25,6 +25,7 @@ const MusicsNavbar = () => {
     shallow
   );
   const selectedMusic = musics?.find((music) => music.id === musicInfo?.id);
+  console.log('default user id', defaultUserId);
 
   const redirectToStage = () => {
     api.stopAudio();
