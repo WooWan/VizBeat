@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 import { Loader2Icon } from 'lucide-react';
 import Link from 'next/link';
 import { Music } from '@prisma/client';
+import { defaultUserId } from '@/utils/password';
 
 const MusicsNavbar = () => {
   const listRefs = useRef<(HTMLLIElement | null)[]>([]);
@@ -75,7 +76,7 @@ const MusicsNavbar = () => {
       <MusicUploadModal />
       {selectedMusic?.vocalUrl && (
         <section className="flex justify-center gap-x-2 pt-2">
-          {selectedMusic?.userId === (process.env.NEXT_PUBLIC_DEFAULT_USERID as string) && (
+          {selectedMusic?.userId === defaultUserId && (
             <Button className="w-full" onClick={() => deleteMusic(selectedMusic)}>
               Delete
             </Button>
