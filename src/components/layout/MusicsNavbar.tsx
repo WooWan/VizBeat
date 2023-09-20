@@ -3,7 +3,7 @@ import AudioPlayer from '@/components/audio-player/AudioPlayer';
 import { cn } from '@/lib/utils';
 import { useMusicStore } from '@/store/music';
 import { shallow } from 'zustand/shallow';
-import { useMusics } from '@/hooks/queries/music/useMusics';
+import { useDeleteMusic, useMusics } from '@/hooks/queries/music/useMusics';
 import MusicUploadModal from '@/components/modal/MusicUploadModal';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/router';
@@ -15,6 +15,7 @@ const MusicsNavbar = () => {
   const listRefs = useRef<(HTMLLIElement | null)[]>([]);
   const { data: musics } = useMusics();
   const router = useRouter();
+  const deleteSelectedMusic = useDeleteMusic();
   const { api, musicInfo } = useMusicStore(
     (state) => ({
       musicInfo: state.musicInfo,
@@ -33,6 +34,11 @@ const MusicsNavbar = () => {
   const selectAlbum = (music: Music) => {
     api.selectAudio(music);
     router.prefetch(`/stage/${music.id}`);
+  };
+
+  const deleteMusic = async (selectedMusic: Music) => {
+    deleteSelectedMusic.mutate(selectedMusic);
+    api.clear();
   };
 
   return (
@@ -58,16 +64,21 @@ const MusicsNavbar = () => {
             ref={(el) => (listRefs.current[index] = el)}
             onClick={() => selectAlbum(music)}
           >
-            <span>{music.artist}</span>
-            <span className="text-sm">{music.title}</span>
-            {!music.vocalUrl && <Loader2Icon className="ml-1.5 h-4 w-4 animate-spin" />}
+            <span className="flex items-center">
+              {music.title}
+              {!music.vocalUrl && <Loader2Icon className="ml-1.5 h-4 w-4 animate-spin" />}
+            </span>
+            <span className="text-sm">{music.artist}</span>
           </li>
         ))}
       </ul>
       <MusicUploadModal />
       {selectedMusic?.vocalUrl && (
-        <section className="flex justify-end pt-2">
-          <Button onClick={redirectToStage} size="sm">
+        <section className="flex justify-center gap-x-2 pt-2">
+          <Button className="w-full" onClick={() => deleteMusic(selectedMusic)}>
+            Delete
+          </Button>
+          <Button className="w-full" onClick={redirectToStage}>
             Go to Stage
           </Button>
         </section>
