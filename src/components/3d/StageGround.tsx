@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import Warehouse from '@/components/3d/stage/Warehouse';
-import GuitarAmp from '@/components/3d/stage/GuitarAmp';
 import BassAmp from '@/components/3d/stage/BassAmp';
 import Speaker from '@/components/3d/stage/Speaker';
 import MonitorSpeaker from '@/components/3d/stage/MonitorSpeaker';
@@ -19,8 +18,7 @@ export default function StageGround() {
   }, []);
   return (
     <group>
-      <Warehouse scale={[200, 200, 200]} position={[0, -11, 90]} rotation={[0, Math.PI / 2, 0]} />
-      <GuitarAmp scale={[40, 40, 40]} position={[80, -10, -20]} rotation={[0, -Math.PI / 6, 0]} />
+      <Warehouse scale={[25, 25, 25]} position={[-20, -70, 40]} />
       <BassAmp scale={[35, 35, 35]} position={[-80, 1, -20]} rotation={[0, Math.PI / 6, 0]} />
       <MonitorSpeaker scale={[0.15, 0.15, 0.15]} position={[40, -7, 40]} rotation={[0, -Math.PI / 2, 0]} />
       <MonitorSpeaker scale={[0.15, 0.15, 0.15]} position={[-40, -7, 40]} rotation={[0, -Math.PI / 2, 0]} />
