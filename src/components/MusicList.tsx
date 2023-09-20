@@ -12,6 +12,7 @@ const MusicList = () => {
   const groupRef = useRef<Group>(null!);
   const scroll = useScroll();
   const selectedMusic = useMusicStore((state) => state.musicInfo);
+  const length = musicList?.length;
 
   useFrame(() => {
     if (musicList) {
@@ -25,7 +26,7 @@ const MusicList = () => {
   });
 
   return (
-    <group ref={groupRef}>
+    <group ref={groupRef} key={length}>
       {musicList?.map((music, index) => (
         <MusicAlbum key={music.id} music={music} index={index} musics={musicList} />
       ))}
