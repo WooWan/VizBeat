@@ -20,6 +20,7 @@ export default function StageGround() {
     <group>
       <Warehouse scale={[25, 25, 25]} position={[-20, -70, 40]} />
       <BassAmp scale={[35, 35, 35]} position={[-80, 1, -20]} rotation={[0, Math.PI / 6, 0]} />
+      <BassAmp scale={[35, 35, 35]} position={[80, 1, -20]} rotation={[0, -Math.PI / 6, 0]} />
       <MonitorSpeaker scale={[0.15, 0.15, 0.15]} position={[40, -7, 40]} rotation={[0, -Math.PI / 2, 0]} />
       <MonitorSpeaker scale={[0.15, 0.15, 0.15]} position={[-40, -7, 40]} rotation={[0, -Math.PI / 2, 0]} />
       <Speaker scale={[0.15, 0.15, 0.15]} position={[50, -1, -55]} rotation={[0, Math.PI, 0]} />
