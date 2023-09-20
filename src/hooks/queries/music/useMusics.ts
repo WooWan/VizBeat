@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { musicKey } from '@/hooks/queries/music/queryKeys';
-import { fetchMusicFromYoutube, fetchMusics, separateMusic, fetchMusic } from '@/service/musics';
+import { fetchMusicFromYoutube, fetchMusics, separateMusic, fetchMusic, deleteMusic } from '@/service/musics';
 import { fetchAndStoreMusic } from '@/utils/fetchMusicIdb';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -8,6 +8,16 @@ export const useMusics = () => {
   return useQuery({
     queryKey: musicKey.all,
     queryFn: fetchMusics
+  });
+};
+
+export const useDeleteMusic = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deleteMusic,
+    onSuccess: () => {
+      queryClient.invalidateQueries(musicKey.all);
+    }
   });
 };
 
