@@ -9,7 +9,7 @@ function AudioMergeTooltip() {
           <InfoIcon className="h-3.5 w-3.5 text-zinc-500" />
         </TooltipTrigger>
         <TooltipContent>
-          <p>Merge all tracks into one</p>
+          <p>Except for muted tracks, merge tracks into one</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

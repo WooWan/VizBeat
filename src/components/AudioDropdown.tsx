@@ -40,8 +40,6 @@ function AudioDropdown({ music }: Props) {
 
   const downloadMixedTrack = async () => {
     if (!music) return;
-    setIsMusicDownloading(true);
-
     const unmutedMusicMap = [];
     for (let i = 1; i < Object.values(musicMap).length; i++) {
       const track = Object.keys(musicMap)[i];
@@ -49,6 +47,11 @@ function AudioDropdown({ music }: Props) {
         unmutedMusicMap.push(Object.values(musicMap)[i]);
       }
     }
+    if (!unmutedMusicMap.length) {
+      console.log('all track muted');
+      return;
+    }
+    setIsMusicDownloading(true);
 
     const audioPromises = unmutedMusicMap.map((url) => fetchAndStoreMusic(url));
     const setteledReesult = await Promise.allSettled(audioPromises);
