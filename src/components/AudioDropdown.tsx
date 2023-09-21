@@ -6,6 +6,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { useToast } from '@/components/ui/use-toast';
 import { audioTracks } from '@/constants/music';
 import { useClickAway } from '@/hooks/useOutsideClick';
 import { useMusicStore } from '@/store/music';
@@ -27,6 +28,7 @@ function AudioDropdown({ music }: Props) {
   const ref = useClickAway<HTMLDivElement>(() => setMenuOpen(false));
   const messageRef = useRef<HTMLParagraphElement>(null!);
   const { audioStates } = useMusicStore((state) => ({ audioStates: state.audioTracks }));
+  const { toast } = useToast();
 
   const musicMap = {
     original: music.musicUrl,
@@ -40,15 +42,17 @@ function AudioDropdown({ music }: Props) {
 
   const downloadMixedTrack = async () => {
     if (!music) return;
-    const unmutedMusicMap = [];
-    for (let i = 1; i < Object.values(musicMap).length; i++) {
-      const track = Object.keys(musicMap)[i];
-      if (!audioStates[track as keyof AudioTracks].isMuted) {
-        unmutedMusicMap.push(Object.values(musicMap)[i]);
-      }
-    }
+
+    const unmutedMusicMap = Object.entries(musicMap)
+      .slice(1)
+      .filter(([track, _]) => !audioStates[track as keyof AudioTracks].isMuted)
+      .map(([, url]) => url);
+
     if (!unmutedMusicMap.length) {
-      console.log('all track muted');
+      toast({
+        description: 'Please unmute at least one track',
+        variant: 'destructive'
+      });
       return;
     }
     setIsMusicDownloading(true);
@@ -106,7 +110,7 @@ function AudioDropdown({ music }: Props) {
               <span className="animate-bounce">🎸</span>
             </div>
           ) : (
-            <DownloadIcon onClick={downloadMixedTrack} className="h-3.5 w-3.5" />
+            <DownloadIcon onClick={downloadMixedTrack} className="h-3.5 w-3.5 cursor-pointer" />
           )}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
