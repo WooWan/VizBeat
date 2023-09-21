@@ -16,6 +16,7 @@ export function generateMockMusic(props: Partial<Music> = {}) {
     vocalUrl: faker.internet.url(),
     otherUrl: faker.internet.url(),
     userId: faker.string.uuid(),
+    createdAt: faker.date.past(),
     ...props
   };
 }
