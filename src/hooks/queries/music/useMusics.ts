@@ -7,7 +7,8 @@ import { useToast } from '@/components/ui/use-toast';
 export const useMusics = () => {
   return useQuery({
     queryKey: musicKey.all,
-    queryFn: fetchMusics
+    queryFn: fetchMusics,
+    refetchOnWindowFocus: true
   });
 };
 

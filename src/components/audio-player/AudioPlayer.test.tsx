@@ -7,11 +7,7 @@ import { generateMockMusic } from '@/__test__/mock';
 
 describe('AudioPlayer', () => {
   let musics: Music[];
-  beforeAll(() => {
-    jest.spyOn(window.HTMLMediaElement.prototype, 'pause').mockImplementation(() => {});
-    jest.spyOn(window.HTMLMediaElement.prototype, 'play').mockImplementation(async () => {});
-  });
-
+  
   beforeEach(() => {
     musics = Array.from({ length: 5 }, generateMockMusic);
   });
