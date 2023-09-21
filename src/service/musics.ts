@@ -59,8 +59,6 @@ export const separateMusic = (music: MusicUpload) => {
   return axios.post(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/music-separation`, formData, config);
 };
 
-export const deleteMusic = async (music: Music) => {
-  console.log('delete', music);
-  const response = await nextClient.get(`/deleteMusic/${music.id}`);
-  console.log(response);
+export const deleteMusic = (music: Music) => {
+  return nextClient.delete(`/music/${music.id}`);
 };
