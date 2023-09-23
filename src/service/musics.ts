@@ -10,7 +10,7 @@ export const fetchMusics = async (): Promise<Music[]> => {
 };
 
 export const fetchMusic = async (id: string): Promise<Music> => {
-  const response = await nextClient.get(`/stageMusic/${id}`);
+  const response = await nextClient.get(`/stage/${id}`);
   return response.data;
 };
 
