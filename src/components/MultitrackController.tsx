@@ -14,7 +14,7 @@ import { useRouter } from 'next/router';
 import AudioDropdown from '@/components/AudioDropdown';
 
 type Props = {
-  audios: HTMLAudioElement[];
+  audios?: HTMLAudioElement[];
 };
 
 export default function MultitrackController({ audios }: Props) {
