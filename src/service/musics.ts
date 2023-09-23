@@ -14,6 +14,13 @@ export const fetchMusic = async (id: string): Promise<Music> => {
   return response.data;
 };
 
+export async function fetchMusicAudioFile(url: string): Promise<ArrayBuffer> {
+  const response = await axios.get(url, {
+    responseType: 'arraybuffer'
+  });
+  return response.data;
+}
+
 export const fetchMusicFromYoutube = async ({
   keyword,
   limit = 20
