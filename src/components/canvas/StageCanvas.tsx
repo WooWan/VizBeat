@@ -9,9 +9,10 @@ import Rig from '../3d/Rig';
 import StageGround from '../3d/StageGround';
 
 type Props = {
-  tracks: HTMLAudioElement[];
+  audios?: HTMLAudioElement[];
 };
-export default function StageCanvas({ tracks }: Props) {
+
+export default function StageCanvas({ audios }: Props) {
   return (
     <Suspense fallback={<Loading />}>
       <Canvas
@@ -31,11 +32,15 @@ export default function StageCanvas({ tracks }: Props) {
             {instruments.map((instrument) => (
               <Instrument key={instrument.type} {...instrument} />
             ))}
-            <MusicAnalyzer audio={tracks[0]} fftSize={128} centerPos={[0, -37, 30]} radius={8} />
-            <MusicAnalyzer audio={tracks[1]} fftSize={128} centerPos={[32.5, -37, -16.5]} radius={18} />
-            <MusicAnalyzer audio={tracks[2]} fftSize={128} centerPos={[75, -37, 10]} radius={8} />
-            <MusicAnalyzer audio={tracks[3]} fftSize={128} centerPos={[-75, -37, 10]} radius={0} />
-            <MusicAnalyzer audio={tracks[4]} fftSize={128} centerPos={[-32.5, -37, -16.5]} radius={18} />
+            {audios && (
+              <>
+                <MusicAnalyzer audio={audios[0]} fftSize={128} centerPos={[0, -37, 30]} radius={8} />
+                <MusicAnalyzer audio={audios[1]} fftSize={128} centerPos={[32.5, -37, -16.5]} radius={18} />
+                <MusicAnalyzer audio={audios[2]} fftSize={128} centerPos={[75, -37, 10]} radius={8} />
+                <MusicAnalyzer audio={audios[3]} fftSize={128} centerPos={[-75, -37, 10]} radius={0} />
+                <MusicAnalyzer audio={audios[4]} fftSize={128} centerPos={[-32.5, -37, -16.5]} radius={18} />
+              </>
+            )}
           </Rig>
         </Suspense>
         <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />

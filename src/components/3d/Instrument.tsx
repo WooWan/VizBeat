@@ -42,3 +42,9 @@ export default function Instrument({
     </>
   );
 }
+
+useGLTF.preload('/gltf/microphone/model.glb');
+useGLTF.preload('/gltf/drum/model.glb');
+useGLTF.preload('/gltf/guitar/model.glb');
+useGLTF.preload('/gltf/piano/model.glb');
+useGLTF.preload('/gltf/bass/model.glb');

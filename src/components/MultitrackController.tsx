@@ -12,9 +12,10 @@ import useWavesurfer from '@/hooks/useWavesurfer';
 import { useMusic } from '@/hooks/queries/music/useMusics';
 import { useRouter } from 'next/router';
 import AudioDropdown from '@/components/AudioDropdown';
+import { Slider } from '@/components/ui/slider';
 
 type Props = {
-  audios: HTMLAudioElement[];
+  audios?: HTMLAudioElement[];
 };
 
 export default function MultitrackController({ audios }: Props) {
@@ -35,11 +36,11 @@ export default function MultitrackController({ audios }: Props) {
     for (const instrument of audioTracks) muteToggle(instrument);
   }, [audioStates]);
 
-  const updateMasterVolume = (event: ChangeEvent<HTMLInputElement>) => {
-    const updatedVolume = event.target.valueAsNumber / 100;
+  const updateMasterVolume = (volumes: number[]) => {
+    const volume = volumes[0] / 100;
     Object.values(audioTracks).forEach((audio, index) => {
-      api.updateVolume(audio.type, updatedVolume);
-      wavesurfer.setTrackVolume(index, updatedVolume);
+      api.updateVolume(audio.type, volume);
+      wavesurfer.setTrackVolume(index, volume);
     });
   };
 
@@ -67,12 +68,11 @@ export default function MultitrackController({ audios }: Props) {
     });
   };
 
-  const updateTrackVolume = (id: string, event: ChangeEvent<HTMLInputElement>) => {
-    const updatedVolume = event.target.valueAsNumber / 100;
+  const updateTrackVolume = (id: string, volume: number) => {
     const audioIndex = audioTracks.findIndex((audio) => audio.id === id);
     const instrument = audioTracks[audioIndex];
-    api.updateVolume(instrument.type, updatedVolume);
-    wavesurfer.setTrackVolume(audioIndex, updatedVolume);
+    api.updateVolume(instrument.type, volume);
+    wavesurfer.setTrackVolume(audioIndex, volume);
   };
 
   const muteToggle = (track: AudioTrack) => {
@@ -119,9 +119,7 @@ export default function MultitrackController({ audios }: Props) {
         <div className="flex gap-x-1.5">
           <div className="flex flex-col gap-y-1 pb-2">
             <h4 className="text-base text-zinc-100">Master</h4>
-            <label className="flex items-center pr-2">
-              <input type="range" min="0" max="100" onChange={updateMasterVolume} />
-            </label>
+            <Slider className="w-32" onValueChange={updateMasterVolume} defaultValue={[50]} />
           </div>
           <section className="flex items-end gap-x-3 pb-2 pl-2">
             <button className="text-zinc-100" onClick={allMuted ? unmuteAll : muteAll}>
@@ -158,15 +156,11 @@ export default function MultitrackController({ audios }: Props) {
                       </button>
                     </div>
                   </div>
-                  <label className="block">
-                    <input
-                      value={volume * 100}
-                      onChange={(e) => updateTrackVolume(audio.id, e)}
-                      type="range"
-                      min="0"
-                      max="100"
-                    />
-                  </label>
+                  <Slider
+                    className="w-32"
+                    onValueChange={(v) => updateTrackVolume(audio.id, v[0] / 100)}
+                    value={[volume * 100]}
+                  />
                 </li>
               );
             })}
