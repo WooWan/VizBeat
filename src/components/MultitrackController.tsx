@@ -97,7 +97,10 @@ export default function MultitrackController({ audios }: Props) {
   return (
     <main>
       <div className="absolute right-5 top-4 z-10 flex items-center gap-x-1.5">
-        <Button onClick={() => setIsPlayerOpen(!isPlayerOpen)} className="bg-zinc-950 text-base text-zinc-100">
+        <Button
+          onClick={() => setIsPlayerOpen(!isPlayerOpen)}
+          className="border-[1px] border-slate-300/[0.3] bg-zinc-950 text-base text-zinc-100"
+        >
           <span>{isPlayerOpen ? 'Hide Controller' : 'Show Controller'}</span>
         </Button>
         <MusicPlayToggleButton onClick={pauseAndResumeAll} className="relative right-0" />

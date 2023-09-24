@@ -54,7 +54,7 @@ function StageRedirectButton() {
     return (
       <div
         className={cn(
-          'duration-[900ms] absolute left-1/2 top-1/2 z-50 flex h-12 w-12 translate-x-16 translate-y-12 cursor-pointer items-center justify-center rounded-full border-[1px] border-slate-500/[0.3] bg-zinc-950/[0.85] p-2 opacity-100 transition-opacity duration-900 lg:h-36 lg:w-36',
+          'duration-[900ms] absolute left-1/2 top-1/2 z-50 flex h-12 w-12 translate-x-16 translate-y-12 cursor-pointer items-center justify-center rounded-full border-2 border-slate-300/[0.3] bg-zinc-950/[0.85] p-2 opacity-100 transition-opacity duration-900 lg:h-36 lg:w-36',
           {
             'opacity-0 duration-0': musicInfo?.id !== delayedMusicId
           }
