@@ -1,3 +1,4 @@
+import { useMusicStore } from '@/store/music';
 import React, { useEffect, useState } from 'react';
 import Multitrack from 'wavesurfer-multitrack';
 
@@ -9,6 +10,7 @@ type Props = {
 const TRACK_HEIGHT = 80;
 
 function useWavesurfer({ containerRef, audios }: Props) {
+  const api = useMusicStore((state) => state.api);
   const [wavesurfer, setWavesurfer] = useState<Multitrack>(null!);
 
   useEffect(() => {
@@ -41,6 +43,8 @@ function useWavesurfer({ containerRef, audios }: Props) {
 
     multitrack.once('canplay', () => {
       setWavesurfer(multitrack);
+      api.playAudio();
+      multitrack.play();
     });
 
     return () => {
