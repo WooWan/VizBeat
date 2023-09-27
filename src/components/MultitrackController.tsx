@@ -32,14 +32,6 @@ export default function MultitrackController({ audios }: Props) {
   const allMuted = Object.values(audioStates).every((audio) => audio.isMuted);
 
   useEffect(() => {
-    if (!wavesurfer || wavesurfer.isPlaying()) return;
-    setTimeout(() => {
-      api.playAudio();
-      wavesurfer?.play();
-    }, 2000);
-  }, [wavesurfer]);
-
-  useEffect(() => {
     if (!wavesurfer) return;
     for (const instrument of audioTracks) muteToggle(instrument);
   }, [audioStates]);
