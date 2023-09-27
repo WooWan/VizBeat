@@ -27,7 +27,7 @@ function AudioDropdown({ music }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
   const ref = useClickAway<HTMLDivElement>(() => setMenuOpen(false));
   const messageRef = useRef<HTMLParagraphElement>(null!);
-  const { audioStates } = useMusicStore((state) => ({ audioStates: state.audioTracks }));
+  const audioStates = useMusicStore((state) => state.audioTracks);
   const { toast } = useToast();
 
   const musicMap = {
