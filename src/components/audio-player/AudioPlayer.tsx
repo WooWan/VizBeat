@@ -90,9 +90,7 @@ const AudioPlayer = ({ musics }: Props) => {
           )}
         >
           <div className="flex flex-col gap-y-0.5 pb-2">
-            <h2 className={'font-med line-clamp-1 text-sm text-primary-black'}>
-              안녕하세요 프론트엔드 개발자 우창완입니다 궁금한 내용?
-            </h2>
+            <h2 className={'font-med line-clamp-1 text-sm text-primary-black'}>{selectedMusic?.title}</h2>
             <span className="line-clamp-1 text-xs text-slate-400">{selectedMusic?.artist}</span>
           </div>
           <div className={'flex justify-between pb-1 text-slate-500'}>
