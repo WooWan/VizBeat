@@ -41,6 +41,7 @@ function useWavesurfer({ containerRef, audios }: Props) {
 
     multitrack.once('canplay', () => {
       setWavesurfer(multitrack);
+      multitrack.play();
     });
 
     return () => {
