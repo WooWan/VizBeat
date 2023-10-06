@@ -29,7 +29,7 @@ function MusicUploadModal() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <div className="mb-2 flex min-h-[40px] items-center rounded-md bg-red-100 px-4 py-1 text-center align-middle">
-        <span className="text-sm text-red-700">AI 서버 비용으로 음원 업로드를 막아두었습니다.</span>
+        <span className="text-sm text-red-700">AI 서버 비용으로 현재는 음원 업로드가 불가능합니다.</span>
       </div>
       <DialogTrigger asChild>
         <Button variant="secondary" disabled>
