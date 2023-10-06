@@ -28,8 +28,13 @@ function MusicUploadModal() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
+      <div className="mb-2 flex min-h-[40px] items-center rounded-md bg-red-100 px-4 py-1 text-center align-middle">
+        <span className="text-sm text-red-700">AI 서버 비용으로 음원 업로드를 막아두었습니다.</span>
+      </div>
       <DialogTrigger asChild>
-        <Button variant="outline">음악 추가하기</Button>
+        <Button variant="secondary" disabled>
+          음악 추가하기
+        </Button>
       </DialogTrigger>
       <DialogContent
         className={cn('duration-[2500ms] flex max-h-[820px] flex-col overflow-auto transition-all sm:max-w-[425px]')}
