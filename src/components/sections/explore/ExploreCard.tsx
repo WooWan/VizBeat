@@ -18,7 +18,7 @@ const ExploreCard = ({ id, imgUrl, title, index, active, selectCard }: Props) =>
       variants={fadeIn('right', 'spring', index * 0.5, 0.75)}
       className={`relative ${
         active === id ? 'flex-[10] lg:flex-[3.5]' : 'flex-[2] lg:flex-[0.5]'
-      } flex h-[700px] min-w-[170px] cursor-pointer items-center justify-center transition-[flex] duration-[0.7s] ease-out-flex`}
+      } duration-[0.7s] flex h-[700px] min-w-[170px] cursor-pointer items-center justify-center transition-[flex] ease-out-flex`}
       onClick={() => selectCard(id)}
     >
       <Image src={imgUrl} alt={title} className="absolute h-full w-full rounded-[24px] object-cover" fill />

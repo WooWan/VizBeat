@@ -7,7 +7,7 @@ import { generateMockMusic } from '@/__test__/mock';
 
 describe('AudioPlayer', () => {
   let musics: Music[];
-  
+
   beforeEach(() => {
     musics = Array.from({ length: 5 }, generateMockMusic);
   });
