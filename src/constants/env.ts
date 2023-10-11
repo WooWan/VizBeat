@@ -1,8 +1,12 @@
 import { z } from 'zod';
 
 const envVariables = z.object({
-  HJSV: z.number(),
-  HOTJAR_ID: z.number()
+  NEXT_PUBLIC_HJSV: z.string(),
+  NEXT_PUBLIC_HOTJAR_ID: z.string(),
 });
 
-export const envSchema = envVariables.parse(process.env);
+declare global {
+  namespace NodeJS {
+    interface ProcessEnv extends z.infer<typeof envVariables> {}
+  }
+}
