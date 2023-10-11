@@ -122,6 +122,9 @@ dependencies:
   react-hook-form:
     specifier: ^7.43.9
     version: 7.43.9(react@18.2.0)
+  react-hotjar:
+    specifier: ^6.1.0
+    version: 6.1.0
   tailwind-merge:
     specifier: ^1.12.0
     version: 1.12.0
@@ -6697,6 +6700,10 @@ packages:
       react: ^16.8.0 || ^17 || ^18
     dependencies:
       react: 18.2.0
+    dev: false
+
+  /react-hotjar@6.1.0:
+    resolution: {integrity: sha512-V1UJixDMspAIrbGIFG282U7mH2aK1JBid0YR8F9oscb6lTkjMga+gst2gesxJDsqsax+k+lM1LqRXYzmUu8izA==}
     dev: false
 
   /react-is@16.13.1:
