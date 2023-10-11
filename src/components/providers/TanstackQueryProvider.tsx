@@ -1,18 +1,20 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Hydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useState } from 'react';
 
 type Props = {
+  dehydratedState: unknown;
   children: React.ReactNode;
 };
 
-export default function TanstackQueryProvider({ children }: Props) {
+export default function TanstackQueryProvider({ dehydratedState, children }: Props) {
   const [queryClient] = useState(
     () =>
       new QueryClient({
         defaultOptions: {
           queries: {
-            refetchOnWindowFocus: false
+            refetchOnWindowFocus: false,
+            staleTime: 1000 * 60 * 5
           }
         }
       })
@@ -20,8 +22,10 @@ export default function TanstackQueryProvider({ children }: Props) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {children}
-      <ReactQueryDevtools />
+      <Hydrate state={dehydratedState}>
+        {children}
+        <ReactQueryDevtools />
+      </Hydrate>
     </QueryClientProvider>
   );
 }

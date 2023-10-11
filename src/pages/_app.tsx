@@ -15,7 +15,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <title>Vizbeat</title>
         <link rel="favicon" href="/favicon.ico" />
       </Head>
-      <TanstackQueryProvider>
+      <TanstackQueryProvider dehydratedState={pageProps.dehydratedState}>
         <Component {...pageProps} />
         <Toaster />
         <Analytics />
