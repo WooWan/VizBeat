@@ -4,8 +4,11 @@ import TanstackQueryProvider from '@/components/providers/TanstackQueryProvider'
 import { Analytics } from '@vercel/analytics/react';
 import { Toaster } from '@/components/ui/toaster';
 import Head from 'next/head';
+import useHotjar from '@/hooks/useHotjar';
 
 export default function App({ Component, pageProps }: AppProps) {
+  useHotjar();
+
   return (
     <>
       <Head>
