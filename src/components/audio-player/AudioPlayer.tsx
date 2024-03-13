@@ -62,7 +62,19 @@ const AudioPlayer = ({ musics }: Props) => {
     api.selectAudio(musics[previndex]);
   };
 
-  const toggleMusic = () => (isAudioPlaying ? api.stopAudio() : api.playAudio());
+  const toggleMusic = () => {
+    if (!musics) return;
+    if (isAudioPlaying) {
+      api.stopAudio();
+      return;
+    }
+
+    if (selectedMusic) {
+      api.playAudio();
+    } else {
+      api.selectAudio(musics[0]);
+    }
+  };
 
   const playFromClickedPosition = () => {
     if (!audio) return;
