@@ -40,26 +40,43 @@ const MusicAlbum = ({ music, index, musics }: Props) => {
     meshRef.current.position.y = lerp(meshRef.current.position.y, y, LERP_FACTOR);
   };
 
-  useFrame(() => {
+  const resetToOriginalState = () => {
+    meshRef.current.rotation.y = rotationRef.current;
+    updatePosition({ y: originalPosition });
+  };
+
+  const adjustPositionRelativeToSelected = (selectedIdx: number) => {
+    const indexGap = index - selectedIdx;
+    updatePosition({
+      y: originalPosition + (indexGap < 0 ? 5 : -5)
+    });
+  };
+
+  const centerSelectedAlbum = () => {
+    updatePosition({ y: originalPosition });
+    updateRotation({
+      x: Math.PI * 1 + radian * 90,
+      y: Math.PI,
+      z: Math.PI * 1 + radian * -90
+    });
+  };
+  const isSelectedMusic = (selctedIndex: number, index: number) => selctedIndex === index;
+
+  const handleFrameUpdate = () => {
     rotationRef.current = (rotationRef.current + radian * 0.4) % (Math.PI * 2);
-    const selectedIdx = musics.findIndex((music) => music.id === musicInfo?.id);
-    if (selectedIdx === -1) {
-      meshRef.current.rotation.y = rotationRef.current;
-      updatePosition({ y: originalPosition });
+    const selectedIdx = musics.findIndex((m) => m.id === musicInfo?.id);
+    if (selectedIdx === -1) return resetToOriginalState();
+
+    if (isSelectedMusic(selectedIdx, index)) {
+      centerSelectedAlbum();
     } else {
-      if (selectedIdx !== index) {
-        meshRef.current.rotation.y = rotationRef.current;
-        const indexGap = index - selectedIdx;
-        if (indexGap < 0) {
-          updatePosition({ y: originalPosition + 5 });
-        } else {
-          updatePosition({ y: originalPosition - 5 });
-        }
-      } else {
-        updatePosition({ y: originalPosition });
-        updateRotation({ x: Math.PI * 1 + radian * 90, y: Math.PI, z: Math.PI * 1 + radian * -90 });
-      }
+      meshRef.current.rotation.y = rotationRef.current;
+      adjustPositionRelativeToSelected(selectedIdx);
     }
+  };
+
+  useFrame(() => {
+    handleFrameUpdate();
   });
 
   useFrame(() => {
