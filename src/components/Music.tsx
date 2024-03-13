@@ -14,7 +14,7 @@ const radian = Math.PI / 180;
 type Props = {
   music: Music;
   index: number;
-  musics?: Music[];
+  musics: Music[];
 };
 
 const LERP_FACTOR = 0.05;
@@ -41,7 +41,6 @@ const MusicAlbum = ({ music, index, musics }: Props) => {
   };
 
   useFrame(() => {
-    if (!musics) return;
     rotationRef.current = (rotationRef.current + radian * 0.4) % (Math.PI * 2);
     const selectedIdx = musics.findIndex((music) => music.id === musicInfo?.id);
     if (selectedIdx === -1) {
@@ -71,7 +70,6 @@ const MusicAlbum = ({ music, index, musics }: Props) => {
   });
 
   const selectAlbum = (e: ThreeEvent<MouseEvent>) => {
-    if (!musics) return;
     const selectedIdx = musics.findIndex((music) => music.id === musicInfo?.id);
     api.clear();
     if (selectedIdx !== index) {
