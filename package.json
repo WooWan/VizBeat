@@ -15,7 +15,6 @@
     "ts:watch": "tsc -w"
   },
   "dependencies": {
-    "@faker-js/faker": "^8.0.2",
     "@ffmpeg/ffmpeg": "^0.12.6",
     "@ffmpeg/util": "^0.12.1",
     "@hookform/resolvers": "^3.1.0",
@@ -40,11 +39,9 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "file-saver": "^2.0.5",
-    "form-data": "^4.0.0",
     "framer-motion": "^10.12.11",
     "idb": "^7.1.1",
     "immer": "^10.0.2",
-    "leva": "^0.9.35",
     "lucide-react": "0.263.1",
     "maath": "^0.5.3",
     "music-metadata-browser": "^2.5.10",
@@ -56,13 +53,13 @@
     "react-hotjar": "^6.1.0",
     "tailwind-merge": "^1.12.0",
     "tailwind-scrollbar-hide": "^1.1.7",
-    "tailwindcss-animate": "^1.0.7",
     "three": "^0.151.3",
     "wavesurfer-multitrack": "^0.2.0",
     "zod": "^3.21.4",
     "zustand": "^4.3.7"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@next/bundle-analyzer": "^13.4.7",
     "@testing-library/jest-dom": "^6.1.2",
     "@testing-library/react": "^14.0.0",
@@ -73,7 +70,6 @@
     "@types/react": "18.2.0",
     "@types/react-dom": "18.2.1",
     "@types/three": "^0.150.2",
-    "@types/uuid": "^9.0.2",
     "autoprefixer": "10.4.14",
     "eslint": "8.39.0",
     "eslint-config-next": "13.5.2",
@@ -87,6 +83,7 @@
     "prisma": "^5.2.0",
     "tailwind-scrollbar": "^3.0.0",
     "tailwindcss": "^3.3.3",
+    "tailwindcss-animate": "^1.0.7",
     "typescript": "4.9.5"
   }
 }
