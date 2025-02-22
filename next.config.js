@@ -13,6 +13,10 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'rne8imz5p8sjv4yp.public.blob.vercel-storage.com'
+      },
+      {
+        protocol: 'https',
         hostname: 'i.scdn.co'
       },
       {
