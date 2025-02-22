@@ -68,6 +68,9 @@ dependencies:
   axios:
     specifier: ^1.4.0
     version: 1.6.0
+  can-autoplay:
+    specifier: ^3.0.2
+    version: 3.0.2
   class-variance-authority:
     specifier: ^0.7.0
     version: 0.7.0
@@ -148,6 +151,9 @@ devDependencies:
   '@testing-library/user-event':
     specifier: ^14.4.3
     version: 14.5.1(@testing-library/dom@9.3.3)
+  '@types/can-autoplay':
+    specifier: ^3.0.5
+    version: 3.0.5
   '@types/file-saver':
     specifier: ^2.0.5
     version: 2.0.7
@@ -2332,6 +2338,10 @@ packages:
       '@babel/types': 7.23.0
     dev: true
 
+  /@types/can-autoplay@3.0.5:
+    resolution: {integrity: sha512-OxOLKWCj75BH9f22OfrHiGtwxsr/3BSxOcyAvZZIlzqpF4rfFgfz9+pIlFGyc9tpu+aOJq6R5bKDe1Vdyzo9QQ==}
+    dev: true
+
   /@types/cookie@0.4.1:
     resolution: {integrity: sha512-XW/Aa8APYr6jSVVA1y/DEIZX0/GMKLEVekNG727R8cs56ahETkRAy/3DR7+fJyh7oUgGwNQaRfXCun0+KbWY7Q==}
     dev: true
@@ -3028,6 +3038,10 @@ packages:
       three: '>=0.126.1'
     dependencies:
       three: 0.151.3
+    dev: false
+
+  /can-autoplay@3.0.2:
+    resolution: {integrity: sha512-Ih6wc7yJB4TylS/mLyAW0Dj5Nh3Gftq/g966TcxgvpNCOzlbqTs85srAq7mwIspo4w8gnLCVVGroyCHfh6l9aA==}
     dev: false
 
   /caniuse-lite@1.0.30001561:
