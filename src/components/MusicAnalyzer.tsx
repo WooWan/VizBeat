@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import Bar from './3d/Bar';
 import { Vector3 } from 'three';
+import { useMusicStore } from '@/store/music';
 
 type Props = {
   fftSize: number;
@@ -16,10 +17,12 @@ type AudioNode = {
 };
 
 export default function MusicAnalyzer({ fftSize, centerPos, radius, audio }: Props) {
-  const [audioMap, setAudioMap] = useState({} as AudioNode);
+  const [audioMap, setAudioMap] = useState<AudioNode | null>(null);
   const dataArrayRef = useRef<Uint8Array | null>(null);
   const meanRef = useRef(0);
   const newData = useMemo(() => new Uint8Array(fftSize), [fftSize]);
+  const isMusicPlay = useMusicStore((state) => state.isAudioPlaying);
+  const [isFirst, setIsFirst] = useState(true);
 
   const bars = useMemo(() => {
     const bars = [];
@@ -36,7 +39,12 @@ export default function MusicAnalyzer({ fftSize, centerPos, radius, audio }: Pro
   }, [fftSize, radius]);
 
   useEffect(() => {
-    if (audioMap.sourceNode) return;
+    if (audioMap?.sourceNode != null) {
+      return;
+    }
+    if (isMusicPlay === false || isFirst === false) {
+      return;
+    }
 
     const audioContext = new AudioContext();
     const soureNode = audioContext.createMediaElementSource(audio);
@@ -51,15 +59,11 @@ export default function MusicAnalyzer({ fftSize, centerPos, radius, audio }: Pro
       analyzerNode: analyzerNode
     });
 
-    return () => {
-      audioContext.close();
-      soureNode?.disconnect();
-      analyzerNode?.disconnect();
-    };
-  }, []);
+    setIsFirst(true);
+  }, [isMusicPlay]);
 
   useFrame(() => {
-    const analyzerNode = audioMap.analyzerNode;
+    const analyzerNode = audioMap?.analyzerNode;
     if (!analyzerNode) return;
 
     analyzerNode.getByteTimeDomainData(newData);

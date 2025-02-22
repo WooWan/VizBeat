@@ -1,6 +1,7 @@
 import { useMusicStore } from '@/store/music';
 import React, { useEffect, useState } from 'react';
 import Multitrack from 'wavesurfer-multitrack';
+import canAutoPlay from 'can-autoplay';
 
 type Props = {
   containerRef: React.MutableRefObject<HTMLDivElement>;
@@ -43,8 +44,12 @@ function useWavesurfer({ containerRef, audios }: Props) {
 
     multitrack.once('canplay', () => {
       setWavesurfer(multitrack);
-      api.playAudio();
-      multitrack.play();
+      canAutoPlay.audio({ muted: false, timeout: 2000 }).then(({ result }) => {
+        if (result === true) {
+          api.playAudio();
+          multitrack.play();
+        }
+      });
     });
 
     return () => {
